@@ -14900,7 +14900,7 @@ function horizonContrastSummary(h) {
   if (!dom.hue && !dom.value && !dom.chroma) return '';
   const parts = [];
   for (const rx of h.redoxRows) {
-    if (!rx.type || !rx.type.startsWith('C')) continue;
+    if (!rx.type || !rx.type.startsWith('C –')) continue;
     if (!rx.hue && !rx.value && !rx.chroma) continue;
     const contrast = computeRedoxContrast(dom.hue, dom.value, dom.chroma, rx.hue, rx.value, rx.chroma);
     const label = (rx.hue || '') + (rx.value ? ' ' + rx.value : '') + (rx.chroma ? '/' + rx.chroma : '');
@@ -20059,7 +20059,7 @@ function WetlandApp() {
               if (rx.pct) t(p2, 278, y, rx.pct + '%');
               t(p2, 300, y, (rx.type || '').split(' ')[0]);
               t(p2, 332, y, (rx.loc || '').split(' ')[0]);
-              const ct = rx.type && rx.type.startsWith('C') && (dom.hue || dom.value || dom.chroma) && (rx.hue || rx.value || rx.chroma)
+              const ct = rx.type && rx.type.startsWith('C –') && (dom.hue || dom.value || dom.chroma) && (rx.hue || rx.value || rx.chroma)
                 ? computeRedoxContrast(dom.hue, dom.value, dom.chroma, rx.hue, rx.value, rx.chroma)
                 : null;
               if (ct) t(p2, 358, y, ct.charAt(0));
@@ -22511,12 +22511,7 @@ function WetlandApp() {
         padding: '8px 12px 8px',
         borderTop: '1px solid rgba(255,255,255,0.04)'
       }
-    }, h.redoxRows.map((rx, rxIdx) => {
-      const dom = getDominantMatrix(h);
-      const rxContrast = rx.type && rx.type.startsWith('C') && (dom.hue || dom.value || dom.chroma) && (rx.hue || rx.value || rx.chroma)
-        ? computeRedoxContrast(dom.hue, dom.value, dom.chroma, rx.hue, rx.value, rx.chroma)
-        : null;
-      return React.createElement("div", {
+    }, h.redoxRows.map((rx, rxIdx) => React.createElement("div", {
         key: rx.id,
         className: "fade-in",
         style: {
@@ -22624,19 +22619,7 @@ function WetlandApp() {
       style: {
         width: '100%'
       }
-    }))), rxContrast && React.createElement("div", {
-      style: {
-        fontSize: 9,
-        fontWeight: 600,
-        padding: '2px 5px',
-        borderRadius: 3,
-        flexShrink: 0,
-        alignSelf: 'center',
-        marginBottom: 4,
-        color: rxContrast === 'Prominent' ? '#f87171' : rxContrast === 'Distinct' ? '#fbbf24' : '#71717a',
-        background: rxContrast === 'Prominent' ? 'rgba(248,113,113,0.12)' : rxContrast === 'Distinct' ? 'rgba(251,191,36,0.12)' : 'rgba(113,113,122,0.12)'
-      }
-    }, rxContrast.charAt(0)), React.createElement("button", {
+    }))), React.createElement("button", {
       onClick: () => removeRedox(h.id, rx.id),
       style: {
         background: 'none',
@@ -22656,8 +22639,7 @@ function WetlandApp() {
         position: 'relative',
         top: '0.5px'
       }
-    }, "\u2715")));
-    }), React.createElement("button", {
+    }, "\u2715")))), React.createElement("button", {
       onClick: () => addRedox(h.id),
       style: {
         fontSize: 9,
