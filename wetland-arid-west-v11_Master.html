@@ -11276,59 +11276,12 @@ function inferHydricIndicators(horizons) {
   function hasRedoxDepletion(h, pctMin = 2) {
     return redoxRows(h).some(rx => N(rx.pct) >= pctMin && rx.type.startsWith('D'));
   }
-  const _A1_RING = ['10R', '2.5YR', '5YR', '7.5YR', '10YR', '2.5Y', '5Y', '7.5Y', '10Y', '2.5GY', '5GY', '7.5GY', '10GY', '2.5G', '5G', '7.5G', '10G', '2.5BG', '5BG', '7.5BG', '10BG', '2.5B', '5B', '7.5B', '10B', '2.5PB', '5PB', '7.5PB', '10PB', '2.5P', '5P', '7.5P', '10P', '2.5RP', '5RP', '7.5RP', '10RP', '2.5R', '5R', '7.5R'];
-  function hueSteps(h1, h2) {
-    if (h1 === h2) return 0;
-    if (h1 === 'N' || h2 === 'N') return 99;
-    const i1 = _A1_RING.indexOf(h1),
-      i2 = _A1_RING.indexOf(h2);
-    if (i1 < 0 || i2 < 0) return 99;
-    const d = Math.abs(i1 - i2);
-    return Math.min(d, _A1_RING.length - d);
-  }
-  function contrastClass(mHue, mVal, mChroma, rxHue, rxVal, rxChroma) {
-    const mv = N(mVal),
-      mc = N(mChroma),
-      rv = N(rxVal),
-      rc = N(rxChroma);
-    if (mv <= 3 && mc <= 2 && rv <= 3 && rc <= 2) return 'F';
-    const dv = Math.abs(mv - rv),
-      dc = Math.abs(mc - rc),
-      dh = hueSteps(mHue, rxHue);
-    if (dh === 0) {
-      if (dv === 0 && dc <= 1) return 'F';
-      if (dv === 0 && dc >= 4) return 'P';
-      if (dv === 0) return 'D';
-      if (dv === 1 && dc <= 1) return 'D';
-      return 'P';
-    }
-    if (dh === 1) {
-      if (dv <= 1 && dc <= 1) return 'F';
-      if (dv >= 3 || dv === 2 && dc >= 3 || dv <= 1 && dc >= 3) return 'P';
-      return 'D';
-    }
-    if (dh === 2) {
-      if (dv === 0 && dc === 0) return 'F';
-      if (dv === 0 && dc >= 2) return 'P';
-      if (dv === 0) return 'D';
-      if (dv <= 2 && dc <= 1) return 'F';
-      if (dv <= 2 && dc >= 4) return 'P';
-      if (dv <= 2) return 'D';
-      if (dv === 3 && dc >= 4) return 'P';
-      if (dv === 3) return 'D';
-      return 'P';
-    }
-    return 'P';
-  }
   function isDP(h, rx) {
     const c = contrastClass(h.matrixHue, h.matrixValue, h.matrixChroma, rx.hue, rx.value, rx.chroma);
     return c === 'D' || c === 'P';
   }
   function hasDistOrPromConcMassOrPL(h, pctMin = 2) {
     return redoxRows(h).some(rx => N(rx.pct) >= pctMin && (rx.type.startsWith('C') || rx.loc.startsWith('PL')) && isDP(h, rx));
-  }
-  function hasDistOrPromDepletion(h, pctMin = 2) {
-    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && rx.type.startsWith('D') && isDP(h, rx));
   }
   function aboveLayersChromaOK(qualLayerTop) {
     const above = horizons.filter(h => hzBot(h) <= qualLayerTop + 0.1 && hzTop(h) < qualLayerTop);
@@ -14884,27 +14837,52 @@ function kMeansLab(samples, k, maxIter=20) {
   return {centroids,labels,counts};
 }
 
-// ── Redox contrast determination (USDA Field Book algorithm) ─────────────
-const SOIL_HUE_ORDER = ['5R','7.5R','10R','2.5YR','5YR','7.5YR','10YR','2.5Y','5Y','5GY','5G','5BG','5B','5PB'];
+// ── Redox contrast determination (Arid West Supplement, Table A1) ────────
+const _A1_RING = ['10R','2.5YR','5YR','7.5YR','10YR','2.5Y','5Y','7.5Y','10Y','2.5GY','5GY','7.5GY','10GY','2.5G','5G','7.5G','10G','2.5BG','5BG','7.5BG','10BG','2.5B','5B','7.5B','10B','2.5PB','5PB','7.5PB','10PB','2.5P','5P','7.5P','10P','2.5RP','5RP','7.5RP','10RP','2.5R','5R','7.5R'];
 
-function munsellHueDiff(h1, h2) {
-  const gley = /^[0-9.]*N$/i;
-  if (!h1 || !h2) return 0;
-  const g1 = gley.test(h1), g2 = gley.test(h2);
-  if (g1 !== g2) return 4;
-  if (g1 && g2) return 0;
-  const i1 = SOIL_HUE_ORDER.indexOf(h1), i2 = SOIL_HUE_ORDER.indexOf(h2);
-  if (i1 < 0 || i2 < 0) return 0;
-  return Math.abs(i1 - i2);
+function hueSteps(h1, h2) {
+  if (h1 === h2) return 0;
+  if (h1 === 'N' || h2 === 'N') return 99;
+  const i1 = _A1_RING.indexOf(h1), i2 = _A1_RING.indexOf(h2);
+  if (i1 < 0 || i2 < 0) return 99;
+  const d = Math.abs(i1 - i2);
+  return Math.min(d, _A1_RING.length - d);
+}
+
+function contrastClass(mHue, mVal, mChroma, rxHue, rxVal, rxChroma) {
+  const mv = Number(mVal) || 0, mc = Number(mChroma) || 0;
+  const rv = Number(rxVal) || 0, rc = Number(rxChroma) || 0;
+  if (mv <= 3 && mc <= 2 && rv <= 3 && rc <= 2) return 'F';
+  const dv = Math.abs(mv - rv), dc = Math.abs(mc - rc), dh = hueSteps(mHue, rxHue);
+  if (dh === 0) {
+    if (dv === 0 && dc <= 1) return 'F';
+    if (dv === 0 && dc >= 4) return 'P';
+    if (dv === 0) return 'D';
+    if (dv === 1 && dc <= 1) return 'D';
+    return 'P';
+  }
+  if (dh === 1) {
+    if (dv <= 1 && dc <= 1) return 'F';
+    if (dv >= 3 || dv === 2 && dc >= 3 || dv <= 1 && dc >= 3) return 'P';
+    return 'D';
+  }
+  if (dh === 2) {
+    if (dv === 0 && dc === 0) return 'F';
+    if (dv === 0 && dc >= 2) return 'P';
+    if (dv === 0) return 'D';
+    if (dv <= 2 && dc <= 1) return 'F';
+    if (dv <= 2 && dc >= 4) return 'P';
+    if (dv <= 2) return 'D';
+    if (dv === 3 && dc >= 4) return 'P';
+    if (dv === 3) return 'D';
+    return 'P';
+  }
+  return 'P';
 }
 
 function computeRedoxContrast(mHue, mVal, mChr, rxHue, rxVal, rxChr) {
-  const hueDiff = munsellHueDiff(mHue, rxHue);
-  const valDiff = Math.abs((Number(mVal) || 0) - (Number(rxVal) || 0));
-  const chrDiff = Math.abs((Number(mChr) || 0) - (Number(rxChr) || 0));
-  if (hueDiff >= 3 || valDiff >= 4 || chrDiff >= 4) return 'Prominent';
-  if (hueDiff === 0 && valDiff <= 1 && chrDiff <= 1) return 'Faint';
-  return 'Distinct';
+  const c = contrastClass(mHue, mVal, mChr, rxHue, rxVal, rxChr);
+  return c === 'F' ? 'Faint' : c === 'P' ? 'Prominent' : 'Distinct';
 }
 
 function getDominantMatrix(h) {
