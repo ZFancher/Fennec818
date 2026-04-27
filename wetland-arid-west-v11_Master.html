@@ -10844,7 +10844,7 @@ const HYDRIC_ALL = [{
   label: 'Histosol',
   lrr: 'All LRRs',
   autoable: true,
-  desc: 'Classifies as a Histosol (except Folists). In a Histosol, 16 in. (40 cm) or more of the upper 32 in. (80 cm) is organic soil material. Histosols also include soils that have organic soil material of any thickness over rock or fragmental soil material that has interstices filled with organic soil material. Organic soil material has an organic carbon content (by weight) of 12 to 18 percent or more, depending on the clay content of the soil. The material includes muck, mucky peat, or peat. Cannot be fully confirmed in the field — formal Soil Taxonomy classification and lab OC% analysis required.'
+  desc: 'Classifies as a Histosol (except Folists). In a Histosol, 16 in. (40 cm) or more of the upper 32 in. (80 cm) is organic soil material. Histosols also include soils that have organic soil material of any thickness over rock or fragmental soil material that has interstices filled with organic soil material. Organic soil material has an organic carbon content (by weight) of 12 to 18 percent or more, depending on the clay content of the soil. The material includes muck, mucky peat, or peat. Cannot be fully confirmed in the field — formal Soil Taxonomy classification and OC% analysis required.'
 }, {
   id: 'A2',
   code: 'A2',
@@ -11299,7 +11299,7 @@ function inferHydricIndicators(horizons) {
       organicIn32 += Math.min(hzBot(h), 32) - hzTop(h);
     }
     if (organicIn32 >= 16) inferred['A1'] = {
-      reason: `${organicIn32.toFixed(1)} in. of organic material (muck/mucky peat/peat) in the upper 32 in. (≥16 in. req.). Formal Soil Taxonomy classification and lab OC% analysis required to confirm Histosol.`,
+      reason: `${organicIn32.toFixed(1)} in. of organic material (muck/mucky peat/peat) in the upper 32 in. (≥16 in. req.). Formal Soil Taxonomy classification and OC% analysis required to confirm Histosol.`,
       partial: true
     };
   }
@@ -19459,7 +19459,7 @@ function WetlandApp() {
         const TRUE_ORG = ['muck', 'mucky peat', 'peat'];
         const hasOrg = srt.some(h => TRUE_ORG.includes((h.texture || '').toLowerCase()) && (Number(h.depthTo) || 0) <= bdRaw + 1);
         if (hasOrg) base['A1'] = {
-          reason: `Organic material (muck/mucky peat/peat) present over bedrock at ${bdRaw} in. Histosols include organic material of any thickness over rock or fragmental material. Formal Soil Taxonomy classification and lab OC% required to confirm.`,
+          reason: `Organic material (muck/mucky peat/peat) present over bedrock at ${bdRaw} in. Histosols include organic material of any thickness over rock or fragmental material. Formal Soil Taxonomy classification and OC% required to confirm.`,
           partial: true
         };
       }
