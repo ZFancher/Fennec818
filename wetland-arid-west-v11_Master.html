@@ -19537,8 +19537,10 @@ function WetlandApp() {
   });
   function isHorizonSufficient(h) {
     if (h.depthFrom === '' || h.depthTo === '') return false;
+    if (Number(h.depthTo) <= Number(h.depthFrom)) return false;
     if (!h.texture) return false;
-    if (h.matrixColors && h.matrixColors.length > 1 && !h.matrixColors.every(c => c.pct !== '')) return false;
+    if (!h.matrixColors || !h.matrixColors.length) return false;
+    if (!h.matrixColors.every(c => c.pct !== '')) return false;
     if (h.redoxRows && h.redoxRows.length > 0 && !h.redoxRows.every(rx => rx.pct !== '')) return false;
     return true;
   }
