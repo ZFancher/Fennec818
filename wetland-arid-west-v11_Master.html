@@ -14922,6 +14922,7 @@ function horizonContrastSummary(h) {
   if (!dom.hue && !dom.value && !dom.chroma) return '';
   const parts = [];
   for (const rx of h.redoxRows) {
+    if (!rx.type || !rx.type.startsWith('C')) continue;
     if (!rx.hue && !rx.value && !rx.chroma) continue;
     const contrast = computeRedoxContrast(dom.hue, dom.value, dom.chroma, rx.hue, rx.value, rx.chroma);
     const label = (rx.hue || '') + (rx.value ? ' ' + rx.value : '') + (rx.chroma ? '/' + rx.chroma : '');
@@ -20080,7 +20081,7 @@ function WetlandApp() {
               if (rx.pct) t(p2, 278, y, rx.pct + '%');
               t(p2, 300, y, (rx.type || '').split(' ')[0]);
               t(p2, 332, y, (rx.loc || '').split(' ')[0]);
-              const ct = (dom.hue || dom.value || dom.chroma) && (rx.hue || rx.value || rx.chroma)
+              const ct = rx.type && rx.type.startsWith('C') && (dom.hue || dom.value || dom.chroma) && (rx.hue || rx.value || rx.chroma)
                 ? computeRedoxContrast(dom.hue, dom.value, dom.chroma, rx.hue, rx.value, rx.chroma)
                 : null;
               if (ct) t(p2, 358, y, ct.charAt(0));
@@ -22534,7 +22535,7 @@ function WetlandApp() {
       }
     }, h.redoxRows.map((rx, rxIdx) => {
       const dom = getDominantMatrix(h);
-      const rxContrast = (dom.hue || dom.value || dom.chroma) && (rx.hue || rx.value || rx.chroma)
+      const rxContrast = rx.type && rx.type.startsWith('C') && (dom.hue || dom.value || dom.chroma) && (rx.hue || rx.value || rx.chroma)
         ? computeRedoxContrast(dom.hue, dom.value, dom.chroma, rx.hue, rx.value, rx.chroma)
         : null;
       return React.createElement("div", {
