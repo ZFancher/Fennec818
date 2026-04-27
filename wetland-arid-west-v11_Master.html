@@ -397,6 +397,8 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   [style*="border:#3f3f46"] { border-color: #ccc !important; }
 }
 
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   @keyframes btnFlash {
     0%   { box-shadow: 0 0 0 0px rgba(255,255,255,0.0); }
     30%  { box-shadow: 0 0 0 3px rgba(255,255,255,0.55); }
@@ -14821,6 +14823,67 @@ function rgbToNearestMunsell(r, g, b) {
            deltaE: Math.round(Math.sqrt(bestDE2) * 10) / 10 };
 }
 
+// labToNearestMunsell — nearest chip search directly from Lab values (avoids redundant RGB→Lab).
+function labToNearestMunsell(L, a, b) {
+  let best = null, bestDE2 = Infinity;
+  for (const chip of MUNSELL_LAB) {
+    const dL=L-chip.L, da=a-chip.a, db=b-chip.b;
+    const de2=dL*dL+da*da+db*db;
+    if (de2<bestDE2) { bestDE2=de2; best=chip; }
+  }
+  return { hue:best.hue, value:best.value, chroma:best.chroma,
+           deltaE:Math.round(Math.sqrt(bestDE2)*10)/10 };
+}
+
+// kMeansLab — k-means++ clustering in CIE Lab space.
+// samples: [[L,a,b],...].  Returns {centroids, labels, counts}.
+function kMeansLab(samples, k, maxIter=20) {
+  const n=samples.length;
+  if (!n) return {centroids:[],labels:[],counts:[]};
+  k=Math.min(k,n);
+  // k-means++ initialisation
+  const centroids=[];
+  centroids.push(samples[Math.floor(Math.random()*n)].slice());
+  for (let c=1;c<k;c++) {
+    const dists=samples.map(s=>{
+      let min=Infinity;
+      for (const cen of centroids) {
+        const d=(s[0]-cen[0])**2+(s[1]-cen[1])**2+(s[2]-cen[2])**2;
+        if (d<min) min=d;
+      }
+      return min;
+    });
+    const tot=dists.reduce((a,b)=>a+b,0);
+    let r=Math.random()*tot,acc=0,chosen=n-1;
+    for (let i=0;i<n;i++){acc+=dists[i];if(acc>=r){chosen=i;break;}}
+    centroids.push(samples[chosen].slice());
+  }
+  const labels=new Array(n).fill(0);
+  for (let iter=0;iter<maxIter;iter++){
+    let moved=false;
+    for (let i=0;i<n;i++){
+      let best=0,bestD=Infinity;
+      for (let c=0;c<k;c++){
+        const s=samples[i],cn=centroids[c];
+        const d=(s[0]-cn[0])**2+(s[1]-cn[1])**2+(s[2]-cn[2])**2;
+        if(d<bestD){bestD=d;best=c;}
+      }
+      if(labels[i]!==best){labels[i]=best;moved=true;}
+    }
+    if(!moved) break;
+    const sums=Array.from({length:k},()=>[0,0,0]);
+    const cnts=new Array(k).fill(0);
+    for(let i=0;i<n;i++){
+      const c=labels[i],s=samples[i];
+      sums[c][0]+=s[0];sums[c][1]+=s[1];sums[c][2]+=s[2];cnts[c]++;
+    }
+    for(let c=0;c<k;c++) if(cnts[c]) centroids[c]=sums[c].map(v=>v/cnts[c]);
+  }
+  const counts=new Array(k).fill(0);
+  for(const l of labels) counts[l]++;
+  return {centroids,labels,counts};
+}
+
 // ── Color correction matrix ────────────────────────────────────────────────
 
 // Solve a 3×3 color correction matrix from 6 measured/known patch pairs.
@@ -16454,6 +16517,406 @@ function SoilProfileModal({
     }
   }, "Moist Munsell \xB7 Depths in inches \xB7 For documentation reference only"))));
 }
+
+// ── SoilAnalyzeCapture ────────────────────────────────────────────────────────
+// Full-screen overlay: drag an ellipse over a ped, run k-means colour segmentation.
+// Props: onAnalyze({matrixColors, redoxRows}), onClose()
+
+function labToSRGB(L, a, b) {
+  function fi(t) { return t > 0.206897 ? t*t*t : (t - 16/116) / 7.787037; }
+  const fy=(L+16)/116, fx=a/500+fy, fz=fy-b/200;
+  const X=fi(fx)*95.047, Y=fi(fy)*100.0, Z=fi(fz)*108.883;
+  const rl= 3.2404542*(X/100)-1.5371385*(Y/100)-0.4985314*(Z/100);
+  const gl=-0.9692660*(X/100)+1.8760108*(Y/100)+0.0415560*(Z/100);
+  const bl= 0.0556434*(X/100)-0.2040259*(Y/100)+1.0572252*(Z/100);
+  return [
+    Math.round(Math.max(0,Math.min(255,colorDelinearize(Math.max(0,rl))*255))),
+    Math.round(Math.max(0,Math.min(255,colorDelinearize(Math.max(0,gl))*255))),
+    Math.round(Math.max(0,Math.min(255,colorDelinearize(Math.max(0,bl))*255))),
+  ];
+}
+
+const ANALYZE_K = 6;
+
+function SoilAnalyzeCapture({ onAnalyze, onClose }) {
+  const [phase, setPhase] = useState('position'); // 'position' | 'analyzing' | 'review'
+  const [cardOk, setCardOk] = useState(false);
+  const [concSens, setConcSens] = useState(50);
+  const [deplSens, setDeplSens] = useState(50);
+  const [reviewData, setReviewData] = useState(null);
+
+  const videoRef        = useRef(null);
+  const overlayRef      = useRef(null);      // canvas during position/analyzing phases
+  const reviewCanvasRef = useRef(null);      // canvas during review phase
+  const grabCanvasRef   = useRef(null);      // off-screen 640px detection canvas
+  const fullResCanvasRef= useRef(null);      // off-screen full-res canvas for k-means
+  const ellipseRef      = useRef(null);      // {cx,cy,rx,ry} in display px
+  const detectionRef    = useRef(null);      // last valid measureCard() result
+  const dragRef         = useRef(null);      // active drag state
+  const animRef         = useRef(null);
+  const streamRef       = useRef(null);
+  const phaseRef        = useRef('position');
+  const cardOkRef       = useRef(false);
+
+  useEffect(() => { phaseRef.current = phase; }, [phase]);
+  useEffect(() => { cardOkRef.current = cardOk; }, [cardOk]);
+
+  // Camera boot + detection loop ─────────────────────────────────────────────
+  useEffect(() => {
+    grabCanvasRef.current    = document.createElement('canvas');
+    fullResCanvasRef.current = document.createElement('canvas');
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+    let active = true;
+    navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 } },
+      audio: false
+    }).then(stream => {
+      if (!active) { stream.getTracks().forEach(t => t.stop()); return; }
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play().catch(() => {});
+      }
+    }).catch(() => {});
+
+    let lastDetect = 0;
+    function loop() {
+      animRef.current = requestAnimationFrame(loop);
+      if (phaseRef.current !== 'position') return;
+      const video  = videoRef.current;
+      const canvas = overlayRef.current;
+      const grab   = grabCanvasRef.current;
+      if (!video || !canvas || !grab || video.readyState < 2) return;
+
+      const W = canvas.offsetWidth, H = canvas.offsetHeight;
+      if (!W || !H) return;
+      if (canvas.width !== W) canvas.width = W;
+      if (canvas.height !== H) canvas.height = H;
+      if (!ellipseRef.current) {
+        ellipseRef.current = { cx:W*0.5, cy:H*0.43, rx:W*0.28, ry:H*0.20 };
+      }
+
+      const vW=video.videoWidth, vH=video.videoHeight;
+      if (!vW || !vH) return;
+      const vAsp=vW/vH, cAsp=W/H;
+      let srcX,srcY,srcW,srcH;
+      if (vAsp > cAsp) {
+        srcH=vH; srcW=Math.round(vH*cAsp); srcX=Math.round((vW-srcW)/2); srcY=0;
+      } else {
+        srcW=vW; srcH=Math.round(vW/cAsp); srcX=0; srcY=Math.round((vH-srcH)/2);
+      }
+      const detW=Math.min(640,srcW), detH=Math.round(srcH*detW/srcW);
+      grab.width=detW; grab.height=detH;
+      grab.getContext('2d').drawImage(video, srcX, srcY, srcW, srcH, 0, 0, detW, detH);
+
+      const now = Date.now();
+      if (now - lastDetect > 130) {
+        lastDetect = now;
+        try {
+          const r = measureCard(grab);
+          const ok = !!r;
+          if (ok !== cardOkRef.current) { cardOkRef.current = ok; setCardOk(ok); }
+          detectionRef.current = r || null;
+        } catch(e) {}
+      }
+      drawEllipseOverlay(canvas, W, H);
+    }
+    animRef.current = requestAnimationFrame(loop);
+    return () => {
+      active = false;
+      cancelAnimationFrame(animRef.current);
+      if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
+    };
+  }, []);
+
+  // Review overlay redraws when sensitivity sliders change ───────────────────
+  useEffect(() => {
+    if (phase === 'review' && reviewData) drawReviewOverlay();
+  }, [phase, reviewData, concSens, deplSens]);
+
+  // ── Drawing ──────────────────────────────────────────────────────────────
+  function drawEllipseOverlay(canvas, W, H) {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, W, H);
+    const e = ellipseRef.current;
+    if (!e) return;
+    // dim everything outside the ellipse
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath(); ctx.ellipse(e.cx, e.cy, e.rx, e.ry, 0, 0, Math.PI*2); ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.restore();
+    // ellipse outline
+    ctx.strokeStyle = cardOkRef.current ? '#22c55e' : '#fbbf24';
+    ctx.lineWidth = 2; ctx.setLineDash([8,4]);
+    ctx.beginPath(); ctx.ellipse(e.cx, e.cy, e.rx, e.ry, 0, 0, Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]);
+    // drag handles
+    [[e.cx, e.cy], [e.cx+e.rx, e.cy], [e.cx, e.cy+e.ry]].forEach(([hx,hy]) => {
+      ctx.fillStyle='rgba(0,0,0,0.55)'; ctx.strokeStyle='#fff'; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.arc(hx, hy, 9, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    });
+  }
+
+  function drawReviewOverlay() {
+    const canvas = reviewCanvasRef.current;
+    if (!canvas || !reviewData) return;
+    const { snapImageData, W, H, allLabels, centroids } = reviewData;
+    canvas.width=W; canvas.height=H;
+    const ctx = canvas.getContext('2d');
+    ctx.putImageData(snapImageData, 0, 0);
+    const concC = 30 - concSens*22/100;
+    const deplC = 3  + deplSens*12/100;
+    const role = centroids.map(([,a,b]) => {
+      const c=Math.sqrt(a*a+b*b);
+      return c >= concC ? 1 : c <= deplC ? 2 : 0;
+    });
+    const ov = ctx.createImageData(W, H);
+    const od = ov.data;
+    for (let i=0; i<allLabels.length; i++) {
+      const lbl=allLabels[i]; if (lbl===255) continue;
+      const r=role[lbl], pi=i*4;
+      if (r===1) { od[pi]=255; od[pi+1]=140; od[pi+2]=0;   od[pi+3]=160; }
+      if (r===2) { od[pi]=30;  od[pi+1]=80;  od[pi+2]=220; od[pi+3]=160; }
+    }
+    const tmp=document.createElement('canvas'); tmp.width=W; tmp.height=H;
+    tmp.getContext('2d').putImageData(ov, 0, 0);
+    ctx.drawImage(tmp, 0, 0);
+  }
+
+  // ── Pointer / drag ────────────────────────────────────────────────────────
+  function getCanvasPt(e, canvas) {
+    const r=canvas.getBoundingClientRect();
+    return [(e.clientX-r.left)*(canvas.width/r.width),(e.clientY-r.top)*(canvas.height/r.height)];
+  }
+
+  function onPointerDown(e) {
+    if (phaseRef.current !== 'position') return;
+    e.preventDefault();
+    const canvas=overlayRef.current;
+    const [px,py]=getCanvasPt(e, canvas);
+    const el=ellipseRef.current; if (!el) return;
+    const handles=[
+      {mode:'center',x:el.cx,      y:el.cy},
+      {mode:'east',  x:el.cx+el.rx,y:el.cy},
+      {mode:'south', x:el.cx,      y:el.cy+el.ry},
+    ];
+    for (const h of handles) {
+      if (Math.hypot(px-h.x,py-h.y)<22) {
+        dragRef.current={mode:h.mode,ox:px,oy:py,snap:{...el}};
+        canvas.setPointerCapture(e.pointerId); return;
+      }
+    }
+    const nx=(px-el.cx)/el.rx, ny=(py-el.cy)/el.ry;
+    if (nx*nx+ny*ny<=1) {
+      dragRef.current={mode:'center',ox:px,oy:py,snap:{...el}};
+      canvas.setPointerCapture(e.pointerId);
+    }
+  }
+
+  function onPointerMove(e) {
+    if (!dragRef.current) return;
+    const canvas=overlayRef.current;
+    const [px,py]=getCanvasPt(e, canvas);
+    const {mode,ox,oy,snap}=dragRef.current;
+    const dx=px-ox, dy=py-oy;
+    const el=ellipseRef.current;
+    if      (mode==='center') { el.cx=snap.cx+dx; el.cy=snap.cy+dy; }
+    else if (mode==='east')   { el.rx=Math.max(30,snap.rx+dx); }
+    else if (mode==='south')  { el.ry=Math.max(20,snap.ry+dy); }
+    drawEllipseOverlay(canvas, canvas.width, canvas.height);
+  }
+
+  function onPointerUp() { dragRef.current=null; }
+
+  // ── Analyse ───────────────────────────────────────────────────────────────
+  async function handleAnalyse() {
+    const video=videoRef.current, grab=grabCanvasRef.current, fr=fullResCanvasRef.current;
+    if (!video || !grab || !fr) return;
+    const W=overlayRef.current ? overlayRef.current.offsetWidth  : 640;
+    const H=overlayRef.current ? overlayRef.current.offsetHeight : 480;
+    setPhase('analyzing');
+    await new Promise(r=>setTimeout(r,80));
+
+    const vW=video.videoWidth, vH=video.videoHeight;
+    if (!vW || !vH) { setPhase('position'); return; }
+    const vAsp=vW/vH, cAsp=W/H;
+    let srcX,srcY,srcW,srcH;
+    if (vAsp > cAsp) {
+      srcH=vH; srcW=Math.round(vH*cAsp); srcX=Math.round((vW-srcW)/2); srcY=0;
+    } else {
+      srcW=vW; srcH=Math.round(vW/cAsp); srcX=0; srcY=Math.round((vH-srcH)/2);
+    }
+    // Fresh detection for CCM
+    const detW=Math.min(640,srcW), detH=Math.round(srcH*detW/srcW);
+    grab.width=detW; grab.height=detH;
+    grab.getContext('2d').drawImage(video, srcX, srcY, srcW, srcH, 0, 0, detW, detH);
+    const freshCard=measureCard(grab);
+    const ccm=(freshCard || detectionRef.current) ? (freshCard || detectionRef.current).ccm : null;
+    if (!ccm) { setPhase('position'); return; }
+
+    // Full-res frame capped at 1920 for k-means sampling
+    const scale=Math.min(1,1920/Math.max(srcW,srcH));
+    const frW=Math.round(srcW*scale), frH=Math.round(srcH*scale);
+    fr.width=frW; fr.height=frH;
+    fr.getContext('2d').drawImage(video, srcX, srcY, srcW, srcH, 0, 0, frW, frH);
+    const frData=fr.getContext('2d',{willReadFrequently:true}).getImageData(0,0,frW,frH).data;
+
+    // Ellipse in full-res coords
+    const el=ellipseRef.current;
+    const esx=frW/W, esy=frH/H;
+    const ecx=el.cx*esx, ecy=el.cy*esy, erx=el.rx*esx, ery=el.ry*esy;
+    const bx0=Math.max(0,Math.floor(ecx-erx)), by0=Math.max(0,Math.floor(ecy-ery));
+    const bx1=Math.min(frW-1,Math.ceil(ecx+erx)), by1=Math.min(frH-1,Math.ceil(ecy+ery));
+
+    // Subsample every other pixel in both axes for k-means speed
+    const samples=[];
+    for (let y=by0; y<=by1; y+=2) {
+      for (let x=bx0; x<=bx1; x+=2) {
+        const nx=(x-ecx)/erx, ny=(y-ecy)/ery;
+        if (nx*nx+ny*ny>1) continue;
+        const i=(y*frW+x)*4;
+        const [rC,gC,bC]=applyCCM(frData[i],frData[i+1],frData[i+2],ccm);
+        samples.push(sRGBtoLab(rC,gC,bC));
+      }
+    }
+    if (samples.length<ANALYZE_K) { setPhase('position'); return; }
+
+    const {centroids}=kMeansLab(samples, ANALYZE_K);
+    const munsells=centroids.map(([L,a,b])=>labToNearestMunsell(L,a,b));
+
+    // Classify display-res pixels for the overlay (faster, no new video capture needed)
+    const snapCanvas=document.createElement('canvas');
+    snapCanvas.width=W; snapCanvas.height=H;
+    snapCanvas.getContext('2d').drawImage(video, srcX, srcY, srcW, srcH, 0, 0, W, H);
+    const snapCtx=snapCanvas.getContext('2d',{willReadFrequently:true});
+    const snapID=snapCtx.getImageData(0,0,W,H);
+    const sd=snapID.data;
+    const allLabels =new Uint8Array(W*H).fill(255); // 255 = outside ellipse
+    const fullCounts=new Array(ANALYZE_K).fill(0);
+
+    for (let y=0; y<H; y++) {
+      for (let x=0; x<W; x++) {
+        const nx=(x-el.cx)/el.rx, ny=(y-el.cy)/el.ry;
+        if (nx*nx+ny*ny>1) continue;
+        const i=(y*W+x)*4;
+        const [rC,gC,bC]=applyCCM(sd[i],sd[i+1],sd[i+2],ccm);
+        const lab=sRGBtoLab(rC,gC,bC);
+        let best=0, bestD=Infinity;
+        for (let c=0; c<centroids.length; c++) {
+          const cn=centroids[c];
+          const d=(lab[0]-cn[0])**2+(lab[1]-cn[1])**2+(lab[2]-cn[2])**2;
+          if (d<bestD) { bestD=d; best=c; }
+        }
+        allLabels[y*W+x]=best; fullCounts[best]++;
+      }
+    }
+
+    setReviewData({ snapImageData:snapID, W, H, centroids, munsells, fullCounts, allLabels });
+    setPhase('review');
+  }
+
+  // ── Chip helpers ──────────────────────────────────────────────────────────
+  function classifyChips(sens_c, sens_d) {
+    if (!reviewData) return { matrix:[], conc:[], depl:[] };
+    const {centroids, munsells, fullCounts}=reviewData;
+    const total=fullCounts.reduce((a,b)=>a+b,0);
+    const concC=30-sens_c*22/100, deplC=3+sens_d*12/100;
+    const matrix=[],conc=[],depl=[];
+    centroids.forEach(([L,a,b],i)=>{
+      const cstar=Math.sqrt(a*a+b*b);
+      const pct=Math.round(fullCounts[i]/total*100);
+      const [sr,sg,sb]=labToSRGB(L,a,b);
+      const hex='#'+[sr,sg,sb].map(v=>v.toString(16).padStart(2,'0')).join('');
+      const entry={...munsells[i],pct,hex};
+      if (cstar>=concC) conc.push(entry); else if (cstar<=deplC) depl.push(entry); else matrix.push(entry);
+    });
+    const byPct=a=>[...a].sort((x,y)=>y.pct-x.pct);
+    return {matrix:byPct(matrix),conc:byPct(conc),depl:byPct(depl)};
+  }
+
+  function chipEl(c, labelColor, label) {
+    return React.createElement('div',{key:label,style:{display:'flex',alignItems:'center',gap:5,background:'#27272a',borderRadius:5,padding:'4px 7px'}},
+      React.createElement('div',{style:{width:18,height:18,borderRadius:3,background:c.hex,border:'1px solid rgba(255,255,255,0.15)',flexShrink:0}}),
+      React.createElement('div',null,
+        React.createElement('div',{style:{fontSize:9,color:labelColor,letterSpacing:'0.05em'}},label),
+        React.createElement('div',{style:{fontSize:11,color:'#f4f4f5',fontWeight:500}},c.hue+' '+c.value+'/'+c.chroma),
+        React.createElement('div',{style:{fontSize:9,color:'#71717a'}},c.pct+'%')
+      )
+    );
+  }
+
+  // ── Accept ────────────────────────────────────────────────────────────────
+  function handleAccept() {
+    if (!reviewData) return;
+    const chips=classifyChips(concSens, deplSens);
+    const matrixColors=chips.matrix.slice(0,3).map((m,i)=>({
+      id:i+1, hue:m.hue, value:m.value, chroma:m.chroma, pct:String(m.pct)
+    }));
+    const redoxRows=[
+      ...chips.conc.slice(0,2).map((m,i)=>({
+        id:i+1, hue:m.hue, value:m.value, chroma:m.chroma, pct:String(m.pct),
+        type:'C – Concentration', loc:'M – Matrix'
+      })),
+      ...chips.depl.slice(0,2).map((m,i)=>({
+        id:i+3, hue:m.hue, value:m.value, chroma:m.chroma, pct:String(m.pct),
+        type:'D – Depletion', loc:'M – Matrix'
+      })),
+    ];
+    onAnalyze({
+      matrixColors: matrixColors.length ? matrixColors : [{id:1,hue:'10YR',value:'4',chroma:'2',pct:''}],
+      redoxRows
+    });
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
+  if (phase==='position' || phase==='analyzing') {
+    return React.createElement('div',{style:{position:'fixed',inset:0,zIndex:10000,background:'#000',userSelect:'none',WebkitUserSelect:'none'}},
+      React.createElement('video',{ref:videoRef,autoPlay:true,playsInline:true,muted:true,
+        style:{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}}),
+      React.createElement('canvas',{ref:overlayRef,
+        onPointerDown:phase==='position'?onPointerDown:undefined,
+        onPointerMove:phase==='position'?onPointerMove:undefined,
+        onPointerUp:  phase==='position'?onPointerUp:undefined,
+        style:{position:'absolute',inset:0,width:'100%',height:'100%',touchAction:'none',cursor:phase==='position'?'grab':'default'}}),
+      phase==='analyzing' && React.createElement('div',{style:{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(0,0,0,0.5)'}},
+        React.createElement('div',{style:{width:40,height:40,borderRadius:'50%',border:'4px solid rgba(255,255,255,0.2)',borderTopColor:'#fff',animation:'spin 0.9s linear infinite'}})),
+      phase==='position' && React.createElement('div',{style:{position:'absolute',bottom:32,left:0,right:0,display:'flex',flexDirection:'column',alignItems:'center',gap:12}},
+        React.createElement('div',{style:{fontSize:12,color:cardOk?'#22c55e':'#fbbf24',textShadow:'0 1px 3px rgba(0,0,0,0.8)'}},
+          cardOk?'Card detected — frame the ped and tap Analyse':'Hold reference card in view…'),
+        React.createElement('button',{onClick:cardOk?handleAnalyse:undefined,disabled:!cardOk,
+          style:{background:cardOk?'#22c55e':'#52525b',color:cardOk?'#000':'#a1a1aa',border:'none',borderRadius:8,padding:'10px 28px',fontSize:15,fontWeight:600,cursor:cardOk?'pointer':'default',letterSpacing:'0.03em',opacity:cardOk?1:0.7}},
+          'Analyse')),
+      React.createElement('button',{onClick:onClose,style:{position:'absolute',top:16,right:16,zIndex:1,background:'rgba(0,0,0,0.55)',color:'#f4f4f5',border:'1px solid rgba(255,255,255,0.25)',borderRadius:8,padding:'6px 14px',fontSize:13,cursor:'pointer'}},'✕')
+    );
+  }
+
+  // review phase
+  const chips=classifyChips(concSens, deplSens);
+  return React.createElement('div',{style:{position:'fixed',inset:0,zIndex:10000,background:'#000',userSelect:'none',WebkitUserSelect:'none',display:'flex',flexDirection:'column'}},
+    React.createElement('div',{style:{position:'relative',flex:1,overflow:'hidden',background:'#000'}},
+      React.createElement('canvas',{ref:reviewCanvasRef,
+        style:{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'contain'}})),
+    React.createElement('div',{style:{background:'#18181b',borderTop:'1px solid #3f3f46',padding:'10px 14px',display:'flex',flexDirection:'column',gap:8,maxHeight:'55vh',overflowY:'auto'}},
+      React.createElement('div',{style:{display:'flex',gap:14}},
+        React.createElement('label',{style:{flex:1,fontSize:11,color:'#a1a1aa'}},
+          'Conc. sensitivity: '+concSens,
+          React.createElement('input',{type:'range',min:0,max:100,value:concSens,onChange:e=>setConcSens(Number(e.target.value)),style:{display:'block',width:'100%',marginTop:3,accentColor:'#f97316'}})),
+        React.createElement('label',{style:{flex:1,fontSize:11,color:'#a1a1aa'}},
+          'Depl. sensitivity: '+deplSens,
+          React.createElement('input',{type:'range',min:0,max:100,value:deplSens,onChange:e=>setDeplSens(Number(e.target.value)),style:{display:'block',width:'100%',marginTop:3,accentColor:'#3b82f6'}}))),
+      React.createElement('div',{style:{display:'flex',flexWrap:'wrap',gap:5}},
+        ...chips.matrix.map((c,i)=>chipEl(c,'#a1a1aa','Matrix'+(chips.matrix.length>1?' '+(i+1):''))),
+        ...chips.conc.map((c,i)  =>chipEl(c,'#f97316','Conc.' +(chips.conc.length>1  ?' '+(i+1):''))),
+        ...chips.depl.map((c,i)  =>chipEl(c,'#60a5fa','Depl.' +(chips.depl.length>1  ?' '+(i+1):'')))),
+      React.createElement('div',{style:{display:'flex',gap:8}},
+        React.createElement('button',{onClick:()=>{setPhase('position');setReviewData(null);},style:{flex:1,background:'#27272a',color:'#f4f4f5',border:'1px solid #3f3f46',borderRadius:6,padding:'8px 0',fontSize:13,cursor:'pointer'}},'Retake'),
+        React.createElement('button',{onClick:handleAccept,style:{flex:2,background:'#22c55e',color:'#000',border:'none',borderRadius:6,padding:'8px 0',fontSize:14,fontWeight:600,cursor:'pointer'}},'Use These Colors')))
+  );
+}
+
 // ── SoilCameraCapture ─────────────────────────────────────────────────────────
 // Full-screen camera overlay: detects reference card, solves CCM, matches soil.
 // Props: onSelect(hue, value, chroma), onClose()
@@ -18371,6 +18834,7 @@ function WetlandApp() {
   const [spgiRemarks, setSpgiRemarks] = useState('');
   const [showExportModal, setShowExportModal] = useState(false);
   const [showSoilProfileDiagram, setShowSoilProfileDiagram] = useState(false);
+  const [showPedAnalyze, setShowPedAnalyze] = useState(null); // horizon id | null
   const [pdfTemplate, setPdfTemplate] = useState(null);
   const [pdfTemplateName, setPdfTemplateName] = useState('');
   function flashBtn(el) {
@@ -18775,6 +19239,8 @@ function WetlandApp() {
     setMorphAdaptEntries([]);
     setProbHydroVeg(false);
     setProbHydroVegRemarks('');
+    setPlotSizes({ tree: '', shrub: '', herb: '', vine: '' });
+    setBareGround('');
     setGpsStatus(null);
     setGpsAccuracy(null);
     acquireLocation();
@@ -19655,6 +20121,12 @@ function WetlandApp() {
     profileShallow: profileShallow,
     swDepth: hydroMeasure['A1h'],
     onClose: () => setShowSoilProfileDiagram(false)
+  }), showPedAnalyze !== null && React.createElement(SoilAnalyzeCapture, {
+    onAnalyze: data => {
+      setHorizons(hs => hs.map(h => h.id !== showPedAnalyze ? h : syncPrimary({...h, ...data})));
+      setShowPedAnalyze(null);
+    },
+    onClose: () => setShowPedAnalyze(null)
   }), showExportModal && React.createElement("div", {
     onClick: e => {
       if (e.target === e.currentTarget) setShowExportModal(false);
@@ -21855,6 +22327,24 @@ function WetlandApp() {
         minWidth: 130
       }
     })), React.createElement("button", {
+      onClick: () => setShowPedAnalyze(h.id),
+      title: 'Analyse ped colours with camera',
+      style: {
+        background: 'none',
+        border: '1px solid #3f3f46',
+        borderRadius: 4,
+        color: '#a1a1aa',
+        padding: '2px 6px',
+        fontSize: 11,
+        cursor: 'pointer',
+        flexShrink: 0,
+        marginLeft: 'auto',
+        marginBottom: 5,
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 3
+      }
+    }, '\ud83d\udcf7', React.createElement("span", null, "Analyse")), React.createElement("button", {
       onClick: () => removeHorizon(h.id),
       style: {
         background: 'none',
@@ -21864,7 +22354,6 @@ function WetlandApp() {
         fontSize: 14,
         cursor: 'pointer',
         flexShrink: 0,
-        marginLeft: 'auto',
         marginBottom: 5,
         display: 'inline-flex',
         alignItems: 'center',
