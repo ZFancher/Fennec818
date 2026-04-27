@@ -19452,18 +19452,6 @@ function WetlandApp() {
         }
       }
     }
-    if (!base['A1'] && restrictiveType === 'Bedrock') {
-      const bdRaw = Number(restrictiveDepth);
-      if (bdRaw > 0) {
-        const srt = [...horizons].sort((a, b) => (Number(a.depthFrom) || 0) - (Number(b.depthFrom) || 0));
-        const TRUE_ORG = ['muck', 'mucky peat', 'peat'];
-        const hasOrg = srt.some(h => TRUE_ORG.includes((h.texture || '').toLowerCase()) && (Number(h.depthTo) || 0) <= bdRaw + 1);
-        if (hasOrg) base['A1'] = {
-          reason: `Organic material (muck/mucky peat/peat) present over bedrock at ${bdRaw} in. Histosols include organic material of any thickness over rock or fragmental material. Formal Soil Taxonomy classification and OC% required to confirm.`,
-          partial: true
-        };
-      }
-    }
     return base;
   }, [autoInferred, chkP, chkHydric, horizons, restrictiveType, restrictiveDepth]);
   const autoCount = Object.values(effectiveSoilAuto).filter(v => v && !v.combo && !v.partial).length;
