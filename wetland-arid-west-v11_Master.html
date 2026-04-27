@@ -14884,6 +14884,52 @@ function kMeansLab(samples, k, maxIter=20) {
   return {centroids,labels,counts};
 }
 
+// ── Redox contrast determination (USDA Field Book algorithm) ─────────────
+const SOIL_HUE_ORDER = ['5R','7.5R','10R','2.5YR','5YR','7.5YR','10YR','2.5Y','5Y','5GY','5G','5BG','5B','5PB'];
+
+function munsellHueDiff(h1, h2) {
+  const gley = /^[0-9.]*N$/i;
+  if (!h1 || !h2) return 0;
+  const g1 = gley.test(h1), g2 = gley.test(h2);
+  if (g1 !== g2) return 4;
+  if (g1 && g2) return 0;
+  const i1 = SOIL_HUE_ORDER.indexOf(h1), i2 = SOIL_HUE_ORDER.indexOf(h2);
+  if (i1 < 0 || i2 < 0) return 0;
+  return Math.abs(i1 - i2);
+}
+
+function computeRedoxContrast(mHue, mVal, mChr, rxHue, rxVal, rxChr) {
+  const hueDiff = munsellHueDiff(mHue, rxHue);
+  const valDiff = Math.abs((Number(mVal) || 0) - (Number(rxVal) || 0));
+  const chrDiff = Math.abs((Number(mChr) || 0) - (Number(rxChr) || 0));
+  if (hueDiff >= 3 || valDiff >= 4 || chrDiff >= 4) return 'Prominent';
+  if (hueDiff === 0 && valDiff <= 1 && chrDiff <= 1) return 'Faint';
+  return 'Distinct';
+}
+
+function getDominantMatrix(h) {
+  if (h.matrixColors && h.matrixColors.length > 0) {
+    let best = h.matrixColors[0];
+    for (const c of h.matrixColors) if ((Number(c.pct) || 0) > (Number(best.pct) || 0)) best = c;
+    return { hue: best.hue, value: best.value, chroma: best.chroma };
+  }
+  return { hue: h.matrixHue, value: h.matrixValue, chroma: h.matrixChroma };
+}
+
+function horizonContrastSummary(h) {
+  if (!h.redoxRows || !h.redoxRows.length) return '';
+  const dom = getDominantMatrix(h);
+  if (!dom.hue && !dom.value && !dom.chroma) return '';
+  const parts = [];
+  for (const rx of h.redoxRows) {
+    if (!rx.hue && !rx.value && !rx.chroma) continue;
+    const contrast = computeRedoxContrast(dom.hue, dom.value, dom.chroma, rx.hue, rx.value, rx.chroma);
+    const label = (rx.hue || '') + (rx.value ? ' ' + rx.value : '') + (rx.chroma ? '/' + rx.chroma : '');
+    parts.push(label + ': ' + contrast);
+  }
+  return parts.join('; ');
+}
+
 // ── Color correction matrix ────────────────────────────────────────────────
 
 // Solve a 3×3 color correction matrix from 6 measured/known patch pairs.
@@ -20016,7 +20062,10 @@ function WetlandApp() {
           const firstY = soilY[rowIdx];
           t(p2, 41, firstY, dep);
           t(p2, 380, firstY, tr(h.texture || '', 14));
-          if (h.remarks) t(p2, 433, firstY, tr(h.remarks, 37));
+          const dom = getDominantMatrix(h);
+          const contrastSumm = horizonContrastSummary(h);
+          const remarksText = [h.remarks, contrastSumm].filter(Boolean).join('; ');
+          if (remarksText) t(p2, 433, firstY, tr(remarksText, 37));
           for (let r = 0; r < totalSubRows; r++) {
             if (rowIdx >= soilY.length) break;
             const y = soilY[rowIdx];
@@ -20031,6 +20080,10 @@ function WetlandApp() {
               if (rx.pct) t(p2, 278, y, rx.pct + '%');
               t(p2, 300, y, (rx.type || '').split(' ')[0]);
               t(p2, 332, y, (rx.loc || '').split(' ')[0]);
+              const ct = (dom.hue || dom.value || dom.chroma) && (rx.hue || rx.value || rx.chroma)
+                ? computeRedoxContrast(dom.hue, dom.value, dom.chroma, rx.hue, rx.value, rx.chroma)
+                : null;
+              if (ct) t(p2, 358, y, ct.charAt(0));
             }
             rowIdx++;
           }
@@ -22479,15 +22532,20 @@ function WetlandApp() {
         padding: '8px 12px 8px',
         borderTop: '1px solid rgba(255,255,255,0.04)'
       }
-    }, h.redoxRows.map((rx, rxIdx) => React.createElement("div", {
-      key: rx.id,
-      className: "fade-in",
-      style: {
-        display: 'flex',
-        alignItems: 'flex-end',
-        gap: 4,
-        marginBottom: 6
-      }
+    }, h.redoxRows.map((rx, rxIdx) => {
+      const dom = getDominantMatrix(h);
+      const rxContrast = (dom.hue || dom.value || dom.chroma) && (rx.hue || rx.value || rx.chroma)
+        ? computeRedoxContrast(dom.hue, dom.value, dom.chroma, rx.hue, rx.value, rx.chroma)
+        : null;
+      return React.createElement("div", {
+        key: rx.id,
+        className: "fade-in",
+        style: {
+          display: 'flex',
+          alignItems: 'flex-end',
+          gap: 4,
+          marginBottom: 6
+        }
     }, React.createElement("div", {
       style: {
         display: 'flex',
@@ -22587,7 +22645,19 @@ function WetlandApp() {
       style: {
         width: '100%'
       }
-    }))), React.createElement("button", {
+    }))), rxContrast && React.createElement("div", {
+      style: {
+        fontSize: 9,
+        fontWeight: 600,
+        padding: '2px 5px',
+        borderRadius: 3,
+        flexShrink: 0,
+        alignSelf: 'center',
+        marginBottom: 4,
+        color: rxContrast === 'Prominent' ? '#f87171' : rxContrast === 'Distinct' ? '#fbbf24' : '#71717a',
+        background: rxContrast === 'Prominent' ? 'rgba(248,113,113,0.12)' : rxContrast === 'Distinct' ? 'rgba(251,191,36,0.12)' : 'rgba(113,113,122,0.12)'
+      }
+    }, rxContrast.charAt(0)), React.createElement("button", {
       onClick: () => removeRedox(h.id, rx.id),
       style: {
         background: 'none',
@@ -22607,7 +22677,8 @@ function WetlandApp() {
         position: 'relative',
         top: '0.5px'
       }
-    }, "\u2715")))), React.createElement("button", {
+    }, "\u2715")));
+    }), React.createElement("button", {
       onClick: () => addRedox(h.id),
       style: {
         fontSize: 9,
@@ -22648,7 +22719,15 @@ function WetlandApp() {
         width: '100%',
         boxSizing: 'border-box'
       }
-    })));
+    }), horizonContrastSummary(h) && React.createElement("div", {
+      style: {
+        fontSize: 9,
+        color: '#a1a1aa',
+        marginTop: 5,
+        fontStyle: 'italic',
+        lineHeight: 1.4
+      }
+    }, "→ Contrast: " + horizonContrastSummary(h))));
   }), (soilProfileWarning || profileShallow) && React.createElement("div", {
     style: {
       margin: '6px 12px 2px',
