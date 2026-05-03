@@ -18510,11 +18510,11 @@ function HydricRow({
       marginTop: 4,
       padding: '4px 8px',
       borderRadius: 3,
-      background: 'rgba(251,191,36,0.06)',
-      border: '1px solid rgba(251,191,36,0.2)',
-      fontSize: 9,
+      background: 'rgba(251,191,36,0.08)',
+      border: '1px solid rgba(251,191,36,0.25)',
+      fontSize: 8,
       color: '#fbbf24',
-      lineHeight: 1.6
+      lineHeight: 1.5
     }
   }, autoReason.replace(/^Partial:\s*/i, '')), isPartial && checked && React.createElement("div", {
     style: {
@@ -18706,11 +18706,11 @@ function IndRow({
       marginTop: 4,
       padding: '4px 8px',
       borderRadius: 3,
-      background: 'rgba(251,191,36,0.06)',
-      border: '1px solid rgba(251,191,36,0.2)',
-      fontSize: 9,
+      background: 'rgba(251,191,36,0.08)',
+      border: '1px solid rgba(251,191,36,0.25)',
+      fontSize: 8,
       color: '#fbbf24',
-      lineHeight: 1.6
+      lineHeight: 1.5
     }
   }, autoPartial.reason), autoPartial && checked && React.createElement("div", {
     style: {
@@ -21794,13 +21794,14 @@ function WetlandApp() {
     }
   }, React.createElement("div", {
     style: {
+      marginTop: 4,
       padding: '4px 8px',
       borderRadius: 3,
-      background: 'rgba(245,158,11,0.08)',
-      border: '1px solid rgba(245,158,11,0.25)',
-      fontSize: 9,
+      background: 'rgba(251,191,36,0.08)',
+      border: '1px solid rgba(251,191,36,0.25)',
+      fontSize: 8,
       color: '#fbbf24',
-      lineHeight: 1.6
+      lineHeight: 1.5
     }
   }, "\u26A0 Dominance Test passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, when utilizing Morphological Adaptations the recalculated Dominance Test only counts when BOTH hydric soil AND wetland hydrology are confirmed (or disturbed/problematic)."))), React.createElement(Collapsible, {
     defaultOpen: false,
@@ -22056,11 +22057,11 @@ function WetlandApp() {
       marginTop: 4,
       padding: '4px 8px',
       borderRadius: 3,
-      background: 'rgba(245,158,11,0.08)',
-      border: '1px solid rgba(245,158,11,0.25)',
-      fontSize: 9,
+      background: 'rgba(251,191,36,0.08)',
+      border: '1px solid rgba(251,191,36,0.25)',
+      fontSize: 8,
       color: '#fbbf24',
-      lineHeight: 1.6
+      lineHeight: 1.5
     }
   }, "\u26A0 PI passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, the Prevalence Index only counts when BOTH hydric soil AND wetland hydrology are confirmed (or disturbed/problematic).")))), React.createElement(Collapsible, {
     defaultOpen: false,
@@ -22464,12 +22465,12 @@ function WetlandApp() {
     }
   }, "\u2713 Criterion satisfied \u2014 hydric soil and wetland hydrology are present."), vegProbFlag && !vegMet && !probVegMet && React.createElement("div", {
     style: {
-      marginTop: 6,
-      padding: '5px 8px',
-      background: 'rgba(251,191,36,0.07)',
-      border: '1px solid rgba(251,191,36,0.2)',
-      borderRadius: 4,
-      fontSize: 9,
+      marginTop: 4,
+      padding: '4px 8px',
+      background: 'rgba(251,191,36,0.08)',
+      border: '1px solid rgba(251,191,36,0.25)',
+      borderRadius: 3,
+      fontSize: 8,
       color: '#fbbf24',
       lineHeight: 1.5
     }
@@ -23649,13 +23650,14 @@ function WetlandApp() {
     }
   }, "\u2713 ", React.createElement("strong", null, "Indicators active."), " ", vegMet && hydroMet && !multipleDistOrProb ? 'Hydrophytic vegetation and wetland hydrology are both confirmed.' : multipleDistOrProb ? `Active via exception: ${distOrProbCount} factors disturbed/problematic (${[vegDistOrProb && 'vegetation', soilDistOrProb && 'soils', hydroDistOrProb && 'hydrology'].filter(Boolean).join(', ')}). Per ERDC/TN WRAP-17-1, 2+ factors required.` : 'Conditions met.') : React.createElement("div", {
     style: {
-      fontSize: 9,
+      marginTop: 4,
+      fontSize: 8,
       color: '#fbbf24',
-      lineHeight: 1.65,
-      padding: '5px 8px',
+      lineHeight: 1.5,
+      padding: '4px 8px',
       borderRadius: 3,
-      background: 'rgba(251,191,36,0.07)',
-      border: '1px solid rgba(251,191,36,0.2)'
+      background: 'rgba(251,191,36,0.08)',
+      border: '1px solid rgba(251,191,36,0.25)'
     }
   }, "\u26A0 ", React.createElement("strong", null, "Problematic hydric soil indicators"), " per 2024 ENG Form 6116-1 and ERDC/EL TR-08-28 Ch. 3. All require both ", React.createElement("strong", null, "hydrophytic vegetation AND wetland hydrology"), " to be present. Exception: 2 or more factors marked significantly disturbed or naturally problematic. ", React.createElement("span", {
     style: {
@@ -23956,13 +23958,13 @@ function WetlandApp() {
     })), ind.id === 'D3' && !(vegMet && soilsMet) && React.createElement("div", {
       style: {
         margin: '0 16px 6px',
-        padding: '5px 8px',
+        padding: '4px 8px',
         borderRadius: 3,
-        background: 'rgba(251,191,36,0.06)',
-        border: '1px solid rgba(251,191,36,0.2)',
+        background: 'rgba(251,191,36,0.08)',
+        border: '1px solid rgba(251,191,36,0.25)',
         fontSize: 8,
         color: '#fbbf24',
-        lineHeight: 1.6
+        lineHeight: 1.5
       }
     }, "\u26A0 Hydrophytic vegetation ", React.createElement("strong", null, "and"), " hydric soil must both be present to use this indicator (per indicator description and Ch. 4). ", !vegMet && !soilsMet ? 'Neither has passed yet.' : !vegMet ? 'Vegetation has not passed.' : 'Hydric soil has not passed.', " ", React.createElement("span", {
       style: {
@@ -23971,13 +23973,13 @@ function WetlandApp() {
     }, "Indicator dimmed until both criteria met.")), ind.id === 'D5' && !d5Auto && React.createElement("div", {
       style: {
         margin: '0 16px 6px',
-        padding: '5px 8px',
+        padding: '4px 8px',
         borderRadius: 3,
-        background: 'rgba(251,191,36,0.06)',
-        border: '1px solid rgba(251,191,36,0.2)',
+        background: 'rgba(251,191,36,0.08)',
+        border: '1px solid rgba(251,191,36,0.25)',
         fontSize: 8,
         color: '#fbbf24',
-        lineHeight: 1.6
+        lineHeight: 1.5
       }
     }, d5Details ? React.createElement(React.Fragment, null, "\u26A0 FAC-Neutral not met \u2014 ", d5Details.hydro, " OBL/FACW vs ", d5Details.upland, " FACU/UPL dominant", d5Details.upland !== 1 ? 's' : '', " among ", d5Details.nonFAC, " non-FAC dominant", d5Details.nonFAC !== 1 ? 's' : '', ". OBL/FACW must outnumber FACU/UPL. ", React.createElement("span", {
       style: {
@@ -24103,12 +24105,12 @@ function WetlandApp() {
     }
   }, "\u2713 Hydrology criterion met via Ch. 5 best professional judgment \u2014 document rationale thoroughly in field notes and remarks."), !hydroDistOrProb && React.createElement("div", {
     style: {
-      marginTop: 6,
-      padding: '5px 8px',
-      background: 'rgba(251,191,36,0.07)',
-      border: '1px solid rgba(251,191,36,0.2)',
-      borderRadius: 4,
-      fontSize: 9,
+      marginTop: 4,
+      padding: '4px 8px',
+      background: 'rgba(251,191,36,0.08)',
+      border: '1px solid rgba(251,191,36,0.25)',
+      borderRadius: 3,
+      fontSize: 8,
       color: '#fbbf24',
       lineHeight: 1.5
     }
@@ -24167,9 +24169,11 @@ function WetlandApp() {
     }
   }, "LRR ", siteInfo.lrr, siteInfo.mlra ? ` · MLRA ${siteInfo.mlra}` : ''))), normalCirc === false && React.createElement("div", {
     style: {
-      padding: '8px 18px',
-      background: 'rgba(251,191,36,0.08)',
-      borderBottom: '1px solid rgba(251,191,36,0.25)'
+      margin: '8px 12px',
+      padding: '8px 12px',
+      background: 'rgba(146,64,14,0.08)',
+      border: '1px solid rgba(146,64,14,0.5)',
+      borderRadius: 8
     }
   }, React.createElement("div", {
     style: {
@@ -24195,14 +24199,10 @@ function WetlandApp() {
   }, React.createElement("strong", null, "Normal Circumstances not present."), " Results below reflect ", React.createElement("em", null, "observed"), " conditions only. Per 1987 Corps Manual \xA7F and ERDC/EL TR-08-28 Ch. 5, atypical-situation methods must be applied to reconstruct what indicators would exist under normal conditions before a final determination can be made."), React.createElement("div", {
     style: {
       fontSize: 8,
-      color: '#71717a',
+      color: '#a1a1aa',
       lineHeight: 1.7
     }
-  }, React.createElement("strong", {
-    style: {
-      color: '#fbbf24'
-    }
-  }, "Ch. 5 Atypical Situation Procedure (ERDC/EL TR-08-28):"), React.createElement("br", null), "1. Document the nature of the disturbance or problem situation in the Remarks field.", React.createElement("br", null), "2. Determine what indicators would likely be present under normal conditions using: aerial photography, NWI maps, soil surveys, WETS tables, stream gauge records, and reference sites.", React.createElement("br", null), "3. For ", React.createElement("strong", null, "disturbed vegetation"), ": identify historically present hydrophytic species or use reference wetland comparison.", React.createElement("br", null), "4. For ", React.createElement("strong", null, "disturbed soils"), ": evaluate relict redoximorphic features and soil matrix colors that predate the disturbance.", React.createElement("br", null), "5. For ", React.createElement("strong", null, "disturbed hydrology"), ": use hydrologic data, drain tile records, or scope-and-effect equations to estimate pre-disturbance hydrology.", React.createElement("br", null), "6. If direct monitoring is required, use the 14-consecutive-day standard (\u226512 in. saturation or flooding at \u22655 of 10 years probability).")))), React.createElement("div", {
+  }, "Ch. 5 Atypical Situation Procedure (ERDC/EL TR-08-28):", React.createElement("br", null), "1. Document the nature of the disturbance or problem situation in the Remarks field.", React.createElement("br", null), "2. Identify and document the normal plant community, soils, and hydrology for the area.", React.createElement("br", null), "3. Apply the three-parameter approach to the inferred normal conditions.")))), React.createElement("div", {
     style: {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr 1fr',
@@ -24293,7 +24293,7 @@ function WetlandApp() {
   }, isWetland ? `All three criteria satisfied. Hydrophytic vegetation ${vegCalc.domMet ? `(dominance: ${vegCalc.domPct}%)` : piGatedMet ? `(PI: ${vegCalc.pi?.toFixed(2)})` : vegCalc.domMorph?.met ? `(Ind.3 reassigned Dominance Test: ${vegCalc.domMorph.pct}%)` : vegCalc.piMorph?.met ? `(Ind.3 reassigned Prevalence Index: ${vegCalc.piMorph.pi?.toFixed(2)})` : `(PI: ${vegCalc.pi?.toFixed(2)})`}, hydric soils (${numHydricActive} active indicator(s)${autoCount > 0 ? ', ' + autoCount + ' auto-selected' : ''}${soilNoHorizonWarning ? ' — no profile recorded' : ''}), and wetland hydrology (${numP >= 1 ? numP + ' primary' : numS + ' secondary'} indicator(s)). Consistent with USACE definition (33 CFR 328.3).` : `${criteriaCount}/3 criteria met. ` + [!vegMet && `Vegetation: dom. ${vegCalc.domPct}% (need >50%); PI: ${vegCalc.pi !== null ? vegCalc.pi.toFixed(2) + ' (need ≤3.0)' : 'no data'}.`, !soilsMet && `Soils: no standard or usable problematic hydric indicator active.`, !hydroMet && `Hydrology: ${numP} primary, ${numS} secondary (need ≥1 primary or ≥2 secondary).`].filter(Boolean).join(' '))))), (soilProfileWarning || consistencyWarnings.length > 0) && React.createElement("div", {
     style: {
       marginBottom: 8,
-      padding: '10px 16px',
+      padding: '8px 12px',
       background: 'rgba(146,64,14,0.08)',
       border: '1px solid rgba(146,64,14,0.5)',
       borderRadius: 8
