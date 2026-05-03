@@ -16890,8 +16890,8 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     const items = [...map.values()].sort((a,b) => b.rawCount - a.rawCount);
     const mx = items[0]; // matrix item
 
-    // Step 4: sensitivity thresholds
-    const minContrast   = ['P','D','F'][sens_c] || 'D';
+    // Step 4: sensitivity thresholds (sens_c/sens_d may be floats from continuous sliders)
+    const minContrast   = ['P','D','F'][Math.round(sens_c)] || 'D';
     const deplThresh    = sens_d;
     const contrastRank  = { F:1, D:2, P:3 };
     const minRank       = contrastRank[minContrast];
@@ -16916,11 +16916,15 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     mx.pct = Math.round(mx.rawCount / total * 100);
     [...conc, ...depl].forEach(e => { e.pct = Math.round(e.rawCount / total * 100); });
 
-    // Step 7: capped lists for transfer to main UI (top 4 redox total)
-    const concOut = conc.slice(0, 4);
-    const deplOut = depl.slice(0, Math.max(0, 4 - concOut.length));
+    // Step 7: rank all features by percentage (type-agnostic), filter ≤1%, cap at 5
+    const allFeatures = [...conc, ...depl]
+      .filter(e => e.pct > 1)
+      .sort((a, b) => b.pct - a.pct)
+      .slice(0, 5);
+    const concOut = allFeatures.filter(e => conc.includes(e));
+    const deplOut = allFeatures.filter(e => depl.includes(e));
 
-    // Step 8: cluster-index → role for overlay (only capped features coloured)
+    // Step 8: cluster-index → role for overlay
     const clusterRole = new Uint8Array(centroids.length); // 0 = matrix
     concOut.forEach(e => e.indices.forEach(idx => { clusterRole[idx]=1; }));
     deplOut.forEach(e => e.indices.forEach(idx => { clusterRole[idx]=2; }));
@@ -17156,11 +17160,11 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     React.createElement('div',{style:{background:'#18181b',borderTop:'1px solid #3f3f46',padding:'10px 14px',display:'flex',flexDirection:'column',gap:8,maxHeight:'55vh',overflowY:'auto'}},
       React.createElement('div',{style:{display:'flex',gap:14}},
         React.createElement('label',{style:{flex:1,fontSize:11,color:'#a1a1aa'}},
-          'Conc: '+(['Prominent only','Distinct+','Faint+'][concSens]),
-          React.createElement('input',{type:'range',min:0,max:2,step:1,value:concSens,onChange:e=>setConcSens(Number(e.target.value)),style:{display:'block',width:'100%',marginTop:3,accentColor:'#39ff14'}})),
+          'Conc: '+(['Prominent only','Distinct+','Faint+'][Math.round(concSens)]),
+          React.createElement('input',{type:'range',min:0,max:2,step:0.01,value:concSens,onChange:e=>setConcSens(Number(e.target.value)),style:{display:'block',width:'100%',marginTop:3,accentColor:'#39ff14'}})),
         React.createElement('label',{style:{flex:1,fontSize:11,color:'#a1a1aa'}},
-          'Depl: chroma ≤'+deplSens,
-          React.createElement('input',{type:'range',min:1,max:4,step:1,value:deplSens,onChange:e=>setDeplSens(Number(e.target.value)),style:{display:'block',width:'100%',marginTop:3,accentColor:'#00bfff'}}))),
+          'Depl: chroma ≤'+Number(deplSens).toFixed(1),
+          React.createElement('input',{type:'range',min:0,max:4,step:0.1,value:deplSens,onChange:e=>setDeplSens(Number(e.target.value)),style:{display:'block',width:'100%',marginTop:3,accentColor:'#00bfff'}}))),
       blurWarning && React.createElement('div',{style:{display:'flex',alignItems:'center',gap:6,background:'rgba(251,191,36,0.08)',border:'1px solid rgba(251,191,36,0.3)',borderRadius:5,padding:'5px 9px',fontSize:10,color:'#fbbf24'}},
         '⚠ Reference card appears blurry — hold camera steady and tap Retry for best results'),
       React.createElement('div',{style:{display:'flex',flexWrap:'wrap',gap:5}},
