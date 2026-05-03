@@ -16782,9 +16782,15 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       drawPolyOverlay(canvas, W, H);
     }
     animRef.current = requestAnimationFrame(loop);
+    function handleResize() {
+      const c = overlayRef.current;
+      if (c) { c.width = window.innerWidth; c.height = window.innerHeight; }
+    }
+    window.addEventListener('resize', handleResize);
     return () => {
       active = false;
       cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', handleResize);
       if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
       if (document.fullscreenElement) document.exitFullscreen?.().catch(()=>{});
     };
@@ -17308,10 +17314,15 @@ function SoilCameraCapture({ onSelect, onClose }) {
       }
     }
     animRef.current = requestAnimationFrame(loop);
-
+    function handleResize() {
+      const c = canvasRef.current;
+      if (c) { c.width = window.innerWidth; c.height = window.innerHeight; }
+    }
+    window.addEventListener('resize', handleResize);
     return () => {
       active = false;
       cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', handleResize);
       if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
       if (document.fullscreenElement) document.exitFullscreen?.().catch(()=>{});
     };
