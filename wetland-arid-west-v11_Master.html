@@ -16897,8 +16897,14 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     const minRank       = contrastRank[minContrast];
 
     // Step 5: classify non-dominant items
+    // A cluster must differ from the matrix by ≥1 Munsell value, ≥1 chroma, or ≥1 hue step
+    // before it qualifies as any redox feature — otherwise it is matrix noise.
     const conc=[], depl=[];
     items.slice(1).forEach(item => {
+      const dv = Math.abs(Number(mx.value) - Number(item.value));
+      const dc = Math.abs(Number(mx.chroma) - Number(item.chroma));
+      const dh = hueSteps(mx.hue, item.hue);
+      if (dv < 1 && dc < 1 && dh === 0) return; // indistinguishable from matrix
       if ((parseInt(item.chroma) || 0) <= deplThresh) { depl.push(item); return; }
       if (item.cstar > mx.cstar) {
         const cc = contrastClass(mx.hue, mx.value, mx.chroma, item.hue, item.value, item.chroma);
