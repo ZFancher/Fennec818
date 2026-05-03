@@ -16770,7 +16770,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       grab.getContext('2d').drawImage(video, srcX, srcY, srcW, srcH, 0, 0, detW, detH);
 
       const now = Date.now();
-      if (now - lastDetect > 66) {
+      if (now - lastDetect > 130) {
         lastDetect = now;
         try {
           const r = measureCard(grab);
@@ -17240,9 +17240,9 @@ function SoilCameraCapture({ onSelect, onClose }) {
       grabCanvas.getContext('2d').drawImage(video, srcX, srcY, srcW, srcH, 0, 0, detW, detH);
       capturedFrameRef.current = grabCanvas;
 
-      // Throttled ArUco detection (~15 fps)
+      // Throttled ArUco detection (~8 fps)
       const now = Date.now();
-      if (now - lastDetectRef.current > 66) {
+      if (now - lastDetectRef.current > 130) {
         lastDetectRef.current = now;
         const result = measureCard(grabCanvas);
         if (result) {
