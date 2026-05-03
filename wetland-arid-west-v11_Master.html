@@ -10831,10 +10831,10 @@ const STRATA = [{
   color: '#4c1d95',
   light: '#a78bfa'
 }];
-const HUES = ['N', '2.5Y', '5Y', '7.5Y', '10Y', '2.5GY', '5GY', '7.5GY', '10GY', '2.5G', '5G', '7.5G', '10G', '2.5BG', '5BG', '7.5BG', '10BG', '2.5B', '5B', '7.5B', '10B', '2.5PB', '5PB', '7.5PB', '10PB', '2.5P', '5P', '7.5P', '10P', '2.5RP', '5RP', '7.5RP', '10RP', '10R', '7.5R', '5R', '2.5R', '10YR', '7.5YR', '5YR', '2.5YR'];
+const HUES = ['5R', '2.5R', '10YR', '7.5YR', '5YR', '2.5YR', 'N', '2.5Y', '5Y', '7.5Y', '10Y', '2.5GY', '5GY', '7.5GY', '10GY', '2.5G', '5G', '7.5G', '10G', '2.5BG', '5BG', '7.5BG', '10BG', '2.5B', '5B', '7.5B', '10B', '2.5PB', '5PB', '7.5PB', '10PB', '2.5P', '5P', '7.5P', '10P', '2.5RP', '5RP', '7.5RP', '10RP', '10R', '7.5R'];
 const VALUES = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 const CHROMAS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '10', '12', '14', '16', '18', '20'];
-const TEXTURES = ['Muck', 'Mucky Peat', 'Peat', 'Mucky Sand', 'Mucky Loam/Clay', 'Sandy', 'Loamy/Clayey'];
+const TEXTURES = ['Loamy/Clayey', 'Sandy', 'Mucky Loam/Clay', 'Mucky Sand', 'Muck', 'Mucky Peat', 'Peat'];
 const REDOX_TYPES = ['C – Concentration', 'D – Depletion', 'RM – Reduced Matrix', 'CS – Covered or Coated Sand Grains'];
 const REDOX_LOCS = ['M – Matrix', 'PL – Pore Linings', 'PL/M – Pore Linings and Matrix'];
 const RESTRICT_TYPES = ['Artisan', 'Bedrock', 'Fragipan', 'Duripan', 'Hardpan', 'Claypan', 'Ortstein', 'None observed'];
@@ -10844,21 +10844,24 @@ const HYDRIC_ALL = [{
   label: 'Histosol',
   lrr: 'All LRRs',
   autoable: true,
-  desc: 'Classifies as a Histosol (except Folists). In a Histosol, 16 in. (40 cm) or more of the upper 32 in. (80 cm) is organic soil material. Histosols also include soils that have organic soil material of any thickness over rock or fragmental soil material that has interstices filled with organic soil material. Organic soil material has an organic carbon content (by weight) of 12 to 18 percent or more, depending on the clay content of the soil. The material includes muck, mucky peat, or peat. Cannot be fully confirmed in the field — formal Soil Taxonomy classification and OC% analysis required.'
+  minProfileDepth: 12,
+  desc: 'Classifies as a Histosol (except Folists). In a Histosol, 16 in. (40 cm) or more of the upper 32 in. (80 cm) is organic soil material. Histosols also include soils that have organic soil material of any thickness over rock or fragmental soil material that has interstices filled with organic soil material. Organic soil material has an organic carbon content (by weight) of 12 to 18 percent or more, depending on the clay content of the soil. The material includes muck, mucky peat, or peat. Cannot be fully auto-selected — requires formal Soil Taxonomy classification and OC% analysis.'
 }, {
   id: 'A2',
   code: 'A2',
   label: 'Histic Epipedon',
   lrr: 'All LRRs',
-  autoable: false,
-  desc: 'A histic epipedon underlain by mineral soil material with chroma ≤2. Most histic epipedons are organic surface horizons ≥20 cm (8 in.) thick. Requires aquic conditions or artificial drainage; however, aquic conditions can be assumed if indicators of hydrophytic vegetation AND wetland hydrology are both present on the site.'
+  autoable: true,
+  minProfileDepth: 10,
+  desc: 'A histic epipedon underlain by mineral soil material with chroma ≤2. Most histic epipedons are organic surface horizons ≥8 in. (20 cm) thick. Requires aquic conditions or artificial drainage; however, aquic conditions can be assumed if indicators of hydrophytic vegetation AND wetland hydrology are both present on the site.'
 }, {
   id: 'A3',
   code: 'A3',
   label: 'Black Histic',
   lrr: 'All LRRs',
   autoable: true,
-  desc: 'A layer of peat, mucky peat, or muck ≥20 cm (8 in.) thick, starting ≤15 cm (6 in.) from the soil surface, with hue of 10YR or yellower, value ≤3, chroma ≤1 (moist), underlain by mineral soil material with chroma ≤2. Does NOT require proof of aquic conditions or artificial drainage.'
+  minProfileDepth: 10,
+  desc: 'A layer of peat, mucky peat, or muck ≥8 in. (20 cm) thick, starting ≤6 in. (15 cm) from the soil surface, with hue of 10YR or yellower, value ≤3, chroma ≤1 (moist), underlain by mineral soil material with chroma ≤2.'
 }, {
   id: 'A4',
   code: 'A4',
@@ -10866,43 +10869,45 @@ const HYDRIC_ALL = [{
   lrr: 'All LRRs',
   autoable: true,
   noHorizonReq: true,
-  desc: 'Hydrogen sulfide ("rotten egg") odor at ≤30 cm (12 in.) from the soil surface. Indicates sulfate reduced to H₂S under anaerobic conditions.'
+  desc: 'Hydrogen sulfide ("rotten egg") odor within ≤12 in. (30 cm) of the soil surface. Indicates sulfate reduced to H₂S under anaerobic conditions.'
 }, {
   id: 'A5',
   code: 'A5',
   label: 'Stratified Layers',
   lrr: 'Approved: LRR C',
   autoable: false,
-  desc: 'Several stratified DEPOSITIONAL (not pedogenic) layers starting ≤15 cm (6 in.) from surface. At least one layer has value ≤3 and chroma ≤1, OR is muck/mucky peat/peat/mucky mineral texture. Remaining layers in upper 15 cm have chroma ≤2. Individual strata dominantly less than 1 in. (2.5 cm) thick — a hand lens is essential for identification. Many alluvial soils have stratified layers at required depths but lack chroma ≤2; these do not qualify. An undisturbed sample must be observed. Sandy material requires ≥70% organic masking. Approved in LRR C (Mediterranean California) only; NOT applicable in LRR B or D.'
+  desc: 'Several stratified DEPOSITIONAL (not pedogenic) layers starting ≤6 in. (15 cm) from surface. At least one layer has value ≤3 and chroma ≤1, OR is muck/mucky peat/peat/mucky mineral texture. For any sandy material that constitutes the layer with value ≤3 and chroma ≤1, at least 70 percent of the visible soil particles must be masked with organic material. Remaining layers in upper 6 in. (15 cm) have chroma ≤2. Individual strata dominantly less than 1 in. (2.5 cm) thick — a hand lens is essential for identification. Many alluvial soils have stratified layers at required depths but lack chroma ≤2; these do not qualify. An undisturbed sample must be observed. Approved in LRR C (Mediterranean California) only; NOT applicable in LRR B or D. Cannot be fully auto-selected — depositional strata origin, organic masking, individual stratum thickness (<1 in.), and undisturbed sample observation require field confirmation.'
 }, {
   id: 'A9',
   code: 'A9',
   label: '1 cm Muck',
   lrr: 'Approved: LRR D',
   autoable: true,
-  desc: 'A layer of muck (sapric; NOT mucky peat or peat) ≥1 cm (0.4 in.) thick, value ≤3, chroma ≤1, starting ≤15 cm (6 in.) from surface. Muck has Organic Content (OC) ≥12%, is too decomposed to identify plant parts, is generally black/greasy, no visible sand grains. Approved in LRR D (Interior Deserts subregion); for testing in LRR C.'
+  minProfileDepth: 7,
+  desc: 'A layer of muck (sapric; NOT mucky peat or peat) ≥0.5 in. thick, value ≤3, chroma ≤1, starting ≤6 in. (15 cm) from surface. Muck has Organic Content (OC) ≥12%, is too decomposed to identify plant parts, is generally black/greasy, no visible sand grains. Approved in LRR D (Interior Deserts subregion); for testing in LRR C.'
 }, {
   id: 'A11',
   code: 'A11',
   label: 'Depleted Below Dark Surface',
   lrr: 'All LRRs except W, X, Y',
   autoable: true,
-  desc: 'Depleted or gleyed matrix (≥60% value ≥4, chroma ≤2) starting ≤30 cm (12 in.) from surface with minimum thickness of either: (1) ≥15 cm (6 in.), or (2) ≥5 cm (2 in.) if those 5 cm consist entirely of fragmental soil material (≥90% rock fragments). Organic/loamy/clayey layers above must have value ≤3, chroma ≤2, starting <15 cm from surface, extending to the depleted layer. Sandy layers above need value ≤3, chroma ≤1, PLUS ≥70% organic masking of sand grains (hand lens). Redox concentrations required in depleted layers with matrix colors 4/1, 4/2, or 5/2. Above-layer sections with chroma >2 must total <15 cm (6 in.).'
+  minProfileDepth: 12,
+  desc: 'Depleted or gleyed matrix (≥60% value ≥4, chroma ≤2) starting ≤12 in. (30 cm) from surface with minimum thickness of either: (1) ≥6 in. (15 cm), or (2) ≥2 in. (5 cm) if those 5 cm consists of fragmental soil material (≥90% rock fragments). ≥2% distinct or prominent redox concentrations are required in a depleted matrix with colors 4/1, 4/2, or 5/2. A, E, and calcic horizons are excluded from the concept of depleted matrix unless the soil has ≥2% distinct or prominent redox concentrations occurring as soft masses or pore linings. Organic/loamy/clayey layers above must have value ≤3, chroma ≤2, starting <6 in. (15 cm) from surface, and extend to the depleted or gleyed layer. Any loamy fine sand or coarser material above must have value ≤3, chroma ≤1, starting <6 in. (15 cm) from surface and extend to the depleted or gleyed matrix, PLUS ≥70% organic masking of sand grains (hand lens).'
 }, {
   id: 'A12',
   code: 'A12',
   label: 'Thick Dark Surface',
   lrr: 'All LRRs',
   autoable: true,
-  desc: 'Depleted or gleyed matrix (≥60% value ≥4, chroma ≤2) ≥15 cm (6 in.) thick, starting at depth >30 cm (12 in.). Layers above, starting <15 cm from surface, must have value ≤2.5, chroma ≤1 to a depth ≥30 cm; then value ≤3, chroma ≤1 in any remaining layers above the depleted matrix. Sandy layers above require ≥70% organic matter masking (field verify). Redox concentrations required for matrix colors 4/1, 4/2, or 5/2. Most often in overthickened soils in concave positions.'
+  minProfileDepth: 18,
+  desc: 'Depleted or gleyed matrix (≥60% value ≥4, chroma ≤2) ≥6 in. (15 cm) thick, starting at depth >12 in. (30 cm). ≥2% distinct or prominent redox concentrations are required in a depleted matrix with colors 4/1, 4/2, or 5/2. A, E, and calcic horizons are excluded from the concept of depleted matrix unless the soil has ≥2% distinct or prominent redox concentrations occurring as soft masses or pore linings. Layers above the depleted or gleyed matrix, starting <6 in. (15 cm) from surface, must have value ≤2.5, chroma ≤1 to a depth ≥12 in. (30 cm); then value ≤3, chroma ≤1 in any remaining layers. Any loamy fine sand or coarser material above the depleted or gleyed matrix require ≥70% organic matter masking (field verify). Most often in overthickened soils in concave positions.'
 }, {
   id: 'A18',
   code: 'A18',
   label: 'Iron Monosulfides',
   lrr: 'All LRRs',
   autoable: false,
-  desc: 'Positive identification of dark-gray or black iron monosulfide (FeS) concentrations (value ≤4, chroma ≤2) starting ≤25 cm (10 in.) from surface. Requires ≥2 separate observations. Confirmed by documenting dark areas and then: (A) oxidation via air exposure or application of dilute hydrogen peroxide (~3% H₂O₂), resulting in Munsell value increase of ≥1; OR (B) H₂S gas evolution after applying dilute (1M) HCl. Cannot auto-detect — requires field chemical tests. Approved all LRRs (v9.0). See v9.3 Fig. 53 flowchart.',
-  noHorizonReq: true,
+  desc: 'Positive identification of dark-gray or black iron monosulfide (FeS) concentrations (value ≤4, chroma ≤2) starting ≤10 in. (25 cm) from surface. The presence of FeS concentrations is confirmed by documenting dark areas and then: (A) oxidation via air exposure or application of dilute hydrogen peroxide (~3% H₂O₂), resulting in Munsell value increase of ≥1; OR (B) H₂S gas evolution after applying dilute (1M) HCl. Cannot auto-select — requires field chemical tests.',
   fieldVerify: true,
   fieldQuestions: [{
     id: 'fq_a18_dark',
@@ -10910,9 +10915,6 @@ const HYDRIC_ALL = [{
   }, {
     id: 'fq_a18_confirm',
     text: 'Have you confirmed the concentrations are FeS via at least one of: (A) air oxidation or H₂O₂ application causing value increase ≥1; OR (B) H₂S evolution after applying dilute HCl?'
-  }, {
-    id: 'fq_a18_two',
-    text: 'Have ≥2 separate observations of FeS been documented (required by v9.3)?'
   }]
 }];
 const HYDRIC_SANDY = [{
@@ -10921,28 +10923,31 @@ const HYDRIC_SANDY = [{
   label: 'Sandy Mucky Mineral',
   lrr: 'All LRRs',
   autoable: true,
-  desc: 'A layer of mucky-modified sandy soil material ≥5 cm (2 in.) thick, starting ≤15 cm (6 in.) from surface. "Mucky" modifier = OC 5–12%. Approved in LRRs B, C, and D. (Not approved in T, U, W, X, Y, Z, P/MLRA 136.)'
+  minProfileDepth: 8,
+  desc: 'A layer of mucky-modified sandy soil material ≥2 in. (5 cm) thick, starting ≤6 in. (15 cm) from surface. "Mucky" modifier = OC 5–12%. Approved in LRRs B, C, and D. (Not approved in T, U, W, X, Y, Z, P/MLRA 136.)'
 }, {
   id: 'S4',
   code: 'S4',
   label: 'Sandy Gleyed Matrix',
   lrr: 'All LRRs except W, X, Y',
   autoable: true,
-  desc: 'A gleyed matrix occupying ≥60% of a layer starting ≤15 cm (6 in.) from surface in sandy soil (loamy fine sand or coarser). Gleyed matrix = hues on the Munsell gley pages (N, 10Y, 5GY, 10GY, 5G, 10G, 5BG, 10BG, 5B, 10B, 5PB) with value ≥4. NOT the same as ordinary gray colors. No minimum thickness. Above-layer sections with chroma >2 must total <15 cm. Typically found in near-constantly inundated soils.'
+  minProfileDepth: 7,
+  desc: 'A gleyed matrix occupying ≥60% of a layer starting ≤6 in. (15 cm) from surface in sandy soil (loamy fine sand or coarser). Gleyed matrix = hues on the Munsell gley pages (N, 10Y, 5GY, 10GY, 5G, 10G, 5BG, 10BG, 5B, 10B, 5PB) with value ≥4. NOT the same as ordinary gray colors. No minimum thickness. Above-layer sections with chroma >2 must total <15 cm. Typically found in near-constantly inundated soils.'
 }, {
   id: 'S5',
   code: 'S5',
   label: 'Sandy Redox',
   lrr: 'All LRRs except V, W, X, Y',
   autoable: true,
-  desc: 'Sandy layer (loamy fine sand or coarser) starting ≤15 cm (6 in.) from surface, ≥10 cm (4 in.) thick, matrix ≥60% chroma ≤2, with ≥2% DISTINCT OR PROMINENT redox concentrations as soft masses and/or pore linings (v9.3 confirmed). Faint redox features do not count. Above-layer sections with chroma >2 must total <15 cm. If soil is saturated at sampling, let dry to moist before reading redox.'
+  minProfileDepth: 10,
+  desc: 'Sandy layer (loamy fine sand or coarser) starting ≤6 in. (15 cm) from surface, ≥4 in. (10 cm) thick, matrix ≥60% chroma ≤2, with ≥2% DISTINCT OR PROMINENT redox concentrations as soft masses and/or pore linings (v9.3 confirmed). Faint redox features do not count. Above-layer sections with chroma >2 must total <15 cm. If soil is saturated at sampling, let dry to moist before reading redox.'
 }, {
   id: 'S6',
   code: 'S6',
   label: 'Stripped Matrix',
   lrr: 'All LRRs except V, W, X, Y',
   autoable: false,
-  desc: 'Sandy layer starting ≤15 cm (6 in.) from surface in which Fe/Mn oxides and/or organic matter have been stripped from the matrix, exposing the primary base color. The stripped areas and translocated oxides/organic matter form a faint, diffuse splotchy pattern of ≥2 colors. Stripped zones must be ≥10% of the volume, rounded, approximately 0.5–1 in. (1–3 cm) in diameter — common to many such areas are required. Stripped zones typically have value ≥5 and chroma 1–2; unstripped areas chroma 3–4. A 10x hand lens helps distinguish stripped from unstripped areas. No specific matrix color requirement. Cannot auto-detect — requires field observation.'
+  desc: 'Sandy layer starting ≤6 in. (15 cm) from surface in which Fe/Mn oxides and/or organic matter have been stripped from the matrix, exposing the primary base color. The stripped areas and translocated oxides/organic matter form a faint, diffuse splotchy pattern of ≥2 colors. Stripped zones must be ≥10% of the volume, rounded, approximately 0.5–1 in. (1–3 cm) in diameter — common to many such areas are required. Stripped zones typically have value ≥5 and chroma 1–2; unstripped areas chroma 3–4. A 10x hand lens helps distinguish stripped from unstripped areas. No specific matrix color requirement. Cannot auto-select — requires field observation.'
 }];
 const HYDRIC_LOAMY = [{
   id: 'F1',
@@ -10950,35 +10955,40 @@ const HYDRIC_LOAMY = [{
   label: 'Loamy Mucky Mineral',
   lrr: 'All LRRs',
   autoable: true,
-  desc: 'A layer of mucky-modified loamy or clayey soil material ≥10 cm (4 in.) thick, starting ≤15 cm (6 in.) from surface. "Mucky" modifier = OC 5–12%. Approved in LRRs B, C, D (approved in all LRRs except N, Q, R, S, V, W, X, Y, and those using A7 [P, T, U, Z], and MLRA 1 of LRR A).'
+  minProfileDepth: 10,
+  desc: 'A layer of mucky-modified loamy or clayey soil material ≥4 in. (10 cm) thick, starting ≤6 in. (15 cm) from surface. "Mucky" modifier = OC 5–12%. Approved in LRRs B, C, D (approved in all LRRs except N, Q, R, S, V, W, X, Y, and those using A7 [P, T, U, Z], and MLRA 1 of LRR A).'
 }, {
   id: 'F2',
   code: 'F2',
   label: 'Loamy Gleyed Matrix',
   lrr: 'All LRRs except W, X, Y',
   autoable: true,
-  desc: 'A gleyed matrix (≥60% of layer) starting ≤30 cm (12 in.) from surface in loamy or clayey soil (loamy very fine sand and finer). Gleyed matrix = true gley hues (N, 10Y, 5GY, etc.) with value ≥4. No minimum thickness. Above-layer sections with chroma >2 must total <15 cm. Typically near-constantly inundated sites; not common at wetland–upland boundaries.'
+  minProfileDepth: 12,
+  desc: 'A gleyed matrix (≥60% of layer) starting ≤12 in. (30 cm) from surface in loamy or clayey soil (loamy very fine sand and finer). Gleyed matrix = true gley hues (N, 10Y, 5GY, etc.) with value ≥4. No minimum thickness. Above-layer sections with chroma >2 must total <15 cm. Typically near-constantly inundated sites; not common at wetland–upland boundaries.'
 }, {
   id: 'F3',
   code: 'F3',
   label: 'Depleted Matrix',
   lrr: 'All LRRs except W, X, Y',
   autoable: true,
-  desc: 'Loamy or clayey layer with depleted matrix (≥60% value ≥4, chroma ≤2) with minimum thickness of either: (1) ≥5 cm (2 in.) starting ≤10 cm (4 in.) from surface, or (2) ≥15 cm (6 in.) starting ≤25 cm (10 in.) from surface. Redox concentrations (soft masses and/or pore linings) required for matrix colors 4/1, 4/2, or 5/2. A, E, and calcic horizons excluded unless ≥2% soft masses/pore linings. Low-chroma matrix must result from wetness, not weathering/parent material. All layers above must have chroma ≤2 or above-layer sections with chroma >2 total <15 cm.'
+  minProfileDepth: 10,
+  desc: 'Loamy or clayey layer with depleted matrix (≥60% value ≥4, chroma ≤2) with minimum thickness of either: (1) ≥2 in. (5 cm) starting ≤4 in. (10 cm) from surface, or (2) ≥6 in. (15 cm) starting ≤10 in. (25 cm) from surface. ≥2% distinct or prominent redox concentrations are required in a depleted matrix with colors 4/1, 4/2, or 5/2. A, E, and calcic horizons are excluded from the concept of depleted matrix unless the soil has ≥2% distinct or prominent redox concentrations occurring as soft masses or pore linings. Low-chroma matrix must result from wetness, not weathering/parent material.'
 }, {
   id: 'F6',
   code: 'F6',
   label: 'Redox Dark Surface',
   lrr: 'All LRRs',
   autoable: true,
-  desc: 'Loamy or clayey layer ≥10 cm (4 in.) thick, ENTIRELY within the upper 30 cm (12 in.) of the mineral soil surface (measured from top of uppermost mineral layer, not from any organic surface), meeting either: (1) value ≤3, chroma ≤1, ≥2% distinct/prominent redox concentrations as soft masses or pore linings; OR (2) value ≤3, chroma ≤2, ≥5% distinct/prominent redox concentrations as soft masses or pore linings. Moist colors only. In high-OC dark soils, redox concentrations can be small and difficult to see — hand lens and careful ped examination required.'
+  minProfileDepth: 12,
+  desc: 'Loamy or clayey layer ≥4 in. (10 cm) thick, ENTIRELY within the upper 12 in. (30 cm) of the mineral soil surface (measured from top of uppermost mineral layer, not from any organic surface), meeting either: (1) value ≤3, chroma ≤1, ≥2% distinct/prominent redox concentrations as soft masses or pore linings; OR (2) value ≤3, chroma ≤2, ≥5% distinct/prominent redox concentrations as soft masses or pore linings. Moist colors only. In high-OC dark soils, redox concentrations can be small and difficult to see — hand lens and careful ped examination required.'
 }, {
   id: 'F7',
   code: 'F7',
   label: 'Depleted Dark Surface',
   lrr: 'All LRRs',
   autoable: true,
-  desc: 'Loamy or clayey layer ≥10 cm (4 in.) thick, ENTIRELY within the upper 30 cm (12 in.) of the mineral soil surface (measured from top of uppermost mineral layer), with redox depletions (value ≥5, chroma ≤2), meeting either: (1) matrix value ≤3, chroma ≤1, with ≥10% redox depletions; OR (2) matrix value ≤3, chroma ≤2, with ≥20% redox depletions. Soils meeting F7 commonly also meet F6. Do not confuse E horizon or calcic horizon pieces mixed into the surface layer as redox depletions. Depletions typically have associated redox concentrations as pore linings or masses within or surrounding them.'
+  minProfileDepth: 12,
+  desc: 'Loamy or clayey layer ≥4 in. (10 cm) thick, ENTIRELY within the upper 12 in. (30 cm) of the mineral soil surface (measured from top of uppermost mineral layer), with redox depletions (value ≥5, chroma ≤2), meeting either: (1) matrix value ≤3, chroma ≤1, with ≥10% redox depletions; OR (2) matrix value ≤3, chroma ≤2, with ≥20% redox depletions. Soils meeting F7 commonly also meet F6. Do not confuse E horizon or calcic horizon pieces mixed into the surface layer as redox depletions. Depletions typically have associated redox concentrations as pore linings or masses within or surrounding them.'
 }, {
   id: 'F8',
   code: 'F8',
@@ -10991,9 +11001,9 @@ const HYDRIC_LOAMY = [{
     text: 'Is the sampling location within a closed depression that is subject to ponding?'
   }, {
     id: 'fq_f8_nochroma',
-    text: 'Does the layer have ≥5% distinct/prominent redox concentrations as soft masses or pore linings within ≤5 cm (2 in.) thick starting ≤10 cm (4 in.) from surface?'
+    text: 'Does the layer have ≥5% distinct/prominent redox concentrations as soft masses or pore linings within ≤2 in. (5 cm) thick starting ≤4 in. (10 cm) from surface?'
   }],
-  desc: 'Loamy or clayey soils ONLY in closed depressions subject to ponding: ≥5% distinct/prominent redox concentrations as soft masses or pore linings in a layer ≥5 cm (2 in.) thick, starting ≤10 cm (4 in.) from surface. Cannot auto-detect — requires topographic observation confirming a closed depression. If soil color/redox data are met but topographic confirmation is still needed, this indicator will appear highlighted for field verification.'
+  desc: 'Loamy or clayey soils ONLY in closed depressions subject to ponding: ≥5% distinct/prominent redox concentrations as soft masses or pore linings in a layer ≥2 in. (5 cm) thick, starting ≤4 in. (10 cm) from surface. Cannot be fully auto-selected — requires topographic observation confirming a closed depression. If soil color/redox data are met but topographic confirmation is still needed, this indicator will appear highlighted for field verification.'
 }];
 const HYDRIC_PROBLEMATIC = [{
   id: 'A9prob',
@@ -11001,48 +11011,47 @@ const HYDRIC_PROBLEMATIC = [{
   label: '1 cm Muck',
   testLRR: 'Test: LRR C',
   lrr: 'Test: LRR C',
-  desc: 'Muck (sapric; not mucky peat or peat) ≥1 cm (0.4 in.) thick, value ≤3, chroma ≤1, starting ≤15 cm (6 in.) from surface. Muck has Organic Content (OC) ≥12%, is too decomposed to identify plant parts, is generally black/greasy, no visible sand grains. Approved in LRR D; TEST in LRR C — requires hydrophytic vegetation AND wetland hydrology (or 2+ factors disturbed/problematic).'
+  desc: 'Muck (sapric; not mucky peat or peat) ≥0.5 in. thick, value ≤3, chroma ≤1, starting ≤6 in. (15 cm) from surface. Muck has Organic Content (OC) ≥12%, is too decomposed to identify plant parts, is generally black/greasy, no visible sand grains. Approved in LRR D; TEST in LRR C — requires hydrophytic vegetation AND wetland hydrology (or 2+ factors disturbed/problematic).'
 }, {
   id: 'A10',
   code: 'A10',
   label: '2 cm Muck',
   testLRR: 'Test: LRR B',
   lrr: 'Test: LRR B',
-  desc: 'Muck (sapric; not mucky peat or peat) ≥2 cm (0.75 in.) thick, value ≤3, chroma ≤1, starting ≤15 cm (6 in.) from surface. Muck has Organic Content (OC) ≥12%, is too decomposed to identify plant parts, is generally black/greasy, no visible sand grains. TEST in LRR B — requires hydrophytic vegetation AND wetland hydrology (or 2+ factors disturbed/problematic).'
+  desc: 'Muck (sapric; not mucky peat or peat) ≥0.75 in. (2 cm) thick, value ≤3, chroma ≤1, starting ≤6 in. (15 cm) from surface. Muck has Organic Content (OC) ≥12%, is too decomposed to identify plant parts, is generally black/greasy, no visible sand grains. TEST in LRR B — requires hydrophytic vegetation AND wetland hydrology (or 2+ factors disturbed/problematic).'
 }, {
   id: 'F12',
   code: 'F12',
   label: 'Iron-Manganese Masses',
   testLRR: 'Problematic: LRR D',
   lrr: 'Approved as problematic indicator in LRR D (added on 2024 ENG Form 6116-1)',
-  desc: 'ON FLOOD PLAINS ONLY: loamy/clayey layer ≥10 cm (4 in.) thick (thickness waived if at mineral surface) with ≥40% chroma ≤2 and ≥2% soft iron-manganese masses with diffuse boundaries (value + chroma ≤3, commonly black), starting ≤20 cm (8 in.) from surface. Masses are 2–5 mm, distinct from plinthite or hard concretions. Per v9.3, TEST in LRR D; added to Arid West as a problematic indicator on 2024 ENG Form 6116-1. Requires hydrophytic vegetation AND wetland hydrology (or 2+ factors disturbed/problematic).'
+  desc: 'ON FLOOD PLAINS ONLY: loamy/clayey layer ≥4 in. (10 cm) thick (thickness waived if at mineral surface) with ≥40% chroma ≤2 and ≥2% soft iron-manganese masses with diffuse boundaries (value + chroma ≤3, commonly black), starting ≤8 in. (20 cm) from surface. Masses are 2–5 mm, distinct from plinthite or hard concretions. Per v9.3, TEST in LRR D; added to Arid West as a problematic indicator on 2024 ENG Form 6116-1. Requires hydrophytic vegetation AND wetland hydrology (or 2+ factors disturbed/problematic). Cannot auto-select — soft iron-manganese mass identification and flood plain location require field observation.'
 }, {
   id: 'F18',
   code: 'F18',
   label: 'Reduced Vertic',
   lrr: 'All LRRs',
-  noHorizonReq: true,
-  desc: 'Vertic soil (slickensides present). Requires positive α,α-dipyridyl dye reaction ≥60% of a 10 cm layer within 30 cm of surface (or 5 cm within 15 cm), continuous ≥7 days over 28 cumulative growing-season days. Multi-day field monitoring required. TEST in LRRs B,C — requires hydrophytic vegetation AND wetland hydrology (or 2+ factors disturbed/problematic).'
+  desc: 'In Vertisols and Vertic intergrades (slickensides present; includes Loamy/Clayey and Mucky Loam/Clay textures), a positive α,α-dipyridyl reaction that is the dominant condition (≥60%) of a layer meeting: (1) ≥4 in. (10 cm) thick starting ≤12 in. (30 cm) from the surface, or (2) ≥2 in. (5 cm) thick starting ≤6 in. (15 cm) from the surface. Multi-day field monitoring required. Reaction must occur for ≥7 continuous days and ≥28 cumulative days during a normal or drier season and month. TEST in LRRs B,C — requires hydrophytic vegetation AND wetland hydrology (or 2+ factors disturbed/problematic). Cannot fully auto-select — slickensides presence and multi-day dipyridyl monitoring require field observation.'
 }, {
   id: 'F21',
   code: 'F21',
   label: 'Red Parent Material',
   lrr: 'All LRRs',
   noHorizonReq: true,
-  desc: 'Layer ≥10 cm (4 in.) thick, starting ≤25 cm (10 in.) from surface, derived from red parent material (hue 7.5YR or redder; value and chroma >2 to ≤4). Must contain ≥10% combined depletions and/or distinct/prominent concentrations as soft masses or pore linings. Depletions must differ by ≥1 value higher and ≥1 chroma lower, or value ≥4, chroma ≤2. Red parent material has CCPI <30 (Rabenhorst & Parikh, 2000). Per v9.3, approved in specific eastern LRRs (N, R, S); TEST in all red parent material soils. Listed as a problematic indicator for Arid West on 2024 ENG Form 6116-1 (replaced TF2). Requires veg+hydro (or 2+ factors disturbed/problematic).'
+  desc: 'Layer ≥4 in. (10 cm) thick, starting ≤10 in. (25 cm) from surface, derived from red parent material (hue 7.5YR or redder; value and chroma >2 to ≤4). Must contain ≥10% combined depletions and/or distinct/prominent concentrations as soft masses or pore linings. Depletions must differ by ≥1 value higher and ≥1 chroma lower, or value ≥4, chroma ≤2. Red parent material has CCPI <30 (Rabenhorst & Parikh, 2000). Per v9.3, approved in specific eastern LRRs (N, R, S); TEST in all red parent material soils. Listed as a problematic indicator for Arid West on 2024 ENG Form 6116-1 (replaced TF2). Requires veg+hydro (or 2+ factors disturbed/problematic). Cannot be fully auto-selected — red parent material origin (CCPI <30) and combined depletion/concentration presence require field confirmation.'
 }, {
   id: 'F22',
   code: 'F22',
   label: 'Very Shallow Dark Surface',
   lrr: 'All LRRs',
-  desc: 'In depressions/flood plains subject to FREQUENT ponding/flooding, meeting one of: (1) If bedrock at 15–25 cm depth: a layer ≥15 cm (6 in.) thick starting ≤10 cm (4 in.) from surface, with value ≤2.5, chroma ≤1, and remaining soil to bedrock having same color or chroma ≤2; OR (2) If bedrock ≤15 cm (6 in.) depth: >half of soil thickness with value ≤2.5, chroma ≤1, and remainder chroma ≤2. Per v9.3, approved in specific Florida/Gulf MLRAs; TEST in all other LRRs. Listed as problematic indicator for Arid West on 2024 ENG Form 6116-1. Requires veg+hydro (or 2+ factors disturbed/problematic).'
+  desc: 'In depressions/flood plains subject to FREQUENT ponding/flooding, meeting one of: (1) If bedrock at 6–10 in. (15–25 cm) depth: a layer ≥6 in. (15 cm) thick starting ≤4 in. (10 cm) from surface, with value ≤2.5, chroma ≤1, and remaining soil to bedrock having same color or chroma ≤2; OR (2) If bedrock ≤6 in. (15 cm) depth: >half of soil thickness with value ≤2.5, chroma ≤1, and remainder chroma ≤2. Per v9.3, approved in specific Florida/Gulf MLRAs; TEST in all other LRRs. Listed as problematic indicator for Arid West on 2024 ENG Form 6116-1. Requires veg+hydro (or 2+ factors disturbed/problematic). Cannot auto-select — bedrock depth verification and depression/flood plain position require field observation.'
 }, {
   id: 'SOTHERprob',
   code: 'Other',
   label: 'Other (Explain in Remarks)',
   lrr: 'All LRRs',
   noHorizonReq: true,
-  desc: 'Hydric soil characteristics present based on best professional judgment but not captured by any named indicator — e.g., soil series listed on the NRCS county hydric soils list without observable field indicator, positive α,α-dipyridyl reaction in a non-vertic profile, or unique Arid West soil morphology not covered by existing indicators. Document fully in remarks. Requires hydrophytic vegetation AND wetland hydrology (or 2+ factors disturbed/problematic).'
+  desc: 'Hydric soil characteristics present based on best professional judgment but not captured by any named indicator — e.g., soil series listed on the NRCS county hydric soils list without observable field indicator, positive α,α-dipyridyl reaction in a non-vertic profile, or unique Arid West soil morphology not covered by existing indicators. Document fully in remarks. Requires hydrophytic vegetation AND wetland hydrology (or 2+ factors disturbed/problematic). Cannot auto-select — requires best professional judgment and full documentation in remarks.'
 }];
 const PRIMARY = [{
   id: 'A1h',
@@ -11114,7 +11123,7 @@ const PRIMARY = [{
   id: 'C1',
   code: 'C1',
   label: 'Hydrogen Sulfide Odor',
-  desc: 'Rotten-egg odor (H₂S) detected within or immediately after exposing soil, indicating sulfate reduction under prolonged anaerobic conditions. Most common in permanent or semi-permanent wetlands, salt marshes, and other persistently saturated areas in the Arid West. Auto-detected when hydric soil indicator A4 (Hydrogen Sulfide) is active.'
+  desc: 'Rotten-egg odor (H₂S) detected within or immediately after exposing soil, indicating sulfate reduction under prolonged anaerobic conditions. Most common in permanent or semi-permanent wetlands, salt marshes, and other persistently saturated areas in the Arid West. Auto-selected when hydric soil indicator A4 (Hydrogen Sulfide) is active.'
 }, {
   id: 'C3',
   code: 'C3',
@@ -11124,7 +11133,7 @@ const PRIMARY = [{
   id: 'C4',
   code: 'C4',
   label: 'Presence of Reduced Iron',
-  desc: 'Presence of ferrous (Fe²⁺) iron in the upper 12 in. (30 cm) of the soil profile, confirmed by either: (A) positive pink or red reaction to alpha-alpha-dipyridyl dye applied freshly to the soil — positive reaction must occur over >50% of the layer being tested; OR (B) a soil that changes color (increases in chroma) upon exposure to air (reduced matrix). No minimum thickness or initial color required. Test immediately after opening the pit — ferrous iron oxidizes rapidly. A negative dye result during the dry season does not rule out saturation at other times. Auto-detected from gleyed matrix in upper 12 in. of soil profile.'
+  desc: 'Presence of ferrous (Fe²⁺) iron in the upper 12 in. (30 cm) of the soil profile, confirmed by either: (A) positive pink or red reaction to alpha-alpha-dipyridyl dye applied freshly to the soil — positive reaction must occur over >50% of the layer being tested; OR (B) a soil that changes color (increases in chroma) upon exposure to air (reduced matrix). No minimum thickness or initial color required. Test immediately after opening the pit — ferrous iron oxidizes rapidly. A negative dye result during the dry season does not rule out saturation at other times. Auto-selected from gleyed matrix in upper 12 in. of soil profile.'
 }, {
   id: 'C6',
   code: 'C6',
@@ -11134,7 +11143,7 @@ const PRIMARY = [{
   id: 'C7',
   code: 'C7',
   label: 'Thin Muck Surface',
-  desc: 'A layer of muck ≤1 in. (2.5 cm) thick on or at the soil surface, indicating recent prolonged inundation. The muck itself is thin (not deeply buried) — it rests at the surface. Auto-detects if a muck-textured horizon starts at 0 in. with depth to ≤1 in.'
+  desc: 'A layer of muck ≤1 in. (2.5 cm) thick on or at the soil surface, indicating recent prolonged inundation. The muck itself is thin (not deeply buried) — it rests at the surface. Auto-selects if a muck-textured horizon starts at 0 in. with depth to ≤1 in.'
 }, {
   id: 'HOTHERprim',
   code: 'Other',
@@ -11206,7 +11215,9 @@ function texIsTrueSandy(tex) {
   return ['sand', 'loamy sand', 'loamy coarse sand', 'loamy fine sand', 'gravelly', 'cobbly', 'stony'].some(t => lc.includes(t)) && !lc.includes('loamy very fine sand');
 }
 function texIsLoamy(tex) {
-  if (!tex || texIsMucky(tex) || texIsTrueSandy(tex)) return false;
+  if (!tex || texIsTrueSandy(tex)) return false;
+  if (texIsLoamyMuck(tex)) return true;
+  if (texIsMucky(tex)) return false;
   return true;
 }
 function inferHydricIndicators(horizons) {
@@ -11241,22 +11252,27 @@ function inferHydricIndicators(horizons) {
     return ['sand', 'loamy sand', 'loamy coarse sand', 'loamy fine sand', 'gravelly', 'cobbly', 'stony'].some(t => lc.includes(t)) && !lc.includes('loamy very fine sand');
   }
   function isLoamy(tex) {
-    if (!tex || isMucky(tex) || isTrueSandy(tex)) return false;
+    if (!tex || isTrueSandy(tex)) return false;
+    if (isLoamyMuck(tex)) return true;
+    if (isMucky(tex)) return false;
     return true;
   }
   const GLEY_HUES = ['N', '10Y', '5GY', '10GY', '5G', '10G', '5BG', '10BG', '5B', '10B', '5PB'];
-  function isGleyedMatrix(hue, value) {
-    return GLEY_HUES.includes(hue) && N(value) >= 4;
+  function isGleyedMatrix(hue, value, chroma) {
+    if (!GLEY_HUES.includes(hue) || N(value) < 4) return false;
+    if (hue === 'N') return true;
+    return N(chroma) <= (hue === '5G' ? 2 : 1);
   }
   function isDepletedMatrix(hue, value, chroma) {
-    return N(value) >= 4 && N(chroma) <= 2 || isGleyedMatrix(hue, value);
+    return N(value) >= 4 && N(chroma) <= 2 || isGleyedMatrix(hue, value, chroma);
   }
   function matrixPct(h) {
+    if (h.matrixPct === '' || h.matrixPct === undefined) return 0;
     const p = N(h.matrixPct);
     return p > 0 ? p : 100;
   }
   function hasDepletedMatrix60(h) {
-    return (N(h.matrixChroma) <= 2 || isGleyedMatrix(h.matrixHue, h.matrixValue)) && matrixPct(h) >= 60 && N(h.matrixValue) >= 4;
+    return !isHistosolOrganic(h.texture) && (N(h.matrixChroma) <= 2 || isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma)) && matrixPct(h) >= 60 && N(h.matrixValue) >= 4;
   }
   function redoxRows(h) {
     return h.redoxRows || [];
@@ -11285,7 +11301,7 @@ function inferHydricIndicators(horizons) {
   }
   function aboveLayersChromaOK(qualLayerTop) {
     const above = horizons.filter(h => hzBot(h) <= qualLayerTop + 0.1 && hzTop(h) < qualLayerTop);
-    return above.filter(h => N(h.matrixChroma) > 2 && !isGleyedMatrix(h.matrixHue, h.matrixValue)).reduce((s, h) => s + hzThick(h), 0) < 6;
+    return above.filter(h => N(h.matrixChroma) > 2 && !isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma)).reduce((s, h) => s + hzThick(h), 0) < 6;
   }
   const sorted = [...horizons].sort((a, b) => N(a.depthFrom) - N(b.depthFrom));
   const TRUE_ORGANIC = ['muck', 'mucky peat', 'peat'];
@@ -11304,8 +11320,25 @@ function inferHydricIndicators(horizons) {
     };
   }
   {
+    // A2 — Histic Epipedon: consecutive organic surface horizon ≥8 in., underlain by mineral with chroma ≤2
+    let organicThick = 0, organicEnd = 0, firstOrganic = null;
+    for (const h of sorted) {
+      if (!isHistosolOrganic(h.texture)) { if (organicThick > 0) break; continue; }
+      if (organicThick === 0 && hzTop(h) > 0) break;
+      if (organicThick === 0) { organicThick = hzThick(h); organicEnd = hzBot(h); firstOrganic = h; }
+      else if (Math.abs(hzTop(h) - organicEnd) < 0.5) { organicThick += hzThick(h); organicEnd = hzBot(h); }
+    }
+    if (organicThick >= 8 && firstOrganic) {
+      const below = sorted.find(h => hzTop(h) >= organicEnd && h.depthTo !== '' && h.texture && !isHistosolOrganic(h.texture) && (h.matrixHue === 'N' || h.matrixChroma !== '') && N(h.matrixChroma) <= 2);
+      if (below) inferred['A2'] = {
+        reason: `${organicThick.toFixed(1)} in. of organic surface material (${firstOrganic.texture}, ≥8 in. req.) underlain by mineral soil (${below.texture}, chroma ${below.matrixChroma} ≤2 req.). Aquic conditions must be confirmed — assumed present if both vegetation and wetland hydrology criteria are met.`,
+        partial: true
+      };
+    }
+  }
+  {
     const YELLOWER = ['10YR', '2.5Y', '5Y'];
-    const cands = sorted.filter(h => hzTop(h) <= 6 && isMucky(h.texture) && YELLOWER.includes(h.matrixHue) && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1);
+    const cands = sorted.filter(h => hzTop(h) <= 6 && isHistosolOrganic(h.texture) && YELLOWER.includes(h.matrixHue) && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1);
     if (cands.length > 0) {
       let thickness = 0,
         endDepth = 0,
@@ -11322,7 +11355,7 @@ function inferHydricIndicators(horizons) {
         }
       }
       if (thickness >= 8 && first) {
-        const below = sorted.find(h => Math.abs(hzTop(h) - endDepth) <= 1 && !isMucky(h.texture));
+        const below = sorted.find(h => hzTop(h) >= endDepth && h.depthTo !== '' && h.texture && !isHistosolOrganic(h.texture) && (h.matrixHue === 'N' || h.matrixChroma !== ''));
         if (below && N(below.matrixChroma) <= 2) inferred['A3'] = {
           reason: `Organic layer (${first.texture}) ${thickness.toFixed(1)} in. thick, starting ≤6 in., hue ${first.matrixHue} value ${first.matrixValue}/chroma ${first.matrixChroma} (≤3/≤1 req.); underlain by mineral horizon (chroma ${below.matrixChroma} ≤2 req.).`
         };
@@ -11330,9 +11363,33 @@ function inferHydricIndicators(horizons) {
     }
   }
   {
-    const q = sorted.find(h => hzTop(h) <= 6 && isMuck(h.texture) && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hzThick(h) >= 0.4);
+    const surfHz = sorted.filter(h => hzTop(h) <= 6 && h.texture && h.depthTo !== '');
+    if (surfHz.length >= 2) {
+      const isQualLayer = h => {
+        if (isHistosolOrganic(h.texture) || isMuckyMineral(h.texture) || isLoamyMuck(h.texture)) return true;
+        return h.matrixValue !== '' && (h.matrixHue === 'N' || h.matrixChroma !== '') && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1;
+      };
+      const hasQual = surfHz.some(isQualLayer);
+      const allChromaOK = surfHz.every(h => {
+        if (isHistosolOrganic(h.texture) || isMuckyMineral(h.texture) || isLoamyMuck(h.texture)) return true;
+        return h.matrixChroma !== '' && N(h.matrixChroma) <= 2;
+      });
+      if (hasQual && allChromaOK) {
+        const qualH = surfHz.find(isQualLayer);
+        const isOrgTex = h => isHistosolOrganic(h.texture) || isMuckyMineral(h.texture) || isLoamyMuck(h.texture);
+        const qualIsSandyColor = !isOrgTex(qualH) && isTrueSandy(qualH.texture);
+        const qualExtra = isOrgTex(qualH) ? '' : `, value ${qualH.matrixValue}/chroma ${qualH.matrixChroma}`;
+        inferred['A5'] = {
+          reason: `${surfHz.length} stratified layers starting ≤6 in.: qualifying layer at ${hzTop(qualH)}–${hzBot(qualH)} in. (${qualH.texture || '?'}${qualExtra}); remaining layers chroma ≤2. SOIL DATA MET — must confirm in the field: (1) layers are DEPOSITIONAL strata (not pedogenic horizons); (2) individual strata dominantly <1 in. thick (hand lens required); (3) undisturbed sample observed.${qualIsSandyColor ? ' Qualifying layer is sandy — ≥70% organic masking of sand grains required (field verify).' : ''} LRR C ONLY — not applicable in LRR B or D.`,
+          partial: true
+        };
+      }
+    }
+  }
+  {
+    const q = sorted.find(h => hzTop(h) <= 6 && isMuck(h.texture) && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hzThick(h) >= 0.5);
     if (q) inferred['A9'] = {
-      reason: `Muck at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in. thick; ≥0.4 in. req.), value ${q.matrixValue}/chroma ${q.matrixChroma}. Confirm LRR D (approved) or C (testing).`
+      reason: `Muck at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in. thick; ≥0.5 in. req.), value ${q.matrixValue}/chroma ${q.matrixChroma}. Confirm LRR D (approved) or C (testing).`
     };
   }
   {
@@ -11349,16 +11406,19 @@ function inferHydricIndicators(horizons) {
       const deplTop = hzTop(h);
       const above = sorted.filter(a => hzBot(a) <= deplTop + 0.1 && hzTop(a) < deplTop);
       if (above.length === 0) continue;
+      if (!above.some(a => Math.abs(hzBot(a) - deplTop) < 0.1)) continue;
       const darkOK = above.some(a => hzTop(a) <= 6) && above.every(a => {
+        if (!a.texture || a.matrixValue === '' || (a.matrixHue !== 'N' && a.matrixChroma === '')) return false;
         if (isTrueSandy(a.texture) && !isMucky(a.texture)) return N(a.matrixValue) <= 3 && N(a.matrixChroma) <= 1;
         return N(a.matrixValue) <= 3 && N(a.matrixChroma) <= 2;
       });
       if (!darkOK) continue;
-      const needsRedox = N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2;
+      const needsRedox = !isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma) && (N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2);
       if (needsRedox && !hasDistOrPromConcMassOrPL(h, 2)) continue;
-      if (!aboveLayersChromaOK(deplTop)) continue;
+      const hasSandyAbove = above.some(a => isTrueSandy(a.texture) || isMuckyMineral(a.texture));
       inferred['A11'] = {
-        reason: `Depleted/gleyed layer at ${hzTop(h)}–${hzBot(h)} in. (chroma ${h.matrixChroma}, value ${h.matrixValue}, ${hzThick(h).toFixed(1)} in.) starts ≤12 in. Dark organic/loamy surface above with value ≤3, chroma ≤2 beginning ≤6 in.${needsRedox ? ' Redox at 4/1–5/2 verified distinct/prominent (Table A1).' : ''} Sandy layers above require ≥70% sand masking (field verify).`
+        reason: `Depleted/gleyed layer at ${hzTop(h)}–${hzBot(h)} in. (value ${h.matrixValue}/chroma ${h.matrixChroma}, ${hzThick(h).toFixed(1)} in.) starts ≤12 in. Above-layer(s) directly abut the depleted/gleyed layer: organic/loamy/clayey value ≤3/chroma ≤2, or sandy value ≤3/chroma ≤1, starting ≤6 in.${needsRedox ? ' Redox at 4/1–5/2 verified distinct/prominent (Table A1).' : ''}${hasSandyAbove ? ' Sandy layer(s) above require ≥70% organic masking of sand grains (field verify).' : ''}`,
+        ...(hasSandyAbove ? { partial: true } : {})
       };
       break;
     }
@@ -11373,12 +11433,14 @@ function inferHydricIndicators(horizons) {
       if (hzTop(above[0]) >= 6) continue;
       const to12 = above.filter(a => hzBot(a) <= 12.5);
       const beyond = above.filter(a => hzTop(a) >= 12);
-      if (!to12.every(a => N(a.matrixValue) <= 2.5 && N(a.matrixChroma) <= 1)) continue;
-      if (!beyond.every(a => N(a.matrixValue) <= 3 && N(a.matrixChroma) <= 1)) continue;
-      const needsRedox = N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2;
+      if (!to12.every(a => a.texture && a.matrixValue !== '' && (a.matrixHue === 'N' || a.matrixChroma !== '') && N(a.matrixValue) <= 2.5 && N(a.matrixChroma) <= 1)) continue;
+      if (!beyond.every(a => a.texture && a.matrixValue !== '' && (a.matrixHue === 'N' || a.matrixChroma !== '') && N(a.matrixValue) <= 3 && N(a.matrixChroma) <= 1)) continue;
+      const needsRedox = !isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma) && (N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2);
       if (needsRedox && !hasDistOrPromConcMassOrPL(h, 2)) continue;
+      const hasSandyAbove = above.some(a => isTrueSandy(a.texture));
       inferred['A12'] = {
-        reason: `Surface layers: value ≤2.5/chroma ≤1 from <6 in. to ≥12 in., then value ≤3/chroma ≤1 to depleted layer at ${hzTop(h)}–${hzBot(h)} in. (${hzThick(h).toFixed(1)} in. thick).${needsRedox ? ' Redox at 4/1–5/2 verified distinct/prominent (Table A1).' : ''} Sandy layers above require ≥70% masking (field verify).`
+        reason: `Surface layers: value ≤2.5/chroma ≤1 from <6 in. to ≥12 in., then value ≤3/chroma ≤1 to depleted/gleyed layer at ${hzTop(h)}–${hzBot(h)} in. (${hzThick(h).toFixed(1)} in. thick).${needsRedox ? ' Redox at 4/1–5/2 verified distinct/prominent (Table A1).' : ''}${hasSandyAbove ? ' Loamy fine sand or coarser layer(s) above require ≥70% organic masking (field verify).' : ''}`,
+        ...(hasSandyAbove ? { partial: true } : {})
       };
       break;
     }
@@ -11390,7 +11452,7 @@ function inferHydricIndicators(horizons) {
     };
   }
   {
-    const q = sorted.find(h => hzTop(h) <= 6 && isTrueSandy(h.texture) && isGleyedMatrix(h.matrixHue, h.matrixValue) && matrixPct(h) >= 60);
+    const q = sorted.find(h => hzTop(h) <= 6 && isTrueSandy(h.texture) && isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma) && matrixPct(h) >= 60);
     if (q && aboveLayersChromaOK(hzTop(q))) inferred['S4'] = {
       reason: `Sandy layer at ${hzTop(q)}–${hzBot(q)} in.: gleyed matrix (hue ${q.matrixHue}, value ${q.matrixValue}) ≥60% of layer, starting ≤6 in. No thickness req.`
     };
@@ -11411,7 +11473,7 @@ function inferHydricIndicators(horizons) {
     };
   }
   {
-    const q = sorted.find(h => hzTop(h) <= 12 && isLoamy(h.texture) && isGleyedMatrix(h.matrixHue, h.matrixValue) && matrixPct(h) >= 60);
+    const q = sorted.find(h => hzTop(h) <= 12 && isLoamy(h.texture) && isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma) && matrixPct(h) >= 60);
     if (q && aboveLayersChromaOK(hzTop(q))) inferred['F2'] = {
       reason: `Loamy/clayey layer at ${hzTop(q)}–${hzBot(q)} in.: gleyed matrix (hue ${q.matrixHue}, value ${q.matrixValue}) ≥60%, starting ≤12 in. No thickness req.`
     };
@@ -11420,11 +11482,11 @@ function inferHydricIndicators(horizons) {
     for (const h of sorted) {
       if (!isLoamy(h.texture)) continue;
       if (!hasDepletedMatrix60(h)) continue;
+      if (isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma)) continue;
       const thickOK = hzTop(h) <= 4 && hzThick(h) >= 2 || hzTop(h) <= 10 && hzThick(h) >= 6;
       if (!thickOK) continue;
       const needsRedox = N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2;
       if (needsRedox && !hasDistOrPromConcMassOrPL(h, 2)) continue;
-      if (!aboveLayersChromaOK(hzTop(h))) continue;
       inferred['F3'] = {
         reason: `Loamy/clayey layer at ${hzTop(h)}–${hzBot(h)} in.: depleted matrix (value ${h.matrixValue} chroma ${h.matrixChroma} ≥60%), ${hzThick(h).toFixed(1)} in. thick.${needsRedox ? ' Distinct/prominent redox verified at 4/1–5/2 (Table A1).' : ''}`
       };
@@ -11432,7 +11494,7 @@ function inferHydricIndicators(horizons) {
     }
   }
   {
-    const firstMin = sorted.find(h => !isMucky(h.texture));
+    const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
     const q = sorted.find(h => isLoamy(h.texture) && hzThick(h) >= 4 && N(h.matrixValue) <= 3 && hzBot(h) - minOff <= 12 && (N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConcMassOrPL(h, 5)));
     if (q) {
@@ -11444,7 +11506,7 @@ function inferHydricIndicators(horizons) {
     }
   }
   {
-    const firstMin = sorted.find(h => !isMucky(h.texture));
+    const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
     const q = sorted.find(h => {
       if (!isLoamy(h.texture)) return false;
@@ -11472,7 +11534,7 @@ function inferHydricIndicators(horizons) {
   {
     const RED_HUES = ['7.5YR', '5YR', '2.5YR', '10R', '7.5R', '5R', '2.5R'];
     const q = sorted.find(h => {
-      if (!(isLoamy(h.texture) || isTrueSandy(h.texture))) return false;
+      if (!isLoamy(h.texture)) return false;
       if (hzTop(h) > 10 || hzThick(h) < 4) return false;
       if (!RED_HUES.includes(h.matrixHue)) return false;
       if (N(h.matrixValue) < 2 || N(h.matrixValue) > 4) return false;
@@ -11488,11 +11550,23 @@ function inferHydricIndicators(horizons) {
       };
     }
   }
+  {
+    const q = sorted.find(h => isLoamy(h.texture) && (
+      (hzThick(h) >= 4 && hzTop(h) <= 12) ||
+      (hzThick(h) >= 2 && hzTop(h) <= 6)
+    ));
+    if (q) {
+      inferred['F18'] = {
+        reason: `${q.texture} layer at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in. thick, starting ${hzTop(q)} in.) qualifies for Vertic soil depth/thickness requirement. SOIL DATA MET — must confirm: (1) slickensides present (Vertisol or Vertic intergrade), (2) positive α,α-dipyridyl reaction ≥60% of layer for ≥7 continuous and ≥28 cumulative days during a normal or drier season (multi-day field monitoring required).`,
+        partial: true
+      };
+    }
+  }
   function findDarkSurface() {
     return sorted.find(h => isLoamy(h.texture) && hzTop(h) <= 6 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hzThick(h) >= 2);
   }
   if (!inferred['F6'] && !inferred['F3']) {
-    const firstMin = sorted.find(h => !isMucky(h.texture));
+    const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
     const f6cand = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 8 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2));
     const f3cand = sorted.find(h => isLoamy(h.texture) && hasDepletedMatrix60(h) && hzThick(h) >= 2 && hzTop(h) <= 12 && h !== f6cand);
@@ -11505,7 +11579,7 @@ function inferHydricIndicators(horizons) {
     }
   }
   if (!inferred['F6'] && !inferred['S5']) {
-    const firstMin = sorted.find(h => !isMucky(h.texture));
+    const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
     const f6c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 8 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2));
     const s5c = sorted.find(h => isTrueSandy(h.texture) && hzTop(h) <= 6 && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 2 && hasDistOrPromConcMassOrPL(h, 2) && h !== f6c);
@@ -11529,7 +11603,7 @@ function inferHydricIndicators(horizons) {
     }
   }
   if (!inferred['F7'] && !inferred['F3']) {
-    const firstMin = sorted.find(h => !isMucky(h.texture));
+    const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
     const f7cand = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 2 && hasRedoxDepletion(h, 2));
     const f3cand = sorted.find(h => isLoamy(h.texture) && hasDepletedMatrix60(h) && hzThick(h) >= 2 && hzTop(h) <= 12 && h !== f7cand);
@@ -11542,7 +11616,7 @@ function inferHydricIndicators(horizons) {
     }
   }
   if (!inferred['F7'] && !inferred['S5']) {
-    const firstMin = sorted.find(h => !isMucky(h.texture));
+    const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
     const f7c = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 2 && hasRedoxDepletion(h, 2));
     const s5c = sorted.find(h => isTrueSandy(h.texture) && hzTop(h) <= 6 && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 2 && hasDistOrPromConcMassOrPL(h, 2) && h !== f7c);
@@ -13735,8 +13809,8 @@ function findPageForHue(hue, chroma) {
   }
   return ACTIVE_MUNSELL_PAGES.findIndex(p => p.id === '10YR') || 4;
 }
-const ALL_PICKER_HUES = ['10R', '2.5YR', '5YR', '7.5YR', '10YR', '2.5Y', '5Y', '10Y', '5GY', 'N', '10Y', '5GY', '10GY', '5G', '10G', '5BG', '10BG', '5B', '10B', '5PB', '5R', '7.5R'];
-const PICKER_HUE_OPTIONS = [...new Set(['10R', '2.5YR', '5YR', '7.5YR', '10YR', '2.5Y', '5Y', '10Y', '5GY', 'N', '10GY', '5G', '10G', '5BG', '10BG', '5B', '10B', '5PB', '5R', '7.5R'])];
+const ALL_PICKER_HUES = ['5R', '7.5R', '10R', '2.5YR', '5YR', '7.5YR', '10YR', '2.5Y', '5Y', '10Y', '5GY', 'N', '10Y', '5GY', '10GY', '5G', '10G', '5BG', '10BG', '5B', '10B', '5PB'];
+const PICKER_HUE_OPTIONS = [...new Set(['5R', '7.5R', '10R', '2.5YR', '5YR', '7.5YR', '10YR', '2.5Y', '5Y', '10Y', '5GY', 'N', '10GY', '5G', '10G', '5BG', '10BG', '5B', '10B', '5PB'])];
 
 // ─── Soil Color Camera Module ─────────────────────────────────────────────
 // Inverse Munsell lookup, color correction matrix solver, and reference card
@@ -14857,7 +14931,7 @@ const _A1_RING = ['10R','2.5YR','5YR','7.5YR','10YR','2.5Y','5Y','7.5Y','10Y','2
 
 function hueSteps(h1, h2) {
   if (h1 === h2) return 0;
-  if (h1 === 'N' || h2 === 'N') return 99;
+  if (h1 === 'N' || h2 === 'N') return 1;
   const i1 = _A1_RING.indexOf(h1), i2 = _A1_RING.indexOf(h2);
   if (i1 < 0 || i2 < 0) return 99;
   const d = Math.abs(i1 - i2);
@@ -14870,10 +14944,11 @@ function contrastClass(mHue, mVal, mChroma, rxHue, rxVal, rxChroma) {
   if (mv <= 3 && mc <= 2 && rv <= 3 && rc <= 2) return 'F';
   const dv = Math.abs(mv - rv), dc = Math.abs(mc - rc), dh = hueSteps(mHue, rxHue);
   if (dh === 0) {
-    if (dv === 0 && dc <= 1) return 'F';
-    if (dv === 0 && dc >= 4) return 'P';
-    if (dv === 0) return 'D';
-    if (dv === 1 && dc <= 1) return 'D';
+    if (dv <= 2 && dc <= 1) return 'F';
+    if (dv <= 2 && dc >= 4) return 'P';
+    if (dv <= 2) return 'D';
+    if (dv === 3 && dc >= 4) return 'P';
+    if (dv === 3) return 'D';
     return 'P';
   }
   if (dh === 1) {
@@ -14883,13 +14958,9 @@ function contrastClass(mHue, mVal, mChroma, rxHue, rxVal, rxChroma) {
   }
   if (dh === 2) {
     if (dv === 0 && dc === 0) return 'F';
-    if (dv === 0 && dc >= 2) return 'P';
-    if (dv === 0) return 'D';
-    if (dv <= 2 && dc <= 1) return 'F';
-    if (dv <= 2 && dc >= 4) return 'P';
-    if (dv <= 2) return 'D';
-    if (dv === 3 && dc >= 4) return 'P';
-    if (dv === 3) return 'D';
+    if (dv === 0 && dc === 1) return 'D';
+    if (dv === 0) return 'P';
+    if (dv === 1 && dc <= 1) return 'D';
     return 'P';
   }
   return 'P';
@@ -15158,14 +15229,10 @@ function generateReferenceCardHTML() {
     const px = MX + cu * MS - PW/2, py = MY + cv * MS - PH/2;
     const pcx = px + PW/2, pcy = py + PH/2;
     o(`<rect x="${px.toFixed(3)}" y="${py.toFixed(3)}" width="${PW}" height="${PH}" fill="${p.hex}"/>`);
-    o(`<rect x="${px.toFixed(3)}" y="${py.toFixed(3)}" width="${PW}" height="${PH}" `
-      + `fill="none" stroke="rgba(0,0,0,0.25)" stroke-width="0.3"/>`);
-    const lum = parseInt(p.hex.slice(1,3),16)*0.299 + parseInt(p.hex.slice(3,5),16)*0.587 + parseInt(p.hex.slice(5,7),16)*0.114;
-    const textFill = lum < 128 ? 'white' : '#222';
     const label = p.hue === 'N' ? `N ${p.value}/` : `${p.hue} ${p.value}/${p.chroma}`;
-    o(`<text x="${pcx.toFixed(3)}" y="${(pcy + 0.8).toFixed(3)}" `
-      + `text-anchor="middle" dominant-baseline="middle" `
-      + `font-family="Arial,sans-serif" font-size="2.2" font-weight="bold" fill="${textFill}">${label}</text>`);
+    o(`<text x="${pcx.toFixed(3)}" y="${(py + PH + 3.5).toFixed(3)}" `
+      + `text-anchor="middle" dominant-baseline="auto" `
+      + `font-family="Arial,sans-serif" font-size="2.2" font-weight="bold" fill="#333">${label}</text>`);
   });
 
   o(`</g>`); // end card group
@@ -16431,7 +16498,7 @@ function SoilProfileModal({
       fontSize: 9,
       color: '#a1a1aa'
     }
-  }, restrictiveType, " (", restrictiveDepth, "\")")), profileShallow && React.createElement("div", {
+  }, restrictiveType, " (", restrictiveDepth, "\")")), !!profileShallow && React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'center',
@@ -16481,32 +16548,10 @@ function SoilProfileModal({
       key: h.id,
       style: {
         display: 'flex',
-        gap: 8,
-        alignItems: 'flex-start',
+        flexDirection: 'column',
+        gap: 4,
         paddingBottom: i < validHz.length - 1 ? 10 : 0,
         borderBottom: i < validHz.length - 1 ? '1px solid #1e1e20' : 'none'
-      }
-    }, React.createElement("div", {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-        flexShrink: 0
-      }
-    }, colors.map((c, ci) => React.createElement("div", {
-      key: ci,
-      style: {
-        width: 16,
-        height: 16,
-        borderRadius: 3,
-        background: munsellToCSS(c.hue, c.value, c.chroma) || '#3a2c1e',
-        border: '1px solid rgba(255,255,255,0.08)',
-        flexShrink: 0
-      }
-    }))), React.createElement("div", {
-      style: {
-        flex: 1,
-        minWidth: 0
       }
     }, React.createElement("div", {
       style: {
@@ -16518,28 +16563,48 @@ function SoilProfileModal({
     }, "Horizon ", i + 1, " \xB7 ", h.depthFrom, "\"\u2013", h.depthTo, "\"", h.texture && React.createElement(React.Fragment, null, " \xB7 ", h.texture)), colors.map((c, ci) => React.createElement("div", {
       key: ci,
       style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6
+      }
+    }, React.createElement("div", {
+      style: {
+        width: 16,
+        height: 16,
+        borderRadius: 3,
+        background: munsellToCSS(c.hue, c.value, c.chroma) || '#3a2c1e',
+        border: '1px solid rgba(255,255,255,0.08)',
+        flexShrink: 0
+      }
+    }), React.createElement("span", {
+      style: {
         fontSize: 8,
         color: '#71717a',
-        fontFamily: 'IBM Plex Mono,monospace'
-      }
-    }, React.createElement("span", {
-      style: {
+        fontFamily: 'IBM Plex Mono,monospace',
         whiteSpace: 'nowrap'
       }
     }, c.hue, " ", c.value, "/", c.chroma, c.pct ? ` (${c.pct}%)` : '', ci === 0 && multi ? ' — Primary Matrix Color' : ''))), h.redoxRows && h.redoxRows.length > 0 && React.createElement("div", {
       style: {
         marginTop: 3,
-        fontSize: 8,
-        color: '#52525b'
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1
       }
-    }, h.redoxRows.length, " redox feature", h.redoxRows.length !== 1 ? 's' : '', h.redoxRows[0].type ? `: ${h.redoxRows[0].type}` : ''), h.remarks && React.createElement("div", {
+    }, h.redoxRows.map((rx, ri) => React.createElement("div", {
+      key: ri,
+      style: {
+        fontSize: 8,
+        color: '#52525b',
+        fontFamily: 'IBM Plex Mono,monospace'
+      }
+    }, [rx.pct ? `${rx.pct}%` : null, rx.type || null, rx.loc || null, (rx.hue || rx.value || rx.chroma) ? `${rx.hue} ${rx.value}/${rx.chroma}` : null].filter(Boolean).join(' · ')))), h.remarks && React.createElement("div", {
       style: {
         marginTop: 3,
         fontSize: 8,
         color: '#52525b',
         fontStyle: 'italic'
       }
-    }, h.remarks)));
+    }, h.remarks));
   }))))), React.createElement("div", {
     style: {
       padding: '8px 20px',
@@ -16577,20 +16642,64 @@ function labToSRGB(L, a, b) {
 }
 
 const ANALYZE_K = 6;
+const CARD_BLUR_THRESHOLD = 100; // Laplacian variance below this → warn blurry
+
+// Laplacian variance sharpness check over card patch regions.
+// canvas: the grab/detection canvas; regions: [{cx,cy,r}] in canvas pixels.
+// Returns variance (higher = sharper), or null if no valid region.
+function cardSharpness(canvas, regions) {
+  const ctx = canvas.getContext('2d', {willReadFrequently: true});
+  const W = canvas.width, H = canvas.height;
+  let sum = 0, sumSq = 0, n = 0;
+  for (const reg of regions) {
+    const r  = Math.ceil(reg.r);
+    const x0 = Math.max(1, Math.floor(reg.cx - r));
+    const y0 = Math.max(1, Math.floor(reg.cy - r));
+    const x1 = Math.min(W - 2, Math.ceil(reg.cx + r));
+    const y1 = Math.min(H - 2, Math.ceil(reg.cy + r));
+    if (x1 <= x0 || y1 <= y0) continue;
+    const pw = x1 - x0 + 3;
+    const d  = ctx.getImageData(x0 - 1, y0 - 1, pw, y1 - y0 + 3).data;
+    for (let y = 1; y <= y1 - y0; y++) {
+      for (let x = 1; x <= x1 - x0; x++) {
+        const lum = i => 0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2];
+        const lap = lum(((y-1)*pw+x)*4) + lum(((y+1)*pw+x)*4)
+                  + lum((y*pw+x-1)*4)   + lum((y*pw+x+1)*4)
+                  - 4*lum((y*pw+x)*4);
+        sum += lap; sumSq += lap*lap; n++;
+      }
+    }
+  }
+  if (n === 0) return null;
+  const mean = sum / n;
+  return sumSq / n - mean * mean;
+}
+
+// Even-odd point-in-polygon test (used for quad sample region)
+function ptInPoly(x, y, pts) {
+  let inside = false;
+  const n = pts.length;
+  for (let i=0, j=n-1; i<n; j=i++) {
+    const xi=pts[i].x, yi=pts[i].y, xj=pts[j].x, yj=pts[j].y;
+    if (((yi>y)!==(yj>y)) && (x < (xj-xi)*(y-yi)/(yj-yi)+xi)) inside=!inside;
+  }
+  return inside;
+}
 
 function SoilAnalyzeCapture({ onAnalyze, onClose }) {
   const [phase, setPhase] = useState('position'); // 'position' | 'analyzing' | 'review'
   const [cardOk, setCardOk] = useState(false);
-  const [concSens, setConcSens] = useState(50);
-  const [deplSens, setDeplSens] = useState(50);
+  const [concSens, setConcSens] = useState(1);
+  const [deplSens, setDeplSens] = useState(2);
   const [reviewData, setReviewData] = useState(null);
+  const [blurWarning, setBlurWarning] = useState(false);
 
   const videoRef        = useRef(null);
   const overlayRef      = useRef(null);      // canvas during position/analyzing phases
   const reviewCanvasRef = useRef(null);      // canvas during review phase
   const grabCanvasRef   = useRef(null);      // off-screen 640px detection canvas
   const fullResCanvasRef= useRef(null);      // off-screen full-res canvas for k-means
-  const ellipseRef      = useRef(null);      // {cx,cy,rx,ry} in display px
+  const polyRef         = useRef(null);      // {pts:[{x,y}×4]} quad in display px
   const detectionRef    = useRef(null);      // last valid measureCard() result
   const dragRef         = useRef(null);      // active drag state
   const animRef         = useRef(null);
@@ -16600,6 +16709,14 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
 
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { cardOkRef.current = cardOk; }, [cardOk]);
+
+  // Re-attach stream when video element remounts after Retake ──────────────────
+  useEffect(() => {
+    if ((phase === 'position' || phase === 'analyzing') && streamRef.current && videoRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+      videoRef.current.play().catch(() => {});
+    }
+  }, [phase]);
 
   // Camera boot + detection loop ─────────────────────────────────────────────
   useEffect(() => {
@@ -16632,8 +16749,11 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       if (!W || !H) return;
       if (canvas.width !== W) canvas.width = W;
       if (canvas.height !== H) canvas.height = H;
-      if (!ellipseRef.current) {
-        ellipseRef.current = { cx:W*0.5, cy:H*0.43, rx:W*0.28, ry:H*0.20 };
+      if (!polyRef.current) {
+        polyRef.current = { pts: [
+          {x:W*0.22,y:H*0.23},{x:W*0.78,y:H*0.23},
+          {x:W*0.78,y:H*0.63},{x:W*0.22,y:H*0.63}
+        ]};
       }
 
       const vW=video.videoWidth, vH=video.videoHeight;
@@ -16659,13 +16779,14 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
           detectionRef.current = r || null;
         } catch(e) {}
       }
-      drawEllipseOverlay(canvas, W, H);
+      drawPolyOverlay(canvas, W, H);
     }
     animRef.current = requestAnimationFrame(loop);
     return () => {
       active = false;
       cancelAnimationFrame(animRef.current);
       if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
+      if (document.fullscreenElement) document.exitFullscreen?.().catch(()=>{});
     };
   }, []);
 
@@ -16675,51 +16796,149 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
   }, [phase, reviewData, concSens, deplSens]);
 
   // ── Drawing ──────────────────────────────────────────────────────────────
-  function drawEllipseOverlay(canvas, W, H) {
+  function drawPolyOverlay(canvas, W, H) {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, W, H);
-    const e = ellipseRef.current;
-    if (!e) return;
-    // dim everything outside the ellipse
+    const poly = polyRef.current;
+    if (!poly) return;
+    const pts = poly.pts;
+    // dim outside the quad
     ctx.save();
     ctx.fillStyle = 'rgba(0,0,0,0.55)';
     ctx.fillRect(0, 0, W, H);
     ctx.globalCompositeOperation = 'destination-out';
-    ctx.beginPath(); ctx.ellipse(e.cx, e.cy, e.rx, e.ry, 0, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath();
+    pts.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+    ctx.closePath(); ctx.fill();
     ctx.globalCompositeOperation = 'source-over';
     ctx.restore();
-    // ellipse outline
+    // polygon outline
     ctx.strokeStyle = cardOkRef.current ? '#22c55e' : '#fbbf24';
     ctx.lineWidth = 2; ctx.setLineDash([8,4]);
-    ctx.beginPath(); ctx.ellipse(e.cx, e.cy, e.rx, e.ry, 0, 0, Math.PI*2); ctx.stroke();
-    ctx.setLineDash([]);
-    // drag handles
-    [[e.cx, e.cy], [e.cx+e.rx, e.cy], [e.cx, e.cy+e.ry]].forEach(([hx,hy]) => {
+    ctx.beginPath();
+    pts.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+    ctx.closePath(); ctx.stroke(); ctx.setLineDash([]);
+    // corner drag handles
+    pts.forEach(p => {
       ctx.fillStyle='rgba(0,0,0,0.55)'; ctx.strokeStyle='#fff'; ctx.lineWidth=1.5;
-      ctx.beginPath(); ctx.arc(hx, hy, 9, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.arc(p.x, p.y, 12, 0, Math.PI*2); ctx.fill(); ctx.stroke();
     });
+    // ArUco border + calibration card swatch boxes
+    const det = detectionRef.current;
+    if (det) {
+      const grab = grabCanvasRef.current;
+      const sx = grab ? W / grab.width : 1;
+      const sy = grab ? H / grab.height : 1;
+      const c = det.corners;
+      ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 4;
+      ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(c[0].x*sx, c[0].y*sy); ctx.lineTo(c[1].x*sx, c[1].y*sy);
+      ctx.lineTo(c[2].x*sx, c[2].y*sy); ctx.lineTo(c[3].x*sx, c[3].y*sy);
+      ctx.closePath(); ctx.stroke();
+      ctx.shadowBlur = 0;
+      det.regions.forEach((reg, i) => {
+        ctx.strokeStyle = CARD_REFERENCE_PATCHES[i].hex; ctx.lineWidth = 2;
+        ctx.strokeRect((reg.cx - reg.r) * sx, (reg.cy - reg.r) * sy, reg.r * 2 * sx, reg.r * 2 * sy);
+      });
+    }
+  }
+
+  // ── Core classification ───────────────────────────────────────────────────
+  // Algorithm:
+  //  1. Merge k-means clusters that resolve to the same Munsell HVC chip.
+  //  2. Dominant (highest pixel-area) merged cluster → the single matrix color.
+  //  3. Remaining clusters classified relative to matrix:
+  //     • Concentration: higher cstar than matrix AND contrastClass ≥ minContrast
+  //       - concSens 0 → Prominent only; 1 → Distinct+; 2 → Faint+
+  //     • Depletion: Munsell chroma ≤ deplThresh (absolute achromatic criterion)
+  //       - deplSens 1–4 → chroma threshold directly
+  //     • Everything else → unclassified, not reported
+  //  4. Percentages are each independently rounded (raw pixel share); they need not sum to 100%.
+  //  5. Transfer cap (for main UI): top 4 redox rows returned in concOut/deplOut.
+  function computeClassification(sens_c, sens_d) {
+    if (!reviewData) return null;
+    const {centroids, munsells, fullCounts} = reviewData;
+    const total = fullCounts.reduce((a,b)=>a+b, 0);
+
+    // Step 1: per-centroid entries with canonical Munsell hex
+    const raw = centroids.map(([L,a,b], i) => {
+      const m = munsells[i];
+      const chip = MUNSELL_LAB.find(c => c.hue===m.hue && c.value===m.value && c.chroma===m.chroma);
+      const [sr,sg,sb] = chip ? labToSRGB(chip.L, chip.a, chip.b) : labToSRGB(L,a,b);
+      const hex = '#'+[sr,sg,sb].map(v=>v.toString(16).padStart(2,'0')).join('');
+      return { idx:i, hue:m.hue, value:m.value, chroma:m.chroma,
+               rawCount: fullCounts[i],
+               cstar: Math.sqrt(a*a+b*b), hex };
+    });
+
+    // Step 2: merge identical Munsell HVC, keep max cstar for classification
+    const map = new Map();
+    raw.forEach(e => {
+      const key = `${e.hue} ${e.value}/${e.chroma}`;
+      if (map.has(key)) {
+        const m = map.get(key);
+        m.rawCount += e.rawCount;
+        m.cstar = Math.max(m.cstar, e.cstar);
+        m.indices.push(e.idx);
+      } else {
+        map.set(key, {...e, indices:[e.idx]});
+      }
+    });
+
+    // Step 3: sort by pixel count desc → dominant = matrix
+    const items = [...map.values()].sort((a,b) => b.rawCount - a.rawCount);
+    const mx = items[0]; // matrix item
+
+    // Step 4: sensitivity thresholds
+    const minContrast   = ['P','D','F'][sens_c] || 'D';
+    const deplThresh    = sens_d;
+    const contrastRank  = { F:1, D:2, P:3 };
+    const minRank       = contrastRank[minContrast];
+
+    // Step 5: classify non-dominant items
+    const conc=[], depl=[];
+    items.slice(1).forEach(item => {
+      if ((parseInt(item.chroma) || 0) <= deplThresh) { depl.push(item); return; }
+      if (item.cstar > mx.cstar) {
+        const cc = contrastClass(mx.hue, mx.value, mx.chroma, item.hue, item.value, item.chroma);
+        if ((contrastRank[cc] || 0) >= minRank) { conc.push(item); return; }
+      }
+    });
+
+    // Step 6: independent percentages — raw pixel share, simple rounding
+    mx.pct = Math.round(mx.rawCount / total * 100);
+    [...conc, ...depl].forEach(e => { e.pct = Math.round(e.rawCount / total * 100); });
+
+    // Step 7: capped lists for transfer to main UI (top 4 redox total)
+    const concOut = conc.slice(0, 4);
+    const deplOut = depl.slice(0, Math.max(0, 4 - concOut.length));
+
+    // Step 8: cluster-index → role for overlay (only capped features coloured)
+    const clusterRole = new Uint8Array(centroids.length); // 0 = matrix
+    concOut.forEach(e => e.indices.forEach(idx => { clusterRole[idx]=1; }));
+    deplOut.forEach(e => e.indices.forEach(idx => { clusterRole[idx]=2; }));
+
+    return { matrix: [mx], conc, depl, concOut, deplOut, clusterRole };
   }
 
   function drawReviewOverlay() {
     const canvas = reviewCanvasRef.current;
     if (!canvas || !reviewData) return;
-    const { snapImageData, W, H, allLabels, centroids } = reviewData;
+    const { snapImageData, W, H, allLabels } = reviewData;
     canvas.width=W; canvas.height=H;
     const ctx = canvas.getContext('2d');
     ctx.putImageData(snapImageData, 0, 0);
-    const concC = 30 - concSens*22/100;
-    const deplC = 3  + deplSens*12/100;
-    const role = centroids.map(([,a,b]) => {
-      const c=Math.sqrt(a*a+b*b);
-      return c >= concC ? 1 : c <= deplC ? 2 : 0;
-    });
+    const result = computeClassification(concSens, deplSens);
+    if (!result) return;
+    const { clusterRole } = result;
     const ov = ctx.createImageData(W, H);
     const od = ov.data;
     for (let i=0; i<allLabels.length; i++) {
       const lbl=allLabels[i]; if (lbl===255) continue;
-      const r=role[lbl], pi=i*4;
-      if (r===1) { od[pi]=255; od[pi+1]=140; od[pi+2]=0;   od[pi+3]=160; }
-      if (r===2) { od[pi]=30;  od[pi+1]=80;  od[pi+2]=220; od[pi+3]=160; }
+      const r=clusterRole[lbl], pi=i*4;
+      if (r===1) { od[pi]=57;  od[pi+1]=255; od[pi+2]=20;  od[pi+3]=180; } // neon green
+      if (r===2) { od[pi]=0;   od[pi+1]=191; od[pi+2]=255; od[pi+3]=180; } // electric blue
     }
     const tmp=document.createElement('canvas'); tmp.width=W; tmp.height=H;
     tmp.getContext('2d').putImageData(ov, 0, 0);
@@ -16737,21 +16956,19 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     e.preventDefault();
     const canvas=overlayRef.current;
     const [px,py]=getCanvasPt(e, canvas);
-    const el=ellipseRef.current; if (!el) return;
-    const handles=[
-      {mode:'center',x:el.cx,      y:el.cy},
-      {mode:'east',  x:el.cx+el.rx,y:el.cy},
-      {mode:'south', x:el.cx,      y:el.cy+el.ry},
-    ];
-    for (const h of handles) {
-      if (Math.hypot(px-h.x,py-h.y)<22) {
-        dragRef.current={mode:h.mode,ox:px,oy:py,snap:{...el}};
+    const poly=polyRef.current; if (!poly) return;
+    const pts=poly.pts;
+    const snapPts=pts.map(p=>({...p}));
+    // corner handles (largest hit target)
+    for (let i=0; i<pts.length; i++) {
+      if (Math.hypot(px-pts[i].x, py-pts[i].y)<44) {
+        dragRef.current={mode:'corner',cornerIdx:i,ox:px,oy:py,snapPts};
         canvas.setPointerCapture(e.pointerId); return;
       }
     }
-    const nx=(px-el.cx)/el.rx, ny=(py-el.cy)/el.ry;
-    if (nx*nx+ny*ny<=1) {
-      dragRef.current={mode:'center',ox:px,oy:py,snap:{...el}};
+    // interior touch → move whole polygon
+    if (ptInPoly(px, py, pts)) {
+      dragRef.current={mode:'poly',ox:px,oy:py,snapPts};
       canvas.setPointerCapture(e.pointerId);
     }
   }
@@ -16760,13 +16977,16 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     if (!dragRef.current) return;
     const canvas=overlayRef.current;
     const [px,py]=getCanvasPt(e, canvas);
-    const {mode,ox,oy,snap}=dragRef.current;
+    const {mode,ox,oy,snapPts,cornerIdx}=dragRef.current;
     const dx=px-ox, dy=py-oy;
-    const el=ellipseRef.current;
-    if      (mode==='center') { el.cx=snap.cx+dx; el.cy=snap.cy+dy; }
-    else if (mode==='east')   { el.rx=Math.max(30,snap.rx+dx); }
-    else if (mode==='south')  { el.ry=Math.max(20,snap.ry+dy); }
-    drawEllipseOverlay(canvas, canvas.width, canvas.height);
+    const poly=polyRef.current;
+    if (mode==='corner') {
+      poly.pts[cornerIdx].x=snapPts[cornerIdx].x+dx;
+      poly.pts[cornerIdx].y=snapPts[cornerIdx].y+dy;
+    } else {
+      poly.pts=snapPts.map(p=>({x:p.x+dx,y:p.y+dy}));
+    }
+    drawPolyOverlay(canvas, canvas.width, canvas.height);
   }
 
   function onPointerUp() { dragRef.current=null; }
@@ -16796,6 +17016,8 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     const freshCard=measureCard(grab);
     const ccm=(freshCard || detectionRef.current) ? (freshCard || detectionRef.current).ccm : null;
     if (!ccm) { setPhase('position'); return; }
+    const sharpness = freshCard ? cardSharpness(grab, freshCard.regions) : null;
+    setBlurWarning(sharpness !== null && sharpness < CARD_BLUR_THRESHOLD);
 
     // Full-res frame capped at 1920 for k-means sampling
     const scale=Math.min(1,1920/Math.max(srcW,srcH));
@@ -16804,19 +17026,20 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     fr.getContext('2d').drawImage(video, srcX, srcY, srcW, srcH, 0, 0, frW, frH);
     const frData=fr.getContext('2d',{willReadFrequently:true}).getImageData(0,0,frW,frH).data;
 
-    // Ellipse in full-res coords
-    const el=ellipseRef.current;
-    const esx=frW/W, esy=frH/H;
-    const ecx=el.cx*esx, ecy=el.cy*esy, erx=el.rx*esx, ery=el.ry*esy;
-    const bx0=Math.max(0,Math.floor(ecx-erx)), by0=Math.max(0,Math.floor(ecy-ery));
-    const bx1=Math.min(frW-1,Math.ceil(ecx+erx)), by1=Math.min(frH-1,Math.ceil(ecy+ery));
+    // Polygon in full-res coords
+    const poly=polyRef.current;
+    const fsx=frW/W, fsy=frH/H;
+    const frPts=poly.pts.map(p=>({x:p.x*fsx, y:p.y*fsy}));
+    const bx0=Math.max(0,Math.floor(Math.min(...frPts.map(p=>p.x))));
+    const by0=Math.max(0,Math.floor(Math.min(...frPts.map(p=>p.y))));
+    const bx1=Math.min(frW-1,Math.ceil(Math.max(...frPts.map(p=>p.x))));
+    const by1=Math.min(frH-1,Math.ceil(Math.max(...frPts.map(p=>p.y))));
 
     // Subsample every other pixel in both axes for k-means speed
     const samples=[];
     for (let y=by0; y<=by1; y+=2) {
       for (let x=bx0; x<=bx1; x+=2) {
-        const nx=(x-ecx)/erx, ny=(y-ecy)/ery;
-        if (nx*nx+ny*ny>1) continue;
+        if (!ptInPoly(x, y, frPts)) continue;
         const i=(y*frW+x)*4;
         const [rC,gC,bC]=applyCCM(frData[i],frData[i+1],frData[i+2],ccm);
         samples.push(sRGBtoLab(rC,gC,bC));
@@ -16834,13 +17057,12 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     const snapCtx=snapCanvas.getContext('2d',{willReadFrequently:true});
     const snapID=snapCtx.getImageData(0,0,W,H);
     const sd=snapID.data;
-    const allLabels =new Uint8Array(W*H).fill(255); // 255 = outside ellipse
+    const allLabels =new Uint8Array(W*H).fill(255); // 255 = outside polygon
     const fullCounts=new Array(ANALYZE_K).fill(0);
 
     for (let y=0; y<H; y++) {
       for (let x=0; x<W; x++) {
-        const nx=(x-el.cx)/el.rx, ny=(y-el.cy)/el.ry;
-        if (nx*nx+ny*ny>1) continue;
+        if (!ptInPoly(x, y, poly.pts)) continue;
         const i=(y*W+x)*4;
         const [rC,gC,bC]=applyCCM(sd[i],sd[i+1],sd[i+2],ccm);
         const lab=sRGBtoLab(rC,gC,bC);
@@ -16860,21 +17082,9 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
 
   // ── Chip helpers ──────────────────────────────────────────────────────────
   function classifyChips(sens_c, sens_d) {
-    if (!reviewData) return { matrix:[], conc:[], depl:[] };
-    const {centroids, munsells, fullCounts}=reviewData;
-    const total=fullCounts.reduce((a,b)=>a+b,0);
-    const concC=30-sens_c*22/100, deplC=3+sens_d*12/100;
-    const matrix=[],conc=[],depl=[];
-    centroids.forEach(([L,a,b],i)=>{
-      const cstar=Math.sqrt(a*a+b*b);
-      const pct=Math.round(fullCounts[i]/total*100);
-      const [sr,sg,sb]=labToSRGB(L,a,b);
-      const hex='#'+[sr,sg,sb].map(v=>v.toString(16).padStart(2,'0')).join('');
-      const entry={...munsells[i],pct,hex};
-      if (cstar>=concC) conc.push(entry); else if (cstar<=deplC) depl.push(entry); else matrix.push(entry);
-    });
-    const byPct=a=>[...a].sort((x,y)=>y.pct-x.pct);
-    return {matrix:byPct(matrix),conc:byPct(conc),depl:byPct(depl)};
+    const result = computeClassification(sens_c, sens_d);
+    if (!result) return { matrix:[], conc:[], depl:[] };
+    return { matrix:result.matrix, conc:result.concOut, depl:result.deplOut };
   }
 
   function chipEl(c, labelColor, label) {
@@ -16891,23 +17101,21 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
   // ── Accept ────────────────────────────────────────────────────────────────
   function handleAccept() {
     if (!reviewData) return;
-    const chips=classifyChips(concSens, deplSens);
-    const matrixColors=chips.matrix.slice(0,3).map((m,i)=>({
-      id:i+1, hue:m.hue, value:m.value, chroma:m.chroma, pct:String(m.pct)
+    const result = computeClassification(concSens, deplSens);
+    if (!result) return;
+    const mx = result.matrix[0];
+    const matrixColors = [{ id:1, hue:mx.hue, value:mx.value, chroma:mx.chroma, pct:String(mx.pct) }];
+    const concRows = result.concOut.map((m,i)=>({
+      id:i+1, hue:m.hue, value:m.value, chroma:m.chroma, pct:String(m.pct),
+      type:'C – Concentration', loc:'M – Matrix'
     }));
-    const redoxRows=[
-      ...chips.conc.slice(0,2).map((m,i)=>({
-        id:i+1, hue:m.hue, value:m.value, chroma:m.chroma, pct:String(m.pct),
-        type:'C – Concentration', loc:'M – Matrix'
-      })),
-      ...chips.depl.slice(0,2).map((m,i)=>({
-        id:i+3, hue:m.hue, value:m.value, chroma:m.chroma, pct:String(m.pct),
-        type:'D – Depletion', loc:'M – Matrix'
-      })),
-    ];
+    const deplRows = result.deplOut.map((m,i)=>({
+      id:concRows.length+i+1, hue:m.hue, value:m.value, chroma:m.chroma, pct:String(m.pct),
+      type:'D – Depletion', loc:'M – Matrix'
+    }));
     onAnalyze({
       matrixColors: matrixColors.length ? matrixColors : [{id:1,hue:'10YR',value:'4',chroma:'2',pct:''}],
-      redoxRows
+      redoxRows: [...concRows, ...deplRows]
     });
   }
 
@@ -16923,12 +17131,11 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
         style:{position:'absolute',inset:0,width:'100%',height:'100%',touchAction:'none',cursor:phase==='position'?'grab':'default'}}),
       phase==='analyzing' && React.createElement('div',{style:{position:'absolute',inset:0,display:'flex',alignItems:'center',justifyContent:'center',background:'rgba(0,0,0,0.5)'}},
         React.createElement('div',{style:{width:40,height:40,borderRadius:'50%',border:'4px solid rgba(255,255,255,0.2)',borderTopColor:'#fff',animation:'spin 0.9s linear infinite'}})),
-      phase==='position' && React.createElement('div',{style:{position:'absolute',bottom:32,left:0,right:0,display:'flex',flexDirection:'column',alignItems:'center',gap:12}},
-        React.createElement('div',{style:{fontSize:12,color:cardOk?'#22c55e':'#fbbf24',textShadow:'0 1px 3px rgba(0,0,0,0.8)'}},
+      phase==='position' && React.createElement(React.Fragment,null,
+        React.createElement('div',{style:{position:'absolute',top:16,left:'50%',transform:'translateX(-50%)',background:'rgba(0,0,0,0.65)',pointerEvents:'none',zIndex:1,color:cardOk?'#86efac':'#f4f4f5',borderRadius:20,padding:'6px 16px',fontSize:13,whiteSpace:'nowrap',border:cardOk?'1px solid rgba(34,197,94,0.35)':'1px solid rgba(255,255,255,0.15)'}},
           cardOk?'Card detected — frame the ped and tap Analyse':'Hold reference card in view…'),
-        React.createElement('button',{onClick:cardOk?handleAnalyse:undefined,disabled:!cardOk,
-          style:{background:cardOk?'#22c55e':'#52525b',color:cardOk?'#000':'#a1a1aa',border:'none',borderRadius:8,padding:'10px 28px',fontSize:15,fontWeight:600,cursor:cardOk?'pointer':'default',letterSpacing:'0.03em',opacity:cardOk?1:0.7}},
-          'Analyse')),
+        React.createElement('div',{style:{position:'absolute',bottom:32,left:0,right:0,display:'flex',justifyContent:'center'}},
+          React.createElement('button',{onClick:handleAnalyse,style:{background:'#22c55e',color:'#000',border:'none',borderRadius:8,padding:'10px 28px',fontSize:15,fontWeight:600,cursor:'pointer',letterSpacing:'0.03em'}},'Analyse'))),
       React.createElement('button',{onClick:onClose,style:{position:'absolute',top:16,right:16,zIndex:1,background:'rgba(0,0,0,0.55)',color:'#f4f4f5',border:'1px solid rgba(255,255,255,0.25)',borderRadius:8,padding:'6px 14px',fontSize:13,cursor:'pointer'}},'✕')
     );
   }
@@ -16938,21 +17145,24 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
   return React.createElement('div',{style:{position:'fixed',inset:0,zIndex:10000,background:'#000',userSelect:'none',WebkitUserSelect:'none',display:'flex',flexDirection:'column'}},
     React.createElement('div',{style:{position:'relative',flex:1,overflow:'hidden',background:'#000'}},
       React.createElement('canvas',{ref:reviewCanvasRef,
-        style:{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'contain'}})),
+        style:{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'contain'}}),
+      React.createElement('button',{onClick:onClose,style:{position:'absolute',top:16,right:16,zIndex:1,background:'rgba(0,0,0,0.55)',color:'#f4f4f5',border:'1px solid rgba(255,255,255,0.25)',borderRadius:8,padding:'6px 14px',fontSize:13,cursor:'pointer'}},'✕')),
     React.createElement('div',{style:{background:'#18181b',borderTop:'1px solid #3f3f46',padding:'10px 14px',display:'flex',flexDirection:'column',gap:8,maxHeight:'55vh',overflowY:'auto'}},
       React.createElement('div',{style:{display:'flex',gap:14}},
         React.createElement('label',{style:{flex:1,fontSize:11,color:'#a1a1aa'}},
-          'Conc. sensitivity: '+concSens,
-          React.createElement('input',{type:'range',min:0,max:100,value:concSens,onChange:e=>setConcSens(Number(e.target.value)),style:{display:'block',width:'100%',marginTop:3,accentColor:'#f97316'}})),
+          'Conc: '+(['Prominent only','Distinct+','Faint+'][concSens]),
+          React.createElement('input',{type:'range',min:0,max:2,step:1,value:concSens,onChange:e=>setConcSens(Number(e.target.value)),style:{display:'block',width:'100%',marginTop:3,accentColor:'#f97316'}})),
         React.createElement('label',{style:{flex:1,fontSize:11,color:'#a1a1aa'}},
-          'Depl. sensitivity: '+deplSens,
-          React.createElement('input',{type:'range',min:0,max:100,value:deplSens,onChange:e=>setDeplSens(Number(e.target.value)),style:{display:'block',width:'100%',marginTop:3,accentColor:'#3b82f6'}}))),
+          'Depl: chroma ≤'+deplSens,
+          React.createElement('input',{type:'range',min:1,max:4,step:1,value:deplSens,onChange:e=>setDeplSens(Number(e.target.value)),style:{display:'block',width:'100%',marginTop:3,accentColor:'#3b82f6'}}))),
+      blurWarning && React.createElement('div',{style:{display:'flex',alignItems:'center',gap:6,background:'rgba(251,191,36,0.08)',border:'1px solid rgba(251,191,36,0.3)',borderRadius:5,padding:'5px 9px',fontSize:10,color:'#fbbf24'}},
+        '⚠ Reference card appears blurry — hold camera steady and tap Retry for best results'),
       React.createElement('div',{style:{display:'flex',flexWrap:'wrap',gap:5}},
-        ...chips.matrix.map((c,i)=>chipEl(c,'#a1a1aa','Matrix'+(chips.matrix.length>1?' '+(i+1):''))),
+        ...chips.matrix.map(c=>chipEl(c,'#a1a1aa','Matrix')),
         ...chips.conc.map((c,i)  =>chipEl(c,'#f97316','Conc.' +(chips.conc.length>1  ?' '+(i+1):''))),
         ...chips.depl.map((c,i)  =>chipEl(c,'#60a5fa','Depl.' +(chips.depl.length>1  ?' '+(i+1):'')))),
       React.createElement('div',{style:{display:'flex',gap:8}},
-        React.createElement('button',{onClick:()=>{setPhase('position');setReviewData(null);},style:{flex:1,background:'#27272a',color:'#f4f4f5',border:'1px solid #3f3f46',borderRadius:6,padding:'8px 0',fontSize:13,cursor:'pointer'}},'Retake'),
+        React.createElement('button',{onClick:()=>setPhase('position'),style:{flex:1,background:'#27272a',color:'#f4f4f5',border:'1px solid #3f3f46',borderRadius:6,padding:'8px 0',fontSize:13,cursor:'pointer'}},'Retry'),
         React.createElement('button',{onClick:handleAccept,style:{flex:2,background:'#22c55e',color:'#000',border:'none',borderRadius:6,padding:'8px 0',fontSize:14,fontWeight:600,cursor:'pointer'}},'Use These Colors')))
   );
 }
@@ -16964,6 +17174,7 @@ function SoilCameraCapture({ onSelect, onClose }) {
   const [phase, setPhase] = useState('preview');   // 'preview' | 'sampled'
   const [soilResult, setSoilResult] = useState(null);
   const [cardDetected, setCardDetected] = useState(false);
+  const [blurWarning, setBlurWarning] = useState(false);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -17044,24 +17255,22 @@ function SoilCameraCapture({ onSelect, onClose }) {
         }
       }
 
-      // Draw marker overlay (skip while result is showing)
-      if (phaseRef.current !== 'sampled') {
-        const det = detectionRef.current;
-        if (det) {
-          const c = det.corners;
-          ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 4;
-          ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 3;
-          ctx.beginPath();
-          ctx.moveTo(c[0].x, c[0].y); ctx.lineTo(c[1].x, c[1].y);
-          ctx.lineTo(c[2].x, c[2].y); ctx.lineTo(c[3].x, c[3].y);
-          ctx.closePath(); ctx.stroke();
-          ctx.shadowBlur = 0;
+      // Draw marker overlay
+      const det = detectionRef.current;
+      if (det) {
+        const c = det.corners;
+        ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 4;
+        ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(c[0].x, c[0].y); ctx.lineTo(c[1].x, c[1].y);
+        ctx.lineTo(c[2].x, c[2].y); ctx.lineTo(c[3].x, c[3].y);
+        ctx.closePath(); ctx.stroke();
+        ctx.shadowBlur = 0;
 
-          det.regions.forEach((reg, i) => {
-            ctx.strokeStyle = CARD_REFERENCE_PATCHES[i].hex; ctx.lineWidth = 2;
-            ctx.strokeRect(reg.cx - reg.r, reg.cy - reg.r, reg.r * 2, reg.r * 2);
-          });
-        }
+        det.regions.forEach((reg, i) => {
+          ctx.strokeStyle = CARD_REFERENCE_PATCHES[i].hex; ctx.lineWidth = 2;
+          ctx.strokeRect(reg.cx - reg.r, reg.cy - reg.r, reg.r * 2, reg.r * 2);
+        });
       }
 
       // Soil crosshair — radius matches actual sample area
@@ -17083,11 +17292,11 @@ function SoilCameraCapture({ onSelect, onClose }) {
       active = false;
       cancelAnimationFrame(animRef.current);
       if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
+      if (document.fullscreenElement) document.exitFullscreen?.().catch(()=>{});
     };
   }, []);
 
   function handleTap(e) {
-    if (phaseRef.current === 'sampled') return;
     e.preventDefault();
     const canvas = canvasRef.current;
     const video = videoRef.current;
@@ -17134,30 +17343,23 @@ function SoilCameraCapture({ onSelect, onClose }) {
       // Card lost between preview and tap — fall back to last known CCM.
       const det = detectionRef.current;
       if (!det) return;
-      // det.regions[0].r is in display-canvas px; convert to full-res px with soil radius ratio.
       const soilR = det.regions[0].r * soilRatio * toFullX;
       const result = measureSoil(fullResCanvas, px * toFullX, py * toFullY, soilR, det.ccm);
+      setBlurWarning(false);
       setSoilResult(result); setPhase('sampled');
       return;
     }
 
     // CCM and soil colour both from the same captured frame.
-    // freshResult.regions[0].r is in detection-canvas px; scale to full-res.
+    const sharpness = cardSharpness(grabCanvas, freshResult.regions);
+    setBlurWarning(sharpness !== null && sharpness < CARD_BLUR_THRESHOLD);
     const soilR = freshResult.regions[0].r * soilRatio * (srcW / detW);
     const result = measureSoil(fullResCanvas, px * toFullX, py * toFullY, soilR, freshResult.ccm);
     setSoilResult(result);
     setPhase('sampled');
   }
 
-  function handleRetry() {
-    soilPointRef.current = null;
-    setSoilResult(null);
-    setPhase('preview');
-  }
-
-  const statusText = phase === 'sampled' ? null
-    : !cardDetected ? 'Hold reference card in view…'
-    : 'Card detected — tap soil to sample';
+  const statusText = !cardDetected ? 'Hold reference card in view…' : 'Card detected — tap soil to sample';
 
   return React.createElement('div', {
     style: {
@@ -17174,7 +17376,7 @@ function SoilCameraCapture({ onSelect, onClose }) {
       onTouchStart: handleTap, onClick: handleTap,
       style: {
         position: 'absolute', inset: 0, width: '100%', height: '100%',
-        cursor: phase === 'preview' ? 'crosshair' : 'default'
+        cursor: 'crosshair'
       }
     }),
     React.createElement('button', {
@@ -17208,46 +17410,43 @@ function SoilCameraCapture({ onSelect, onClose }) {
         border: cardDetected ? '1px solid rgba(34,197,94,0.35)' : '1px solid rgba(255,255,255,0.15)'
       }
     }, statusText),
-    phase === 'sampled' && soilResult && React.createElement('div', {
+    !!soilResult && React.createElement('div', {
       style: {
         position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 1,
         background: 'rgba(9,9,11,0.93)', borderTop: '1px solid #3f3f46',
-        padding: '20px 20px 32px', display: 'flex', flexDirection: 'column', gap: 14
+        padding: '14px 20px 32px', display: 'flex', flexDirection: 'column', gap: 8
       }
     },
-      React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 14 } },
+      blurWarning && React.createElement('div', {
+        style: {
+          display: 'flex', alignItems: 'center', gap: 6,
+          background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.3)',
+          borderRadius: 5, padding: '5px 9px', fontSize: 10, color: '#fbbf24'
+        }
+      }, '⚠ Reference card appears blurry — hold camera steady and retap for best results'),
+      React.createElement('div', { style: { display: 'flex', alignItems: 'center', gap: 12 } },
         React.createElement('div', {
           style: {
-            width: 48, height: 48, borderRadius: 8, flexShrink: 0,
+            width: 32, height: 32, borderRadius: 6, flexShrink: 0,
             background: munsellChipRGB(soilResult.hue, soilResult.value, soilResult.chroma) || '#888',
             border: '1px solid rgba(255,255,255,0.15)'
           }
         }),
-        React.createElement('div', { style: { flex: 1 } },
+        React.createElement('div', { style: { flex: 1, minWidth: 0 } },
           React.createElement('div', {
-            style: { color: '#f4f4f5', fontSize: 20, fontWeight: 600, letterSpacing: '0.01em', lineHeight: 1.2 }
+            style: { color: '#f4f4f5', fontSize: 15, fontWeight: 600, letterSpacing: '0.01em', lineHeight: 1.2 }
           }, `${soilResult.hue} ${soilResult.value}/${soilResult.chroma}`),
           React.createElement('div', {
-            style: { color: '#71717a', fontSize: 12, marginTop: 4 }
-          }, `ΔE ${soilResult.deltaE} · nearest chip by CIE76`)
-        )
-      ),
-      React.createElement('div', { style: { display: 'flex', gap: 10 } },
+            style: { color: '#71717a', fontSize: 11, marginTop: 2 }
+          }, `ΔE ${soilResult.deltaE}`)
+        ),
         React.createElement('button', {
           onClick: () => onSelect(soilResult.hue, soilResult.value, soilResult.chroma),
           style: {
-            flex: 1, padding: '11px 0', borderRadius: 8, border: 'none',
+            flexShrink: 0, padding: '11px 18px', borderRadius: 8, border: 'none',
             background: '#16a34a', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer'
           }
-        }, 'Use This Color'),
-        React.createElement('button', {
-          onClick: handleRetry,
-          style: {
-            flex: 1, padding: '11px 0', borderRadius: 8,
-            background: '#27272a', color: '#f4f4f5',
-            border: '1px solid #3f3f46', fontSize: 14, cursor: 'pointer'
-          }
-        }, 'Retry')
+        }, 'Use This Color')
       )
     )
   );
@@ -17368,7 +17567,7 @@ function MunsellPicker({
     value: c
   }, c))),
   React.createElement('button', {
-    onClick: () => setShowCamera(true),
+    onClick: () => { document.documentElement.requestFullscreen?.().catch(()=>{}); setShowCamera(true); },
     title: 'Measure color with camera',
     style: {
       background: '#27272a', border: '1px solid #3f3f46', borderRadius: 4,
@@ -18312,7 +18511,8 @@ function HydricRow({
       color: '#71717a',
       marginTop: 4,
       lineHeight: 1.65,
-      paddingRight: 8
+      paddingRight: 8,
+      whiteSpace: 'pre-line'
     }
   }, ind.desc)));
 }
@@ -18507,7 +18707,8 @@ function IndRow({
       color: '#71717a',
       marginTop: 4,
       lineHeight: 1.65,
-      paddingRight: 8
+      paddingRight: 8,
+      whiteSpace: 'pre-line'
     }
   }, ind.desc)));
 }
@@ -19072,6 +19273,7 @@ function WetlandApp() {
   const [chkHydric, setChkHydric] = useState({});
   const [chkHydricProb, setChkHydricProb] = useState({});
   const [soilRemarks, setSoilRemarks] = useState('');
+  const [remarksResetKey, setRemarksResetKey] = useState(0);
   const [chkP, setChkP] = useState({});
   const [chkS, setChkS] = useState({});
   const vegCalc = useMemo(() => {
@@ -19283,6 +19485,7 @@ function WetlandApp() {
     setBareGround('');
     setGpsStatus(null);
     setGpsAccuracy(null);
+    setRemarksResetKey(k => k + 1);
     acquireLocation();
   }
   const SAVE_KEY = 'wetland_arid_v11';
@@ -19376,7 +19579,7 @@ function WetlandApp() {
     return () => clearTimeout(t);
   }, [siteInfo, strata, horizons, restrictiveType, restrictiveDepth, chkHydric, chkHydricProb, chkP, chkS, hydroMeasure, plotSizes, bareGround, bioticCrust, normalCirc, sigDistVeg, sigDistSoil, sigDistHydro, natProbVeg, natProbSoil, natProbHydro, spgiRemarks, vegRemarks, soilRemarks, hydroRemarks, morphAdaptEntries, probHydroVeg, probHydroVegRemarks, probHydrology, probHydrologyRemarks, gpsStatus, gpsAccuracy]);
   const autoInferred = useMemo(() => inferHydricIndicators(horizons), [horizons]);
-  const effectiveSoilAuto = useMemo(() => {
+  const _effectiveSoilAutoBase = useMemo(() => {
     const base = {
       ...autoInferred
     };
@@ -19392,32 +19595,55 @@ function WetlandApp() {
     };
     if (!base['A18']) {
       const a4Active = !!chkHydric['A4'] || !!base['A4'];
-      const darkLayer = horizons.find(h => {
+      let triggerDesc = null;
+      for (const h of horizons) {
         const top = Number(h.depthFrom) || 0;
-        if (top > 10) return false;
-        const val = Number(h.matrixValue);
-        const chr = Number(h.matrixChroma);
-        return val >= 1 && val <= 4 && chr <= 1;
-      });
-      if (darkLayer && a4Active) base['A18'] = {
-        reason: `Dark layer (${darkLayer.matrixHue || '?'} ${darkLayer.matrixValue}/${darkLayer.matrixChroma}) within 10 in. + A4/C1 (H₂S) confirmed. Step 1: positively document dark-gray or black FeS concentrations (value ≤4, chroma ≤2) starting ≤10 in. Step 2: confirm FeS per v9.3 — (A) apply ~3% H₂O₂ or air-expose: Munsell value increase ≥1 required; OR (B) apply 1M HCl: H₂S gas evolution required. ≥2 separate field observations needed.`,
+        if (top > 10) continue;
+        const rx = h.redoxRows && h.redoxRows.find(r => {
+          const rv = Number(r.value); const rc = Number(r.chroma);
+          return rv >= 1 && rv <= 4 && rc <= 2;
+        });
+        if (rx) { triggerDesc = `${rx.hue || '?'} ${rx.value}/${rx.chroma} redox concentrations within 10 in.`; break; }
+      }
+      if (triggerDesc && a4Active) base['A18'] = {
+        reason: `Dark concentrations (${triggerDesc}) + A4/C1 (H₂S) confirmed. Step 1: positively document dark-gray or black FeS concentrations (value ≤4, chroma ≤2) starting ≤10 in. Step 2: confirm FeS — (A) apply ~3% H₂O₂ or air-expose: Munsell value increase ≥1 required; OR (B) apply 1M HCl: H₂S gas evolution required.`,
         partial: true,
         partialLabel: 'Possible FeS — verify with H₂O₂ or HCl'
-      };else if (darkLayer && !a4Active) base['A18'] = {
-        reason: `Dark layer (${darkLayer.matrixHue || '?'} ${darkLayer.matrixValue}/${darkLayer.matrixChroma}) within 10 in.; A4/C1 (H₂S) not confirmed. Step 1: positively document dark-gray or black FeS concentrations (value ≤4, chroma ≤2) starting ≤10 in. Step 2: confirm FeS per v9.3 — (A) apply ~3% H₂O₂ or air-expose: Munsell value increase ≥1 required; OR (B) apply 1M HCl: H₂S gas evolution required. ≥2 separate field observations needed.`,
+      };else if (triggerDesc && !a4Active) base['A18'] = {
+        reason: `Dark concentrations (${triggerDesc}); A4/C1 (H₂S) not confirmed. Step 1: positively document dark-gray or black FeS concentrations (value ≤4, chroma ≤2) starting ≤10 in. Step 2: confirm FeS — (A) apply ~3% H₂O₂ or air-expose: Munsell value increase ≥1 required; OR (B) apply 1M HCl: H₂S gas evolution required.`,
         partial: true,
-        partialLabel: 'Dark layer ≤10 in. — verify FeS'
+        partialLabel: 'Dark concentrations ≤10 in. — verify FeS'
       };
+    }
+    if (!base['A1'] && restrictiveType === 'Bedrock') {
+      const bdRaw = Number(restrictiveDepth);
+      if (bdRaw > 0) {
+        const srt = [...horizons].filter(h => h.depthFrom !== '' || h.depthTo !== '').sort((a, b) => (Number(a.depthFrom) || 0) - (Number(b.depthFrom) || 0));
+        const TRUE_ORGANIC_A1 = ['muck', 'mucky peat', 'peat'];
+        const organicOverBedrock = srt.find(h => TRUE_ORGANIC_A1.includes((h.texture || '').toLowerCase()) && (Number(h.depthFrom) || 0) < bdRaw);
+        if (organicOverBedrock) base['A1'] = {
+          reason: `${organicOverBedrock.texture} (${Number(organicOverBedrock.depthFrom) || 0}–${Number(organicOverBedrock.depthTo) || 0} in.) above bedrock at ${bdRaw} in. — organic material of any thickness over bedrock qualifies as Histosol. Formal Soil Taxonomy classification and OC% analysis required to confirm.`,
+          partial: true
+        };
+      }
     }
     if (!base['F22'] && restrictiveType === 'Bedrock') {
       const bdRaw = Number(restrictiveDepth);
       if (bdRaw > 0) {
         const srt = [...horizons].filter(h => h.depthFrom !== '' || h.depthTo !== '').sort((a, b) => (Number(a.depthFrom) || 0) - (Number(b.depthFrom) || 0));
+        const _isLoamy = tex => {
+          if (!tex) return false;
+          const lc = tex.toLowerCase();
+          if (lc === 'mucky loam/clay') return true;
+          if (['muck', 'mucky peat', 'peat', 'mucky sand'].includes(lc)) return false;
+          if (['sand', 'loamy sand', 'loamy coarse sand', 'loamy fine sand', 'gravelly', 'cobbly', 'stony'].some(t => lc.includes(t)) && !lc.includes('loamy very fine sand')) return false;
+          return true;
+        };
         if (bdRaw >= 6 && bdRaw <= 10) {
           const dl = srt.find(h => {
             const top = Number(h.depthFrom) || 0;
             const bot = Number(h.depthTo) || 0;
-            return top <= 4 && bot - top >= 6 && Number(h.matrixValue) <= 2.5 && Number(h.matrixChroma) <= 1;
+            return _isLoamy(h.texture) && top <= 4 && bot - top >= 6 && Number(h.matrixValue) <= 2.5 && Number(h.matrixChroma) <= 1;
           });
           if (dl) {
             const dlBot = Number(dl.depthTo) || 0;
@@ -19441,6 +19667,7 @@ function WetlandApp() {
             const bot = Math.min(Number(h.depthTo) || 0, bdRaw);
             const ht = bot - top;
             if (ht <= 0) continue;
+            if (!_isLoamy(h.texture)) { remainOk = false; continue; }
             if (Number(h.matrixValue) <= 2.5 && Number(h.matrixChroma) <= 1) darkThick += ht;else if (Number(h.matrixChroma) > 2) remainOk = false;
           }
           if (darkThick > bdRaw / 2 && remainOk) {
@@ -19454,7 +19681,6 @@ function WetlandApp() {
     }
     return base;
   }, [autoInferred, chkP, chkHydric, horizons, restrictiveType, restrictiveDepth]);
-  const autoCount = Object.values(effectiveSoilAuto).filter(v => v && !v.combo && !v.partial).length;
   const hydroAutoMet = useMemo(() => {
     const m = {};
     const a1val = parseFloat(hydroMeasure['A1h']);
@@ -19484,7 +19710,9 @@ function WetlandApp() {
       const top = Number(h.depthFrom) || 0;
       const bot = Number(h.depthTo) || 0;
       if (bot === 0 || top >= 12) return false;
-      return gleyHues.includes(h.matrixHue) && Number(h.matrixValue) >= 4;
+      const isOrganic = ['muck', 'mucky peat', 'peat'].includes((h.texture || '').toLowerCase());
+      if (isOrganic) return false;
+      return gleyHues.includes(h.matrixHue) && Number(h.matrixValue) >= 4 && (h.matrixHue === 'N' || Number(h.matrixChroma) <= (h.matrixHue === '5G' ? 2 : 1));
     });
     if (c4layer && !chkP['C4']) m['C4'] = {
       reason: `Gleyed matrix (${c4layer.matrixHue} ${c4layer.matrixValue}/${c4layer.matrixChroma}) at ${c4layer.depthFrom}–${c4layer.depthTo} in. suggests reduced iron in the upper 12 in. Field confirmation required — test immediately after opening the pit: (A) apply α,α-dipyridyl solution to freshly exposed soil — a pink/red reaction over >50% of the layer confirms Fe²⁺; OR (B) observe the exposed matrix for a chroma increase upon air exposure, indicating a reduced matrix. Check this indicator only after confirming by at least one method.`,
@@ -19552,19 +19780,36 @@ function WetlandApp() {
   const hydroDistOrProb = sigDistHydro || natProbHydro;
   const hydroBPJ = probHydrology && hydroDistOrProb;
   const hydroMet = hydroMetStandard || hydroBPJ;
+  const effectiveSoilAuto = useMemo(() => {
+    let result = _effectiveSoilAutoBase;
+    if (result['A2'] && result['A2'].partial && vegCalc.vegMet && hydroMet) {
+      result = {
+        ...result,
+        'A2': {
+          ...result['A2'],
+          partial: false,
+          reason: result['A2'].reason.replace('Aquic conditions must be confirmed — assumed present if both vegetation and wetland hydrology criteria are met.', 'Aquic conditions assumed: both vegetation and wetland hydrology criteria are met.')
+        }
+      };
+    }
+    if (result['F18'] && !(vegCalc.vegMet && hydroMet)) {
+      const { F18: _f18removed, ...rest } = result;
+      result = rest;
+    }
+    return result;
+  }, [_effectiveSoilAutoBase, vegCalc, hydroMet]);
+  const autoCount = Object.values(effectiveSoilAuto).filter(v => v && !v.combo && !v.partial).length;
   const allHydricInds = [...HYDRIC_ALL, ...HYDRIC_SANDY, ...HYDRIC_LOAMY];
   const a9IsProb = siteInfo.lrr === 'C';
   const numHydricActive = allHydricInds.filter(ind => {
-    if (ind.code === 'A9' && a9IsProb) return false;
     const a = effectiveSoilAuto[ind.code];
     const isAuto = a && !a.partial && !a.combo;
     return chkHydric[ind.id] || isAuto;
   }).length;
-  const a9AutoActive = !!(effectiveSoilAuto['A9'] && !effectiveSoilAuto['A9'].partial && !effectiveSoilAuto['A9'].combo);
   const numHydricProb = Object.entries(chkHydricProb).filter(([id, v]) => {
     if (id === 'A9prob') return !!v && a9IsProb;
     return !!v;
-  }).length + (a9IsProb && a9AutoActive && !chkHydricProb['A9prob'] ? 1 : 0);
+  }).length;
   const distOrProbCount = [vegDistOrProb, soilDistOrProb, hydroDistOrProb].filter(Boolean).length;
   const multipleDistOrProb = distOrProbCount >= 2;
   const soilsMetStandard = numHydricActive >= 1;
@@ -19585,13 +19830,14 @@ function WetlandApp() {
     return true;
   }
   const hasAtLeastOneSufficientHorizon = horizons.some(isHorizonSufficient);
-  const soilNoHorizonWarning = hasActiveHorizonRequiredInd && !hasAtLeastOneSufficientHorizon;
+  const hasAnyInsufficientEnteredHz = horizons.some(h => (h.depthFrom !== '' || h.depthTo !== '' || h.texture) && !isHorizonSufficient(h));
+  const soilNoHorizonWarning = hasActiveHorizonRequiredInd && (!hasAtLeastOneSufficientHorizon || hasAnyInsufficientEnteredHz);
   const _REDOX_REQ_CODES = new Set(['S5', 'F6', 'F7', 'F8', 'F21']);
   const hasManualRedoxInd = allHydricIndsWithProb.some(ind => _REDOX_REQ_CODES.has(ind.code) && (chkHydric[ind.id] || chkHydricProb[ind.id]));
   const hasAnyRedoxData = horizons.some(h => h.redoxRows && h.redoxRows.some(rx => rx.pct !== ''));
   const soilRedoxWarning = hasManualRedoxInd && !hasAnyRedoxData;
   const soilProfileWarning = soilNoHorizonWarning || soilRedoxWarning;
-  const soilWarnDetail = soilNoHorizonWarning ? 'No complete soil horizon data has been entered. Depth (both bounds), texture, and percentages of matrix colors and redox features must all be filled in.' : 'One or more active indicator(s) require redox feature data (S5 / F6 / F7 / F8 / F21), but no redox row with a percentage has been entered in the soil profile.';
+  const soilWarnDetail = soilNoHorizonWarning ? (hasAtLeastOneSufficientHorizon ? 'One or more soil horizon rows have incomplete data. Each entered row requires depth (both bounds), texture, and percentages for all redox features.' : 'No complete soil horizon data has been entered. Depth (both bounds), texture, and percentages of redox features must all be filled in.') : 'One or more active indicator(s) require redox feature data (S5 / F6 / F7 / F8 / F21), but no redox row with a percentage has been entered in the soil profile.';
   const soilsMetPrelim = soilsMetStandard || numHydricProb >= 1 && (hydroMet || multipleDistOrProb);
   const vegProbFlag = morphAdapt || probHydroVeg;
   const soilsSideOk = soilsMetPrelim || soilDistOrProb;
@@ -19630,26 +19876,44 @@ function WetlandApp() {
       code: 'W5',
       msg: 'All entered soil horizons have chroma >2 with no organic textures. Hydric soil indicators are unlikely to be met based on this profile. Verify colors are moist Munsell readings.'
     });
-    if (siteInfo.lrr === 'D' && chkHydric['A5']) w.push({
-      code: 'W6',
-      msg: 'Indicator A5 (Stratified Layers) is approved only in LRR C (Mediterranean California). It is not applicable in LRR D (Interior Deserts). Uncheck or verify your LRR.'
-    });
-    if (siteInfo.lrr === 'B' && chkHydric['A9']) w.push({
-      code: 'W7',
-      msg: 'Indicator A9 (1 cm Muck) is approved only in LRR D as a standard indicator. In LRR B, A9 is a problematic indicator (check the Problematic section instead).'
-    });
+    if (siteInfo.lrr) {
+      const _lrLetter = siteInfo.lrr.toUpperCase();
+      const _lrrOk = ind => {
+        const s = (ind.lrr || '').toUpperCase();
+        if (s.startsWith('ALL LRRS')) return true;
+        return (s.match(/LRR ([A-Z])/g) || []).some(m => m === 'LRR ' + _lrLetter);
+      };
+      allHydricIndsWithProb.forEach(ind => {
+        if (_lrrOk(ind)) return;
+        if (!(chkHydric[ind.id] || chkHydricProb[ind.id])) return;
+        w.push({
+          code: ind.code,
+          msg: `${ind.code} (${ind.label}) is not approved for use in LRR ${siteInfo.lrr}.`,
+          _lrr: true,
+          _mismatch: true
+        });
+      });
+    }
     if (isWetland && normalCirc === false) w.push({
       code: 'W8',
       msg: 'Final determination is YES but Normal Circumstances are marked as absent. Per ERDC/EL TR-08-28 Ch. 5, atypical-situation methods must be applied before a final determination can be made.'
     });
-    const _hasSufficientHz = horizons.some(h => h.depthFrom !== '' && h.depthTo !== '' && h.texture && (!(h.matrixColors && h.matrixColors.length > 1) || h.matrixColors.every(c => c.pct !== '')) && (!(h.redoxRows && h.redoxRows.length > 0) || h.redoxRows.every(rx => rx.pct !== '')));
-    if (_hasSufficientHz) {
+    if ((chkHydric['A1'] || chkHydricProb['A1']) && !effectiveSoilAuto['A1']) w.push({
+      code: 'A1',
+      msg: 'A1 (Histosol) is manually selected but the entered soil data does not support it. This indicator requires either ≥16 in. of organic soil material (muck, mucky peat, or peat) in the upper 32 in., or organic material of any thickness directly overlying a bedrock restrictive layer.',
+      _mismatch: true
+    });
+    const _enteredHz = horizons.filter(h => h.depthFrom !== '' || h.depthTo !== '' || h.texture);
+    const _hasSufficientHz = _enteredHz.length > 0 && _enteredHz.every(h => h.depthFrom !== '' && h.depthTo !== '' && h.texture && (!(h.redoxRows && h.redoxRows.length > 0) || h.redoxRows.every(rx => rx.pct !== '')));
+    {
       const _HINTS = {
+        A2: 'requires an organic surface horizon (muck, mucky peat, or peat) ≥8 in. thick, directly underlain by mineral soil with chroma ≤2',
         A3: 'requires peat, mucky peat, or muck ≥8 in. thick (hue 10YR or yellower, value ≤3/chroma ≤1) starting ≤6 in., underlain by mineral soil with chroma ≤2',
-        A9: 'requires a muck (sapric) layer ≥0.4 in. thick, value ≤3/chroma ≤1, starting ≤6 in. from surface',
+        A5: 'requires ≥2 stratified layers starting within 6 in. of the surface, with at least one having value ≤3/chroma ≤1 or an organic texture (muck/mucky peat/peat/mucky mineral), and all layers having chroma ≤2',
+        A9: 'requires a muck (sapric) layer ≥0.5 in. thick, value ≤3/chroma ≤1, starting ≤6 in. from surface',
         A10: 'requires a muck (sapric) layer ≥0.75 in. thick, value ≤3/chroma ≤1, starting ≤6 in. from surface',
-        A11: 'requires dark surface layers (value ≤3/chroma ≤2) starting ≤6 in. above a depleted or gleyed matrix (≥60% value ≥4, chroma ≤2) ≥6 in. thick starting ≤12 in.',
-        A12: 'requires surface layers value ≤2.5/chroma ≤1 from <6 in. to ≥12 in., then value ≤3/chroma ≤1, above a depleted or gleyed matrix ≥6 in. thick',
+        A11: 'requires organic/loamy/clayey layers (value ≤3/chroma ≤2) or sandy layers (value ≤3/chroma ≤1) starting ≤6 in. and directly abutting a depleted or gleyed matrix (≥60% value ≥4, chroma ≤2) ≥6 in. thick starting ≤12 in.; ≥2% distinct/prominent redox concentrations required when the depleted matrix is 4/1, 4/2, or 5/2',
+        A12: 'requires surface layers value ≤2.5/chroma ≤1 from <6 in. to ≥12 in., then value ≤3/chroma ≤1, above a depleted or gleyed matrix ≥6 in. thick; ≥2% distinct/prominent redox concentrations required when the depleted matrix is 4/1, 4/2, or 5/2',
         S1: 'requires a mucky-modified sandy layer ≥2 in. thick starting ≤6 in.',
         S4: 'requires a sandy layer with gleyed matrix (gley hue, value ≥4, ≥60% of layer) starting ≤6 in.',
         S5: 'requires a sandy layer ≥4 in. thick starting ≤6 in., matrix ≥60% chroma ≤2, with ≥2% distinct/prominent redox concentrations as soft masses or pore linings',
@@ -19657,23 +19921,46 @@ function WetlandApp() {
         F2: 'requires a loamy/clayey layer with gleyed matrix (gley hue, value ≥4, ≥60% of layer) starting ≤12 in.',
         F3: 'requires a loamy/clayey depleted matrix (≥60% value ≥4, chroma ≤2), either ≥2 in. starting ≤4 in. or ≥6 in. starting ≤10 in. from surface',
         F6: 'requires a loamy/clayey layer ≥4 in. thick entirely within 12 in. of mineral surface, value ≤3, with ≥2% distinct/prominent redox concentrations (chroma ≤1) or ≥5% (chroma ≤2)',
-        F7: 'requires a loamy/clayey layer ≥4 in. thick entirely within 12 in. of mineral surface, value ≤3, with ≥10% redox depletions (chroma ≤1) or ≥20% (chroma ≤2)'
+        F7: 'requires a loamy/clayey layer ≥4 in. thick entirely within 12 in. of mineral surface, value ≤3, with ≥10% redox depletions (chroma ≤1) or ≥20% (chroma ≤2)',
+        F18: 'requires a Loamy/Clayey or Mucky Loam/Clay layer ≥4 in. thick starting ≤12 in., or ≥2 in. thick starting ≤6 in. from surface; partial suggestion only shown when both hydrophytic vegetation and wetland hydrology are met'
       };
       const _AUTOABLE = new Set(Object.keys(_HINTS));
       [...HYDRIC_ALL, ...HYDRIC_SANDY, ...HYDRIC_LOAMY, ...HYDRIC_PROBLEMATIC].forEach(ind => {
         if (ind.noHorizonReq || !_AUTOABLE.has(ind.code)) return;
         if (!(chkHydric[ind.id] || chkHydricProb[ind.id])) return;
-        if (effectiveSoilAuto[ind.code]) return;
+        if (effectiveSoilAuto[ind.code] && _hasSufficientHz) return;
         if (w.some(x => x._mismatch && x.code === ind.code)) return;
-        w.push({
-          code: ind.code,
-          msg: `${ind.code} (${ind.label}) is manually selected but the entered soil data does not support it. This indicator ${_HINTS[ind.code]}.`,
-          _mismatch: true
-        });
+        const _existingLrr = w.find(x => x._lrr && x.code === ind.code);
+        if (_existingLrr) {
+          _existingLrr.msg += ` Additionally, the entered soil data does not support this indicator — it ${_HINTS[ind.code]}.`;
+        } else {
+          w.push({
+            code: ind.code,
+            msg: `${ind.code} (${ind.label}) is manually selected but the entered soil data does not support it. This indicator ${_HINTS[ind.code]}.`,
+            _mismatch: true
+          });
+        }
       });
     }
+    if (chkHydric['A2'] && !(vegMet && hydroMet)) {
+      const _aquicClause = !vegMet && !hydroMet
+        ? 'neither hydrophytic vegetation or wetland hydrology have been confirmed, so aquic conditions cannot be assumed'
+        : !vegMet
+          ? 'hydrophytic vegetation has not been confirmed, so aquic conditions cannot be assumed'
+          : 'wetland hydrology has not been confirmed, so aquic conditions cannot be assumed';
+      const _existingA2 = w.find(x => x.code === 'A2');
+      if (_existingA2) {
+        _existingA2.msg += ` Additionally, ${_aquicClause}.`;
+      } else {
+        w.push({
+          code: 'A2',
+          msg: `A2 (Histic Epipedon) is manually selected. This indicator requires aquic conditions or artificial drainage — ${_aquicClause}.`,
+          _mismatch: true
+        });
+      }
+    }
     return w;
-  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto]);
+  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, hydroMet]);
   const criteriaCount = [vegMet, soilsMet, hydroMet].filter(Boolean).length;
   const passBadge = {
     background: 'rgba(20,184,166,0.15)',
@@ -19693,44 +19980,10 @@ function WetlandApp() {
     return [...h, newSoilHorizon(startDepth)];
   });
   const removeHorizon = id => setHorizons(h => h.filter(r => r.id !== id));
-  const updateHorizon = (id, field, val) => setHorizons(h => {
-    const updated = h.map(r => r.id === id ? {
-      ...r,
-      [field]: val
-    } : r);
-    if (field === 'depthTo') {
-      const idx = updated.findIndex(r => r.id === id);
-      if (idx >= 0 && idx < updated.length - 1) {
-        return updated.map((r, i) => i === idx + 1 ? {
-          ...r,
-          depthFrom: val
-        } : r);
-      }
-    }
-    return updated;
-  });
-  const addMatrixColor = hid => setHorizons(hs => hs.map(r => {
-    if (r.id !== hid) return r;
-    const existing = r.matrixColors && r.matrixColors.length ? r.matrixColors : [{
-      id: Date.now() + Math.random(),
-      hue: r.matrixHue || '10YR',
-      value: r.matrixValue || '4',
-      chroma: r.matrixChroma || '2',
-      pct: r.matrixPct || ''
-    }];
-    return syncPrimary({
-      ...r,
-      matrixColors: [...existing, newMatrixColor()]
-    });
-  }));
-  const removeMatrixColor = (hid, cid) => setHorizons(hs => hs.map(r => {
-    if (r.id !== hid) return r;
-    const colors = (r.matrixColors || []).filter(c => c.id !== cid);
-    return syncPrimary({
-      ...r,
-      matrixColors: colors.length ? colors : [newMatrixColor()]
-    });
-  }));
+  const updateHorizon = (id, field, val) => setHorizons(h => h.map(r => r.id === id ? {
+    ...r,
+    [field]: val
+  } : r));
   const updateMatrixColor = (hid, cid, field, val) => setHorizons(hs => hs.map(r => {
     if (r.id !== hid) return r;
     const colors = (r.matrixColors || []).map(c => c.id === cid ? {
@@ -19762,7 +20015,53 @@ function WetlandApp() {
     if (!horizons.length) return 0;
     return Math.max(...horizons.map(h => Number(h.depthTo) || 0));
   }, [horizons]);
-  const profileShallow = horizons.some(h => h.depthFrom !== '' || h.depthTo !== '') && profileMaxDepth > 0 && profileMaxDepth < 12;
+  const profileShallow = useMemo(() => {
+    if (!horizons.some(h => h.depthFrom !== '' || h.depthTo !== '')) return 0;
+    if (profileMaxDepth <= 0) return 0;
+    const checkInds = [...HYDRIC_ALL, ...HYDRIC_SANDY, ...HYDRIC_LOAMY];
+    const anyActive = checkInds.some(ind => {
+      if (chkHydric[ind.id]) return true;
+      const a = effectiveSoilAuto[ind.code];
+      return a && !a.partial && !a.combo;
+    });
+    if (anyActive) {
+      // Suppress unless a manually selected indicator has an unmet minProfileDepth.
+      // Fully auto-selected indicators already satisfied their depth via inference.
+      let neededDepth = 0;
+      checkInds.forEach(ind => {
+        if (!ind.minProfileDepth || ind.noHorizonReq) return;
+        if (ind.minProfileDepth <= profileMaxDepth) return;
+        if (chkHydric[ind.id]) neededDepth = Math.max(neededDepth, ind.minProfileDepth);
+      });
+      return neededDepth;
+    }
+    // No active indicators — warn about any autoable indicator with unmet depth.
+    let neededDepth = 0;
+    checkInds.forEach(ind => {
+      if (!ind.autoable || !ind.minProfileDepth || ind.noHorizonReq) return;
+      if (ind.minProfileDepth <= profileMaxDepth) return;
+      const a = effectiveSoilAuto[ind.code];
+      const isAuto = a && !a.partial && !a.combo;
+      if (!(chkHydric[ind.id] || isAuto)) neededDepth = Math.max(neededDepth, ind.minProfileDepth);
+    });
+    return neededDepth;
+  }, [horizons, profileMaxDepth, effectiveSoilAuto, chkHydric]);
+  const horizonGaps = useMemo(() => {
+    const complete = horizons
+      .filter(h => h.depthFrom !== '' && h.depthTo !== '')
+      .map(h => ({ from: Number(h.depthFrom), to: Number(h.depthTo) }))
+      .filter(h => !isNaN(h.from) && !isNaN(h.to) && h.to > h.from)
+      .sort((a, b) => a.from - b.from);
+    if (!complete.length) return null;
+    const issues = [];
+    if (complete[0].from > 0) issues.push(`Unsampled zone from 0–${complete[0].from} in. (first horizon does not start at the surface)`);
+    for (let i = 0; i < complete.length - 1; i++) {
+      const cur = complete[i], next = complete[i + 1];
+      if (next.from > cur.to) issues.push(`Unsampled gap from ${cur.to}–${next.from} in.`);
+      else if (next.from < cur.to) issues.push(`Overlapping horizons at ${next.from}–${cur.to} in.`);
+    }
+    return issues.length ? issues : null;
+  }, [horizons]);
   function buildExportState() {
     return {
       siteInfo,
@@ -21230,6 +21529,7 @@ function WetlandApp() {
       marginBottom: 4
     }
   }, "Remarks"), React.createElement("textarea", {
+    key: 'remarks-spgi-' + remarksResetKey,
     value: spgiRemarks,
     onChange: e => setSpgiRemarks(e.target.value),
     rows: 2,
@@ -22166,6 +22466,7 @@ function WetlandApp() {
       marginBottom: 4
     }
   }, "Remarks"), React.createElement("textarea", {
+    key: 'remarks-veg-' + remarksResetKey,
     rows: 2,
     placeholder: "Field observations, notes, or qualifications...",
     value: vegRemarks,
@@ -22191,7 +22492,7 @@ function WetlandApp() {
     headerBg: "rgba(146,64,14,0.2)",
     title: "Module 2 \u2014 Hydric Soils",
     collapsible: true,
-    subtitle: "ERDC/EL TR-08-28 Chapter 3 \xB7 NRCS Field Indicators of Hydric Soils in the United States \xB7 Soil Profile Description \xB7 Auto-Detection",
+    subtitle: "ERDC/EL TR-08-28 Chapter 3 \xB7 NRCS Field Indicators of Hydric Soils in the United States \xB7 Soil Profile Description \xB7 Auto-Selection",
     headerExtra: soilProfileWarning ? React.createElement("span", {
       style: {
         fontSize: 8,
@@ -22376,7 +22677,7 @@ function WetlandApp() {
         minWidth: 130
       }
     })), React.createElement("button", {
-      onClick: () => setShowPedAnalyze(h.id),
+      onClick: () => { document.documentElement.requestFullscreen?.().catch(()=>{}); setShowPedAnalyze(h.id); },
       title: 'Analyse ped colours with camera',
       style: {
         background: 'none',
@@ -22484,44 +22785,12 @@ function WetlandApp() {
         outline: 'none',
         textAlign: 'center'
       }
-    }))), mcIdx > 0 ? React.createElement("button", {
-      onClick: () => removeMatrixColor(h.id, mc.id),
-      style: {
-        background: 'none',
-        border: 'none',
-        color: '#71717a',
-        padding: '1px 4px',
-        fontSize: 11,
-        cursor: 'pointer',
-        flexShrink: 0,
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 4
-      }
-    }, React.createElement("span", {
-      style: {
-        position: 'relative',
-        top: '0.5px'
-      }
-    }, "\u2715")) : React.createElement("div", {
+    }))), React.createElement("div", {
       style: {
         width: 18,
         flexShrink: 0
       }
-    }))), (h.matrixColors || []).length < 3 && React.createElement("button", {
-      onClick: () => addMatrixColor(h.id),
-      style: {
-        fontSize: 9,
-        color: '#fdba74',
-        border: '1px dashed #c2410c',
-        borderRadius: 3,
-        padding: '2px 8px',
-        background: 'none',
-        cursor: 'pointer',
-        marginTop: 2
-      }
-    }, "+ Add Matrix Color")), React.createElement("div", {
+    })))), React.createElement("div", {
       style: {
         padding: '8px 12px 8px',
         borderTop: '1px solid rgba(255,255,255,0.04)'
@@ -22704,7 +22973,7 @@ function WetlandApp() {
         lineHeight: 1.4
       }
     }, "→ Contrast: " + horizonContrastSummary(h))));
-  }), (soilProfileWarning || profileShallow) && React.createElement("div", {
+  }), (soilProfileWarning || profileShallow || horizonGaps) && React.createElement("div", {
     style: {
       margin: '6px 12px 2px',
       padding: '8px 12px',
@@ -22714,7 +22983,7 @@ function WetlandApp() {
     }
   }, soilProfileWarning && React.createElement("div", {
     style: {
-      marginBottom: profileShallow ? 8 : 0
+      marginBottom: (profileShallow || horizonGaps) ? 8 : 0
     }
   }, React.createElement("div", {
     style: {
@@ -22744,7 +23013,7 @@ function WetlandApp() {
       color: '#a1a1aa',
       lineHeight: 1.5
     }
-  }, soilWarnDetail, " A complete soil profile description is required documentation to support any hydric soil determination. This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer.")), profileShallow && React.createElement("div", null, React.createElement("div", {
+  }, soilWarnDetail, " A complete soil profile description is required documentation to support any hydric soil determination. This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer.")), !!profileShallow && React.createElement("div", null, React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'flex-end',
@@ -22766,13 +23035,45 @@ function WetlandApp() {
       color: '#fbbf24',
       fontWeight: 700
     }
-  }, "Shallow Profile")), React.createElement("div", {
+  }, "Profile Depth Advisory")), React.createElement("div", {
     style: {
       fontSize: 9,
       color: '#a1a1aa',
       lineHeight: 1.6
     }
-  }, "Deepest horizon ends at ", profileMaxDepth, " in. Most hydric soil indicators require data to at least 12 in. Indicators that require layers within 12 in. may not have been detectable with the current profile."))), React.createElement("div", {
+  }, "Deepest horizon ends at ", profileMaxDepth, " in. One or more hydric soil indicators require data to at least ", profileShallow, " in. Indicators requiring layers within that depth may not have been detectable with the current profile.")), horizonGaps && React.createElement("div", {
+    style: {
+      marginTop: (soilProfileWarning || profileShallow) ? 8 : 0
+    }
+  }, React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'flex-end',
+      gap: 7,
+      marginBottom: 3
+    }
+  }, React.createElement("span", {
+    style: {
+      fontSize: 12,
+      color: '#fbbf24',
+      flexShrink: 0,
+      lineHeight: 1
+    }
+  }, "⚠"), React.createElement("span", {
+    style: {
+      fontSize: 8,
+      textTransform: 'uppercase',
+      letterSpacing: '0.1em',
+      color: '#fbbf24',
+      fontWeight: 700
+    }
+  }, "Horizon Depth Gaps")), React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: '#a1a1aa',
+      lineHeight: 1.6
+    }
+  }, horizonGaps.map((issue, i) => React.createElement("div", {key: i}, "• " + issue))))), React.createElement("div", {
     style: {
       padding: '8px 12px',
       borderTop: '1px solid #1a1a1e',
@@ -23373,6 +23674,7 @@ function WetlandApp() {
       marginBottom: 4
     }
   }, "Remarks"), React.createElement("textarea", {
+    key: 'remarks-soil-' + remarksResetKey,
     rows: 4,
     placeholder: "Gleying, mottling, additional observations\u2026",
     value: soilRemarks,
@@ -23397,7 +23699,7 @@ function WetlandApp() {
     headerBg: "rgba(30,58,95,0.25)",
     title: "Module 3 \u2014 Wetland Hydrology",
     collapsible: true,
-    subtitle: "ERDC/EL TR-08-28 Chapter 4 \xB7 Hydrologic Indicators \xB7 Auto-Detection",
+    subtitle: "ERDC/EL TR-08-28 Chapter 4 \xB7 Hydrologic Indicators \xB7 Auto-Selection",
     badge: hydroMet ? 'YES' : 'NO',
     badgeStyle: hydroMet ? passBadge : failBadge,
     stickyFooter: React.createElement(React.Fragment, null, "          ", React.createElement("div", {
@@ -23679,6 +23981,7 @@ function WetlandApp() {
       marginBottom: 4
     }
   }, "Remarks"), React.createElement("textarea", {
+    key: 'remarks-hydro-' + remarksResetKey,
     rows: 2,
     placeholder: "Field observations, notes, or qualifications\u2026",
     value: hydroRemarks,
@@ -23965,13 +24268,17 @@ function WetlandApp() {
       color: '#a1a1aa',
       lineHeight: 1.75
     }
-  }, isWetland ? `All three criteria satisfied. Hydrophytic vegetation ${vegCalc.domMet ? `(dominance: ${vegCalc.domPct}%)` : piGatedMet ? `(PI: ${vegCalc.pi?.toFixed(2)})` : vegCalc.domMorph?.met ? `(Ind.3 reassigned Dominance Test: ${vegCalc.domMorph.pct}%)` : vegCalc.piMorph?.met ? `(Ind.3 reassigned Prevalence Index: ${vegCalc.piMorph.pi?.toFixed(2)})` : `(PI: ${vegCalc.pi?.toFixed(2)})`}, hydric soils (${numHydricActive} active indicator(s)${autoCount > 0 ? ', ' + autoCount + ' auto-selected' : ''}${soilNoHorizonWarning ? ' — no profile recorded' : ''}), and wetland hydrology (${numP >= 1 ? numP + ' primary' : numS + ' secondary'} indicator(s)). Consistent with USACE definition (33 CFR 328.3).` : `${criteriaCount}/3 criteria met. ` + [!vegMet && `Vegetation: dom. ${vegCalc.domPct}% (need >50%); PI: ${vegCalc.pi !== null ? vegCalc.pi.toFixed(2) + ' (need ≤3.0)' : 'no data'}.`, !soilsMet && `Soils: no standard or usable problematic hydric indicator active.`, !hydroMet && `Hydrology: ${numP} primary, ${numS} secondary (need ≥1 primary or ≥2 secondary).`].filter(Boolean).join(' '))))), soilProfileWarning && React.createElement("div", {
+  }, isWetland ? `All three criteria satisfied. Hydrophytic vegetation ${vegCalc.domMet ? `(dominance: ${vegCalc.domPct}%)` : piGatedMet ? `(PI: ${vegCalc.pi?.toFixed(2)})` : vegCalc.domMorph?.met ? `(Ind.3 reassigned Dominance Test: ${vegCalc.domMorph.pct}%)` : vegCalc.piMorph?.met ? `(Ind.3 reassigned Prevalence Index: ${vegCalc.piMorph.pi?.toFixed(2)})` : `(PI: ${vegCalc.pi?.toFixed(2)})`}, hydric soils (${numHydricActive} active indicator(s)${autoCount > 0 ? ', ' + autoCount + ' auto-selected' : ''}${soilNoHorizonWarning ? ' — no profile recorded' : ''}), and wetland hydrology (${numP >= 1 ? numP + ' primary' : numS + ' secondary'} indicator(s)). Consistent with USACE definition (33 CFR 328.3).` : `${criteriaCount}/3 criteria met. ` + [!vegMet && `Vegetation: dom. ${vegCalc.domPct}% (need >50%); PI: ${vegCalc.pi !== null ? vegCalc.pi.toFixed(2) + ' (need ≤3.0)' : 'no data'}.`, !soilsMet && `Soils: no standard or usable problematic hydric indicator active.`, !hydroMet && `Hydrology: ${numP} primary, ${numS} secondary (need ≥1 primary or ≥2 secondary).`].filter(Boolean).join(' '))))), (soilProfileWarning || consistencyWarnings.length > 0) && React.createElement("div", {
     style: {
       marginBottom: 8,
       padding: '10px 16px',
       background: 'rgba(146,64,14,0.08)',
       border: '1px solid rgba(146,64,14,0.5)',
       borderRadius: 8
+    }
+  }, soilProfileWarning && React.createElement("div", {
+    style: {
+      marginBottom: consistencyWarnings.length > 0 ? 10 : 0
     }
   }, React.createElement("div", {
     style: {
@@ -24002,15 +24309,11 @@ function WetlandApp() {
       color: '#a1a1aa',
       lineHeight: 1.6
     }
-  }, soilWarnDetail, " A complete profile description is required to support any hydric soil determination under the USACE three-factor methodology. This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer.")), consistencyWarnings.length > 0 && React.createElement("div", {
+  }, soilWarnDetail, " A complete profile description is required to support any hydric soil determination under the USACE three-factor methodology.", React.createElement("span", {
     style: {
-      marginBottom: 8,
-      padding: '10px 16px',
-      background: 'rgba(251,191,36,0.04)',
-      border: '1px solid rgba(251,191,36,0.2)',
-      borderRadius: 8
+      color: '#f87171'
     }
-  }, React.createElement("div", {
+  }, " This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer."))), consistencyWarnings.length > 0 && React.createElement("div", null, React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'flex-end',
@@ -24055,14 +24358,14 @@ function WetlandApp() {
   }, w.code), React.createElement("span", {
     style: {
       fontSize: 9,
-      color: '#d4d4d8',
+      color: '#a1a1aa',
       lineHeight: 1.55
     }
   }, w.msg, w._mismatch && React.createElement("span", {
     style: {
       color: '#f87171'
     }
-  }, " Use of this indicator must be explained in Remarks."))))), React.createElement("div", {
+  }, " Use of this indicator must be explained in Remarks.")))))), React.createElement("div", {
     style: {
       display: 'flex',
       flexWrap: 'wrap',
