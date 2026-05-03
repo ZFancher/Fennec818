@@ -16782,24 +16782,9 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       drawPolyOverlay(canvas, W, H);
     }
     animRef.current = requestAnimationFrame(loop);
-    let resizeTimer;
-    function handleResize() {
-      const c = overlayRef.current;
-      if (c) c.style.visibility = 'hidden';
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        const W = window.innerWidth, H = window.innerHeight;
-        if (c && W && H) { c.width = W; c.height = H; }
-        if (c) c.style.visibility = '';
-        polyRef.current = null;
-      }, 250);
-    }
-    window.addEventListener('resize', handleResize);
     return () => {
       active = false;
-      clearTimeout(resizeTimer);
       cancelAnimationFrame(animRef.current);
-      window.removeEventListener('resize', handleResize);
       if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
       if (document.fullscreenElement) document.exitFullscreen?.().catch(()=>{});
     };
@@ -17324,23 +17309,9 @@ function SoilCameraCapture({ onSelect, onClose }) {
       }
     }
     animRef.current = requestAnimationFrame(loop);
-    let resizeTimer;
-    function handleResize() {
-      const c = canvasRef.current;
-      if (c) c.style.visibility = 'hidden';
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        const W = window.innerWidth, H = window.innerHeight;
-        if (c && W && H) { c.width = W; c.height = H; }
-        if (c) c.style.visibility = '';
-      }, 250);
-    }
-    window.addEventListener('resize', handleResize);
     return () => {
       active = false;
-      clearTimeout(resizeTimer);
       cancelAnimationFrame(animRef.current);
-      window.removeEventListener('resize', handleResize);
       if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
       if (document.fullscreenElement) document.exitFullscreen?.().catch(()=>{});
     };
