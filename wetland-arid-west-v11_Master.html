@@ -18771,7 +18771,7 @@ function Card({
     style: {
       background: headerBg || 'rgba(39,39,42,0.7)',
       borderBottom: `1px solid ${borderColor || '#27272a'}`,
-      padding: '14px 16px',
+      padding: '10px 16px',
       display: 'flex',
       alignItems: 'center',
       gap: 10,
@@ -18794,10 +18794,11 @@ function Card({
     }
   }, React.createElement("div", {
     style: {
-      fontSize: 12,
-      fontWeight: 600,
+      fontSize: 9,
+      fontWeight: 700,
       color: '#e4e4e7',
-      letterSpacing: '0.04em'
+      textTransform: 'uppercase',
+      letterSpacing: '0.12em'
     }
   }, title), subtitle && React.createElement("div", {
     style: {
@@ -20811,7 +20812,7 @@ function WetlandApp() {
       margin: 0,
       lineHeight: 1.4
     }
-  }, "Wetland Determination Data Form", React.createElement("br", null), React.createElement("span", {
+  }, "ADS Plus - Wetland Determination Data Form", React.createElement("br", null), React.createElement("span", {
     style: {
       fontSize: 13,
       fontWeight: 700,
