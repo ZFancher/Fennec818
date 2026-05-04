@@ -19877,7 +19877,7 @@ function WetlandApp() {
   const morphQualOk = !morphAdapt || soilsMetPrelim && hydroMet;
   const morphVegGated = vegCalc.morphVegMet && morphQualOk;
   const rawVegMet = vegCalc.domMet || piGatedMet || morphVegGated;
-  const probVegMet = probHydroVeg && (soilsMetPrelim && hydroMet || soilsMetPrelim && hydroDistOrProb || hydroMet && soilDistOrProb || soilDistOrProb && hydroDistOrProb);
+  const probVegMet = probHydroVeg && vegDistOrProb && (soilsMetPrelim && hydroMet || soilsMetPrelim && hydroDistOrProb || hydroMet && soilDistOrProb || soilDistOrProb && hydroDistOrProb);
   const vegMet = rawVegMet || probVegMet;
   const probValid = rawVegMet && hydroMet || multipleDistOrProb;
   const soilsMet = soilsMetStandard || numHydricProb >= 1 && probValid;
@@ -22400,7 +22400,7 @@ function WetlandApp() {
       style: {
         fontSize: 8,
         fontWeight: 700,
-        color: '#a1a1aa',
+        color: '#fbbf24',
         textTransform: 'uppercase',
         letterSpacing: '0.1em'
       }
@@ -22420,11 +22420,12 @@ function WetlandApp() {
       display: 'flex',
       gap: 8,
       alignItems: 'flex-start',
-      cursor: 'pointer'
+      cursor: vegDistOrProb ? 'pointer' : 'not-allowed',
+      opacity: vegDistOrProb ? 1 : 0.45
     }
   }, React.createElement(CustomCheckbox, {
-    checked: probHydroVeg,
-    onChange: v => setProbHydroVeg(v),
+    checked: probHydroVeg && vegDistOrProb,
+    onChange: v => vegDistOrProb && setProbHydroVeg(v),
     style: {
       marginTop: 2
     }
@@ -22445,7 +22446,7 @@ function WetlandApp() {
       marginTop: 2,
       lineHeight: 1.5
     }
-  }, "Used when standard indicators fail due to disturbance (seeding, herbicide, drought, invasives, etc.) but hydric soil and wetland hydrology are both present (ERDC/EL TR-08-28 Ch. 5, pp. 85\u201395)."), probHydroVeg && React.createElement("input", {
+  }, "Used when standard indicators fail due to disturbance (seeding, herbicide, drought, invasives, etc.) but hydric soil and wetland hydrology are both present (ERDC/EL TR-08-28 Ch. 5, pp. 85\u201395)."), probHydroVeg && vegDistOrProb && React.createElement("input", {
     type: "text",
     placeholder: "Describe problematic condition...",
     value: probHydroVegRemarks,
@@ -22473,7 +22474,18 @@ function WetlandApp() {
       color: '#5eead4',
       lineHeight: 1.5
     }
-  }, "\u2713 Criterion satisfied \u2014 hydric soil and wetland hydrology are present."), vegProbFlag && !vegMet && !probVegMet && React.createElement("div", {
+  }, "\u2713 Criterion satisfied \u2014 " + (soilsMetPrelim && hydroMet ? "hydric soil and wetland hydrology are present." : soilsMetPrelim ? "hydric soil present; hydrology is disturbed/problematic (Ch. 5 exception)." : hydroMet ? "wetland hydrology present; soils are disturbed/problematic (Ch. 5 exception)." : "soils and hydrology both disturbed/problematic (2+ factor Ch. 5 exception).")), !vegDistOrProb && React.createElement("div", {
+    style: {
+      marginTop: 6,
+      padding: '4px 8px',
+      background: 'rgba(251,191,36,0.08)',
+      border: '1px solid rgba(251,191,36,0.25)',
+      borderRadius: 3,
+      fontSize: 8,
+      color: '#fbbf24',
+      lineHeight: 1.5
+    }
+  }, "⚠ Vegetation must be flagged as significantly disturbed or naturally problematic (in the Site Conditions panel) to enable this option."), vegDistOrProb && probHydroVeg && !probVegMet && React.createElement("div", {
     style: {
       marginTop: 6,
       padding: '4px 8px',
