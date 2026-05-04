@@ -18771,7 +18771,7 @@ function Card({
     style: {
       background: headerBg || 'rgba(39,39,42,0.7)',
       borderBottom: `1px solid ${borderColor || '#27272a'}`,
-      padding: '10px 16px',
+      padding: '14px 16px',
       display: 'flex',
       alignItems: 'center',
       gap: 10,
@@ -20879,8 +20879,7 @@ function WetlandApp() {
     icon: "\uD83D\uDCCB",
     borderColor: "#52525b",
     headerBg: "rgba(82,82,91,0.3)",
-    title: "Sample Point General Information",
-    subtitle: "Location \xB7 Landform \xB7 Normal Circumstances \xB7 Disturbance & Problematic Site Flags"
+    title: "Sample Point Information"
   }, React.createElement("div", {
     style: {
       padding: '10px 16px',
@@ -21585,7 +21584,6 @@ function WetlandApp() {
     headerBg: "rgba(21,128,61,0.2)",
     title: "Module 1 \u2014 Hydrophytic Vegetation",
     collapsible: true,
-    subtitle: "NWPL Arid West 2022 v3.6 \xB7 3,526 species \xB7 5,052 scientific synonyms \xB7 1,766 common name aliases \xB7 50/20 Dominance Test \xB7 Prevalence Index \xB7 Morphological Adaptations",
     badge: vegMet ? 'YES' : morphVegGated ? 'YES (Ind.3)' : vegCalc.hasReassignment && (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'PEND' : 'NO',
     badgeStyle: vegMet ? passBadge : vegCalc.hasReassignment && (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? {
       background: 'rgba(245,158,11,0.15)',
@@ -22537,7 +22535,6 @@ function WetlandApp() {
     headerBg: "rgba(146,64,14,0.2)",
     title: "Module 2 \u2014 Hydric Soils",
     collapsible: true,
-    subtitle: "ERDC/EL TR-08-28 Chapter 3 \xB7 NRCS Field Indicators of Hydric Soils in the United States \xB7 Soil Profile Description \xB7 Auto-Selection",
     headerExtra: soilProfileWarning ? React.createElement("span", {
       style: {
         fontSize: 8,
@@ -23732,7 +23729,6 @@ function WetlandApp() {
     headerBg: "rgba(30,58,95,0.25)",
     title: "Module 3 \u2014 Wetland Hydrology",
     collapsible: true,
-    subtitle: "ERDC/EL TR-08-28 Chapter 4 \xB7 Hydrologic Indicators \xB7 Auto-Selection",
     badge: hydroMet ? 'YES' : 'NO',
     badgeStyle: hydroMet ? passBadge : failBadge,
     stickyFooter: React.createElement(React.Fragment, null, "          ", React.createElement("div", {
