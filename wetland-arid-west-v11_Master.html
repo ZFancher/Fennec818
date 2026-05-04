@@ -21461,8 +21461,9 @@ function WetlandApp() {
       paddingLeft: 16,
       paddingRight: 16,
       display: 'flex',
-      flexDirection: 'column',
-      gap: 5
+      alignItems: 'center',
+      gap: 12,
+      flexWrap: 'wrap'
     }
   }, React.createElement("div", {
     style: {
@@ -21470,16 +21471,10 @@ function WetlandApp() {
       fontWeight: 700,
       color: '#a1a1aa',
       textTransform: 'uppercase',
-      letterSpacing: '0.1em'
+      letterSpacing: '0.1em',
+      flexShrink: 0
     }
-  }, "Significantly Disturbed"), React.createElement("div", {
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 12,
-      flexWrap: 'wrap'
-    }
-  }, [['Vegetation', sigDistVeg, setSigDistVeg], ['Soil', sigDistSoil, setSigDistSoil], ['Hydrology', sigDistHydro, setSigDistHydro]].map(([lbl, val, setter]) => React.createElement("label", {
+  }, "Significantly Disturbed"), [['Vegetation', sigDistVeg, setSigDistVeg], ['Soil', sigDistSoil, setSigDistSoil], ['Hydrology', sigDistHydro, setSigDistHydro]].map(([lbl, val, setter]) => React.createElement("label", {
     key: lbl,
     style: {
       display: 'flex',
@@ -21505,14 +21500,15 @@ function WetlandApp() {
       padding: '1px 5px',
       visibility: sigDistVeg || sigDistSoil || sigDistHydro ? 'visible' : 'hidden'
     }
-  }, "ACTIVE"))), React.createElement("div", {
+  }, "ACTIVE")), React.createElement("div", {
     style: {
       marginTop: 8,
       paddingLeft: 16,
       paddingRight: 16,
       display: 'flex',
-      flexDirection: 'column',
-      gap: 5
+      alignItems: 'center',
+      gap: 12,
+      flexWrap: 'wrap'
     }
   }, React.createElement("div", {
     style: {
@@ -21520,16 +21516,10 @@ function WetlandApp() {
       fontWeight: 700,
       color: '#a1a1aa',
       textTransform: 'uppercase',
-      letterSpacing: '0.1em'
+      letterSpacing: '0.1em',
+      flexShrink: 0
     }
-  }, "Naturally Problematic"), React.createElement("div", {
-    style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 12,
-      flexWrap: 'wrap'
-    }
-  }, [['Vegetation', natProbVeg, setNatProbVeg], ['Soil', natProbSoil, setNatProbSoil], ['Hydrology', natProbHydro, setNatProbHydro]].map(([lbl, val, setter]) => React.createElement("label", {
+  }, "Naturally Problematic"), [['Vegetation', natProbVeg, setNatProbVeg], ['Soil', natProbSoil, setNatProbSoil], ['Hydrology', natProbHydro, setNatProbHydro]].map(([lbl, val, setter]) => React.createElement("label", {
     key: lbl,
     style: {
       display: 'flex',
@@ -21555,7 +21545,7 @@ function WetlandApp() {
       padding: '1px 5px',
       visibility: natProbVeg || natProbSoil || natProbHydro ? 'visible' : 'hidden'
     }
-  }, "ACTIVE")))), React.createElement("div", {
+  }, "ACTIVE"))), React.createElement("div", {
     style: {
       padding: '8px 16px',
       borderTop: '1px solid #1a1a1e'
@@ -23142,16 +23132,15 @@ function WetlandApp() {
   }, React.createElement("div", {
     style: {
       display: 'flex',
-      gap: 8,
-      flexWrap: 'nowrap',
+      gap: 16,
+      flexWrap: 'wrap',
       alignItems: 'flex-start'
     }
   }, React.createElement("div", {
     style: {
       display: 'flex',
       flexDirection: 'column',
-      gap: 3,
-      flex: 1
+      gap: 3
     }
   }, React.createElement("span", {
     style: {
@@ -23164,7 +23153,9 @@ function WetlandApp() {
     value: restrictiveType,
     onChange: setRestrictiveType,
     options: RESTRICT_TYPES,
-    style: {}
+    style: {
+      minWidth: 160
+    }
   })), React.createElement("div", {
     style: {
       display: 'flex',
@@ -23185,7 +23176,7 @@ function WetlandApp() {
     min: "0",
     onChange: e => setRestrictiveDepth(e.target.value),
     style: {
-      width: 65,
+      width: 90,
       background: '#27272a',
       border: '1px solid #3f3f46',
       borderRadius: 4,
@@ -23384,41 +23375,7 @@ function WetlandApp() {
       border: '1px solid #b91c1c',
       fontWeight: 700
     }
-  }, "LRR \u2717"), "Not applicable to selected LRR \u2014 row dimmed")), autoCount > 0 && React.createElement("div", {
-    style: {
-      padding: '7px 14px',
-      background: 'rgba(96,165,250,0.07)',
-      borderBottom: '1px solid rgba(96,165,250,0.15)',
-      display: 'flex',
-      alignItems: 'center',
-      gap: 8
-    }
-  }, React.createElement("span", {
-    style: {
-      fontSize: 11,
-      color: '#60a5fa'
-    }
-  }, "\u2726"), React.createElement("span", {
-    style: {
-      fontSize: 9,
-      color: '#93c5fd'
-    }
-  }, React.createElement("span", {
-    style: {
-      fontWeight: 700
-    }
-  }, autoCount, " hydric indicator", autoCount !== 1 ? 's' : '', " auto-selected"), " from your profile description. Marked ", React.createElement("span", {
-    style: {
-      background: 'rgba(96,165,250,0.15)',
-      color: '#60a5fa',
-      border: '1px solid #1e3a5f',
-      padding: '0 4px',
-      borderRadius: 3,
-      fontWeight: 700
-    }
-  }, "AUTO ", React.createElement("span", {
-    style: {}
-  }, "\u2726")), " below. You may still check additional indicators manually.")), React.createElement("div", {
+  }, "LRR \u2717"), "Not applicable to selected LRR \u2014 row dimmed")), React.createElement("div", {
     style: {
       padding: '5px 16px',
       fontSize: 8,
@@ -23825,41 +23782,7 @@ function WetlandApp() {
     }
   }, "AUTO ", React.createElement("span", {
     style: {}
-  }, "\u2726")), "Auto-selected \u2014 non-editable")), hydroAutoCount > 0 && React.createElement("div", {
-    style: {
-      padding: '7px 14px',
-      background: 'rgba(96,165,250,0.07)',
-      borderBottom: '1px solid rgba(96,165,250,0.15)',
-      display: 'flex',
-      alignItems: 'center',
-      gap: 8
-    }
-  }, React.createElement("span", {
-    style: {
-      fontSize: 11,
-      color: '#60a5fa'
-    }
-  }, "\u2726"), React.createElement("span", {
-    style: {
-      fontSize: 9,
-      color: '#93c5fd'
-    }
-  }, React.createElement("span", {
-    style: {
-      fontWeight: 700
-    }
-  }, hydroAutoCount, " hydrology indicator", hydroAutoCount !== 1 ? 's' : '', " auto-selected"), " from linked soil data or field measurements. Marked ", React.createElement("span", {
-    style: {
-      background: 'rgba(96,165,250,0.15)',
-      color: '#60a5fa',
-      border: '1px solid #1e3a5f',
-      padding: '0 4px',
-      borderRadius: 3,
-      fontWeight: 700
-    }
-  }, "AUTO ", React.createElement("span", {
-    style: {}
-  }, "\u2726")), " below. You may still check additional indicators manually.")), React.createElement("div", {
+  }, "\u2726")), "Auto-selected \u2014 non-editable")), React.createElement("div", {
     style: {
       borderBottom: '1px solid #27272a'
     }
