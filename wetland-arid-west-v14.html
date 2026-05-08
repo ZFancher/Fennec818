@@ -18709,7 +18709,7 @@ function IndRow({
         onClick: e => e.stopPropagation(),
         style:{display:'flex',alignItems:'center',gap:6}
       },
-        React.createElement("input", {type:"number",min:"0",step:"0.1",placeholder:"depth (in.)",value:measureVal||'',onChange:e=>onMeasureChange&&onMeasureChange(ind.id,e.target.value),style:{width:82,background:'var(--c-input)',border:`1px solid ${autoChecked?'var(--c-pass)':'var(--c-rule-strong)'}`,borderRadius:4,padding:'3px 6px',fontSize:14,color:'var(--c-ink)',outline:'none'}}),
+        React.createElement("input", {type:"number",min:"0",step:"0.1",placeholder:"depth (in.)",value:measureVal||'',onChange:e=>onMeasureChange&&onMeasureChange(ind.id,e.target.value),style:{width:82,background:'var(--c-input)',border:'1px solid var(--c-rule-strong)',borderRadius:4,padding:'3px 6px',fontSize:14,color:'var(--c-ink)',outline:'none'}}),
         React.createElement("span", {style:{fontFamily:'var(--font-sans)',fontSize:11,color:'var(--c-sub)'}}, ind.measureHint)
       ),
       (autoChecked && reasonText) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-full)',lineHeight:1.5}}, reasonText.replace(/^Auto-selected:\s*/i,'')),
