@@ -18745,8 +18745,6 @@ function Card({
     style: {
       background: headerBg || 'var(--c-panel-2)',
       borderBottom: `1px solid ${borderColor || 'var(--c-rule-strong)'}`,
-      borderBottomLeftRadius: collapsible && !open ? 7 : 0,
-      borderBottomRightRadius: collapsible && !open ? 7 : 0,
       padding: '13px 16px',
       display: 'flex',
       alignItems: 'center',
@@ -18794,7 +18792,7 @@ function Card({
       whiteSpace: 'nowrap',
       ...badgeStyle
     }
-  }, badge)), (!collapsible || open) && children, stickyFooter);
+  }, badge)), (!collapsible || open) && children, (!collapsible || open) && stickyFooter);
 }
 function Collapsible({
   label,
@@ -24193,18 +24191,18 @@ function WetlandApp() {
   }, [{
     label: 'Hydrophytic\nVegetation',
     met: vegMet,
-    bg: vegMet ? 'var(--c-pass-bg)' : 'var(--c-fail-bg)',
+    bg: 'var(--c-panel-2)',
     note: vegCalc.domMet ? `Dominance: ${vegCalc.domPct}% hydro doms` : piGatedMet ? `Prevalence Index: ${vegCalc.pi?.toFixed(2)}` : morphVegGated ? (vegCalc.domMorph && vegCalc.domMorph.met ? `Ind.3 — Reassigned DT: ${vegCalc.domMorph.pct}% hydro doms` : '') + (vegCalc.domMorph && vegCalc.domMorph.met && vegCalc.piMorph && vegCalc.piMorph.met ? ' | ' : '') + (vegCalc.piMorph && vegCalc.piMorph.met ? `Ind.3 — Reassigned PI: ${vegCalc.piMorph.pi?.toFixed(2)}` : '') : probVegMet ? 'Problematic Hydrophytic Vegetation (Ch. 5)' : vegCalc.pi !== null ? `Dom: ${vegCalc.domPct}% | PI: ${vegCalc.pi?.toFixed(2)}` : 'No data entered'
   }, {
     label: 'Hydric\nSoils',
     met: soilsMet,
-    bg: soilsMet ? 'var(--c-pass-bg)' : 'var(--c-fail-bg)',
+    bg: 'var(--c-panel-2)',
     note: numHydricActive >= 1 ? `${numHydricActive} standard indicator(s)${autoCount > 0 ? ' (' + autoCount + ' auto)' : ''}${soilProfileWarning ? ' — PROFILE INCOMPLETE' : ''}` : numHydricProb >= 1 && probValid ? `${numHydricProb} problematic indicator(s)` : 'No indicator active',
     warn: soilProfileWarning
   }, {
     label: 'Wetland\nHydrology',
     met: hydroMet,
-    bg: hydroMet ? 'var(--c-pass-bg)' : 'var(--c-fail-bg)',
+    bg: 'var(--c-panel-2)',
     note: numP >= 1 ? `${numP} primary indicator(s)` : numS >= 2 ? `${numS} secondary indicators` : 'Insufficient indicators'
   }].map((f, i) => React.createElement("div", {
     key: i,
