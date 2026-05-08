@@ -698,7 +698,7 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     border-radius: var(--radius-sm);
     transition: color 0.12s, border-color 0.12s, background 0.12s;
   }
-  .aw-tab-btn.active { color: var(--c-pass); border-top-color: var(--c-pass); border-bottom: 2px solid var(--c-pass); border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; }
+  .aw-tab-btn.active { color: var(--c-pass); border-top-color: var(--c-pass); }
 
   /* ── Bottom nav ──────────────────────────────────────────────────── */
   .aw-bottom-nav {
@@ -18749,7 +18749,7 @@ function Card({
     onClick: toggle,
     style: {
       background: headerBg || 'var(--c-panel-2)',
-      borderBottom: `1px solid ${borderColor || 'var(--c-rule-strong)'}`,
+      borderBottom: (!collapsible || open) ? `1px solid ${borderColor || 'var(--c-rule-strong)'}` : 'none',
       padding: '13px 16px',
       display: 'flex',
       alignItems: 'center',
@@ -18759,9 +18759,11 @@ function Card({
     }
   }, collapsible && React.createElement("span", {
     style: {
-      fontSize: 11,
+      fontSize: 14,
       color: 'var(--c-sub)',
-      flexShrink: 0
+      flexShrink: 0,
+      width: 16,
+      textAlign: 'center'
     }
   }, open ? '▾' : '▸'), React.createElement("div", {
     style: {
