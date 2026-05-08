@@ -17892,12 +17892,12 @@ function MunsellPicker({
       background: 'var(--c-input)',
       border: '1px solid var(--c-rule-strong)',
       borderRadius: 4,
-      padding: '5px 6px',
-      fontSize: 13,
+      padding: '5px 4px',
+      fontSize: 11,
       color: 'var(--c-ink)',
       outline: 'none',
       cursor: 'pointer',
-      width: 80
+      width: 68
     }
   }, PICKER_HUE_OPTIONS.map(h => React.createElement("option", {
     key: h,
@@ -17909,12 +17909,12 @@ function MunsellPicker({
       background: 'var(--c-input)',
       border: '1px solid var(--c-rule-strong)',
       borderRadius: 4,
-      padding: '5px 6px',
-      fontSize: 13,
+      padding: '5px 4px',
+      fontSize: 11,
       color: 'var(--c-ink)',
       outline: 'none',
       cursor: 'pointer',
-      width: 58
+      width: 44
     }
   }, hueValues.map(v => React.createElement("option", {
     key: v,
@@ -17932,12 +17932,12 @@ function MunsellPicker({
       background: 'var(--c-input)',
       border: '1px solid var(--c-rule-strong)',
       borderRadius: 4,
-      padding: '5px 6px',
-      fontSize: 13,
+      padding: '5px 4px',
+      fontSize: 11,
       color: 'var(--c-ink)',
       outline: 'none',
       cursor: 'pointer',
-      width: 54
+      width: 44
     }
   }, hueChromas.map(c => React.createElement("option", {
     key: c,
@@ -22810,11 +22810,11 @@ function WetlandApp() {
       max: "100",
       onChange: e => updateMatrixColor(h.id, mc.id, 'pct', e.target.value),
       style: {
-        width: 46,
+        width: 38,
         background: 'var(--c-input)',
         border: '1px solid var(--c-rule-strong)',
         borderRadius: 4,
-        padding: '4px 5px',
+        padding: '4px 3px',
         fontSize: 10,
         color: 'var(--c-ink)',
         outline: 'none',
@@ -22848,7 +22848,7 @@ function WetlandApp() {
       className: "redox-munsell-pct"
     }, React.createElement("div", {
       style: { flexShrink: 0 }
-    }, rxIdx === 0 && React.createElement("div", {
+    }, React.createElement("div", {
       style: {
         fontFamily: 'var(--font-mono)', fontSize: 10,
         color: 'var(--c-sub-2)',
@@ -22856,7 +22856,7 @@ function WetlandApp() {
         letterSpacing: 'var(--ls-cap)',
         marginBottom: 3
       }
-    }, "Redox Features"), React.createElement(MunsellPicker, {
+    }, "Redox Feature"), React.createElement(MunsellPicker, {
       hue: rx.hue,
       value: rx.value,
       chroma: rx.chroma,
@@ -22868,7 +22868,7 @@ function WetlandApp() {
         gap: 3,
         flexShrink: 0
       }
-    }, rxIdx === 0 && React.createElement("div", {
+    }, React.createElement("div", {
       style: {
         fontFamily: 'var(--font-mono)', fontSize: 10,
         color: 'var(--c-sub-2)',
@@ -22883,11 +22883,11 @@ function WetlandApp() {
       max: "100",
       onChange: e => updateRedox(h.id, rx.id, 'pct', e.target.value),
       style: {
-        width: 46,
+        width: 38,
         background: 'var(--c-input)',
         border: '1px solid var(--c-rule-strong)',
         borderRadius: 4,
-        padding: '4px 5px',
+        padding: '4px 3px',
         fontSize: 10,
         color: 'var(--c-ink)',
         outline: 'none',
@@ -22936,7 +22936,7 @@ function WetlandApp() {
         cursor: 'pointer',
         flexShrink: 0,
         alignSelf: 'flex-start',
-        marginTop: rxIdx === 0 ? 15 : 0,
+        marginTop: 15,
         width: 32,
         height: 32,
         display: 'inline-flex',
