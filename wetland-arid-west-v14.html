@@ -574,9 +574,9 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     }
 
     /* ── Redox row responsive layout ── */
-    .redox-row { display:flex; align-items:flex-end; gap:4px; flex-wrap:wrap; }
-    .redox-munsell-pct { display:flex; gap:4px; align-items:flex-end; flex:0 0 auto; }
-    .redox-type-loc { display:flex; gap:4px; align-items:flex-end; flex:1 1 auto; min-width:240px; }
+    .redox-row { display:grid; grid-template-columns:auto 1fr 32px; gap:4px; align-items:end; }
+    .redox-munsell-pct { display:flex; gap:4px; align-items:flex-end; }
+    .redox-type-loc { display:flex; gap:4px; align-items:flex-end; min-width:0; }
 
     /* ── Results card: ✗ NOT MET should never wrap ── */
     .result-verdict { white-space: nowrap; }
@@ -698,7 +698,7 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     border-radius: var(--radius-sm);
     transition: color 0.12s, border-color 0.12s, background 0.12s;
   }
-  .aw-tab-btn.active { color: var(--c-pass); border-top-color: var(--c-pass); background: var(--c-pass-bg); }
+  .aw-tab-btn.active { color: var(--c-pass); border-top-color: var(--c-pass); }
 
   /* ── Bottom nav ──────────────────────────────────────────────────── */
   .aw-bottom-nav {
@@ -18609,7 +18609,7 @@ function HydricRow({
     React.createElement("div", {
       style: {
         display: 'flex', alignItems: 'center', gap: 10,
-        padding: '10px 16px 6px', minHeight: 52
+        padding: '10px 16px 3px', minHeight: 52
       }
     },
       React.createElement("div", {style:{flexShrink:0,pointerEvents:'none'}},
@@ -18682,7 +18682,7 @@ function IndRow({
     React.createElement("div", {
       style: {
         display: 'flex', alignItems: 'center', gap: 10,
-        padding: '10px 16px 6px', minHeight: 52
+        padding: '10px 16px 3px', minHeight: 52
       }
     },
       React.createElement("div", {style:{flexShrink:0,pointerEvents:'none'}},
@@ -20883,12 +20883,12 @@ function WetlandApp() {
       React.createElement("button", {
         onClick: e => { flashBtn(e.currentTarget); setShowExportModal(true); },
         title: "Export / Import",
-        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:"5px 9px",cursor:"pointer",fontSize:11,color:"var(--c-ink-2)",lineHeight:1,flexShrink:0,fontFamily:"var(--font-sans)"}
+        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:0,cursor:"pointer",fontSize:14,color:"var(--c-ink-2)",flexShrink:0,width:32,height:32,display:"inline-flex",alignItems:"center",justifyContent:"center"}
       }, "\u2193\u2191"),
       React.createElement("button", {
         onClick: e => { flashBtn(e.currentTarget); setTimeout(()=>resetForm(),450); },
         title: "Clear all",
-        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:"5px 9px",cursor:"pointer",fontSize:11,color:"var(--c-fail)",lineHeight:1,flexShrink:0,fontFamily:"var(--font-sans)"}
+        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:0,cursor:"pointer",fontSize:14,color:"var(--c-fail)",flexShrink:0,width:32,height:32,display:"inline-flex",alignItems:"center",justifyContent:"center"}
       }, "\u2715"),
       React.createElement("button", {
         onClick:()=>setTheme(t=>t==='light'?'dark':'light'),
@@ -22828,7 +22828,7 @@ function WetlandApp() {
       }
     })))), React.createElement("div", {
       style: {
-        padding: '8px 12px 8px',
+        padding: '8px 16px 8px 12px',
         borderTop: '1px solid var(--c-rule)'
       }
     }, h.redoxRows.map((rx, rxIdx) => React.createElement("div", {
@@ -22837,14 +22837,11 @@ function WetlandApp() {
         style: {
           borderTop: rxIdx > 0 ? '1px solid var(--c-rule)' : undefined,
           paddingTop: rxIdx > 0 ? 6 : 0,
-          paddingBottom: 6,
-          display: 'flex',
-          alignItems: 'flex-end',
-          gap: 4
+          paddingBottom: 6
         }
     }, React.createElement("div", {
       className: "redox-row",
-      style: { flex: 1, minWidth: 0 }
+      style: { minWidth: 0 }
     }, React.createElement("div", {
       className: "redox-munsell-pct"
     }, React.createElement("div", {
@@ -22898,7 +22895,7 @@ function WetlandApp() {
       className: "redox-type-loc"
     }, React.createElement("div", {
       style: { width: 140, minWidth: 80, flexShrink: 1 }
-    }, rxIdx === 0 && React.createElement("div", {
+    }, React.createElement("div", {
       style: {
         fontFamily: 'var(--font-mono)', fontSize: 10,
         color: 'var(--c-sub-2)',
@@ -22913,7 +22910,7 @@ function WetlandApp() {
       style: { width: '100%' }
     })), React.createElement("div", {
       style: { width: 120, minWidth: 70, flexShrink: 1 }
-    }, rxIdx === 0 && React.createElement("div", {
+    }, React.createElement("div", {
       style: {
         fontFamily: 'var(--font-mono)', fontSize: 10,
         color: 'var(--c-sub-2)',
@@ -22926,7 +22923,7 @@ function WetlandApp() {
       onChange: v => updateRedox(h.id, rx.id, 'loc', v),
       options: REDOX_LOCS,
       style: { width: '100%' }
-    })))), React.createElement("button", {
+    }))), React.createElement("button", {
       onClick: () => removeRedox(h.id, rx.id),
       style: {
         background: 'none',
@@ -22943,7 +22940,7 @@ function WetlandApp() {
         justifyContent: 'center',
         borderRadius: 6
       }
-    }, "\u2715"))), React.createElement("button", {
+    }, "✕")))), React.createElement("button", {
       onClick: () => addRedox(h.id),
       style: {
         fontSize: 12,
