@@ -698,7 +698,7 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     border-radius: var(--radius-sm);
     transition: color 0.12s, border-color 0.12s, background 0.12s;
   }
-  .aw-tab-btn.active { color: var(--c-pass); border-top-color: var(--c-pass); }
+  .aw-tab-btn.active { color: var(--c-pass); border-top-color: var(--c-pass); border-bottom: 2px solid var(--c-pass); border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; }
 
   /* ── Bottom nav ──────────────────────────────────────────────────── */
   .aw-bottom-nav {
@@ -18609,7 +18609,7 @@ function HydricRow({
     React.createElement("div", {
       style: {
         display: 'flex', alignItems: 'center', gap: 10,
-        padding: '10px 16px 3px', minHeight: 52
+        padding: '6px 16px 6px', minHeight: 48
       }
     },
       React.createElement("div", {style:{flexShrink:0,pointerEvents:'none'}},
@@ -18682,7 +18682,7 @@ function IndRow({
     React.createElement("div", {
       style: {
         display: 'flex', alignItems: 'center', gap: 10,
-        padding: '10px 16px 3px', minHeight: 52
+        padding: '6px 16px 6px', minHeight: 48
       }
     },
       React.createElement("div", {style:{flexShrink:0,pointerEvents:'none'}},
@@ -20883,18 +20883,18 @@ function WetlandApp() {
       React.createElement("button", {
         onClick: e => { flashBtn(e.currentTarget); setShowExportModal(true); },
         title: "Export / Import",
-        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:0,cursor:"pointer",fontSize:14,color:"var(--c-ink-2)",flexShrink:0,width:32,height:32,display:"inline-flex",alignItems:"center",justifyContent:"center"}
+        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:0,cursor:"pointer",fontSize:14,color:"var(--c-ink-2)",flexShrink:0,width:32,height:32,display:"inline-flex",alignItems:"center",justifyContent:"center",alignSelf:"flex-end",marginBottom:13}
       }, "\u2193\u2191"),
       React.createElement("button", {
         onClick: e => { flashBtn(e.currentTarget); setTimeout(()=>resetForm(),450); },
         title: "Clear all",
-        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:0,cursor:"pointer",fontSize:14,color:"var(--c-fail)",flexShrink:0,width:32,height:32,display:"inline-flex",alignItems:"center",justifyContent:"center"}
+        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:0,cursor:"pointer",fontSize:14,color:"var(--c-fail)",flexShrink:0,width:32,height:32,display:"inline-flex",alignItems:"center",justifyContent:"center",alignSelf:"flex-end",marginBottom:13}
       }, "\u2715"),
       React.createElement("button", {
         onClick:()=>setTheme(t=>t==='light'?'dark':'light'),
         title:"Toggle theme",
         className:"theme-toggle",
-        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,cursor:"pointer",fontSize:13,color:"var(--c-ink)",lineHeight:1,flexShrink:0}
+        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,cursor:"pointer",fontSize:13,color:"var(--c-ink)",lineHeight:1,flexShrink:0,alignSelf:"flex-end",marginBottom:13}
       }, theme==='light'?'\u263D':'\u2600')
     )
   , React.createElement("div", {className:"aw-tabs"},
