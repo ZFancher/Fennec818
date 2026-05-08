@@ -21770,7 +21770,7 @@ function WetlandApp() {
     l: 'Hydro Dom. Ratio',
     v: vegCalc.hasReassignment && vegCalc.domMorph ? vegCalc.domMorph.pct + '%' : vegCalc.domPct !== undefined ? vegCalc.domPct + '%' : '—',
     s: vegCalc.hasReassignment && vegCalc.domMorph ? `pre-Ind. 3: ${vegCalc.domPct}%` : 'must exceed 50%',
-    hc: vegCalc.hasReassignment && vegCalc.domMorph ? vegCalc.domMorph.met ? 'var(--c-pass)' : 'var(--c-fail)' : domColor
+    hc: vegCalc.hasReassignment && vegCalc.domMorph ? vegCalc.domMorph.met ? 'var(--c-pass)' : 'var(--c-fail)' : undefined
   }].map((it, i) => React.createElement("div", {
     key: i,
     style: {
