@@ -18625,7 +18625,7 @@ function HydricRow({
       lrrTag,
       React.createElement("button", {
         onClick: e => { e.stopPropagation(); setExp(x=>!x); },
-        style:{fontSize:11,color:'var(--c-sub)',background:'none',border:'none',cursor:'pointer',padding:'0 4px',flexShrink:0,lineHeight:1}
+        style:{fontSize:10,color:'var(--c-sub)',background:'none',border:'none',cursor:'pointer',padding:'0 4px',flexShrink:0,lineHeight:1}
       }, exp ? '▲' : '▼')
     ),
     hasSubContent && React.createElement("div", {
@@ -18698,7 +18698,7 @@ function IndRow({
       lrrTag,
       React.createElement("button", {
         onClick: e => { e.stopPropagation(); setExp(x=>!x); },
-        style:{fontSize:11,color:'var(--c-sub)',background:'none',border:'none',cursor:'pointer',padding:'0 4px',flexShrink:0,lineHeight:1}
+        style:{fontSize:10,color:'var(--c-sub)',background:'none',border:'none',cursor:'pointer',padding:'0 4px',flexShrink:0,lineHeight:1}
       }, exp ? '▲' : '▼')
     ),
     hasSubContent && React.createElement("div", {
@@ -18803,9 +18803,11 @@ function Collapsible({
   labelStyle,
   defaultOpen = false,
   headerExtra,
-  children
+  children,
+  resetKey
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  useEffect(() => { if (resetKey > 0) setOpen(defaultOpen); }, [resetKey]);
   return React.createElement("div", null, React.createElement("div", {
     onClick: () => setOpen(o => !o),
     style: {
@@ -19287,6 +19289,7 @@ function WetlandApp() {
   const [chkHydricProb, setChkHydricProb] = useState({});
   const [soilRemarks, setSoilRemarks] = useState('');
   const [remarksResetKey, setRemarksResetKey] = useState(0);
+  const [collapsibleResetKey, setCollapsibleResetKey] = useState(0);
   const [chkP, setChkP] = useState({});
   const [chkS, setChkS] = useState({});
   const vegCalc = useMemo(() => {
@@ -19499,6 +19502,7 @@ function WetlandApp() {
     setGpsStatus(null);
     setGpsAccuracy(null);
     setRemarksResetKey(k => k + 1);
+    setCollapsibleResetKey(k => k + 1);
     acquireLocation();
   }
   const SAVE_KEY = 'wetland_arid_v11';
@@ -21716,6 +21720,7 @@ function WetlandApp() {
     }
   }, "%"))), React.createElement(Collapsible, {
     defaultOpen: false,
+    resetKey: collapsibleResetKey,
     label: React.createElement("span", {
       style: {
         fontSize: 11,
@@ -21806,6 +21811,7 @@ function WetlandApp() {
     }
   }, "\u26A0 Dominance Test passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, when utilizing Morphological Adaptations the recalculated Dominance Test only counts when BOTH hydric soil AND wetland hydrology are confirmed (or disturbed/problematic)."))), React.createElement(Collapsible, {
     defaultOpen: false,
+    resetKey: collapsibleResetKey,
     label: React.createElement("span", {
       style: {
         fontSize: 11,
@@ -22066,6 +22072,7 @@ function WetlandApp() {
     }
   }, "\u26A0 PI passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, the Prevalence Index only counts when BOTH hydric soil AND wetland hydrology are confirmed (or disturbed/problematic).")))), React.createElement(Collapsible, {
     defaultOpen: false,
+    resetKey: collapsibleResetKey,
     label: React.createElement("span", {
       style: {
         fontSize: 11,
@@ -22382,6 +22389,7 @@ function WetlandApp() {
     }
   }, (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && morphQualOk ? '✓ Indicator 3 SATISFIED — vegetation is hydrophytic after reassignment' : (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? '⚠ Reassignment passes mathematically, but Indicator 3 cannot be applied — hydric soil and wetland hydrology must both be confirmed first (Ch. 2 p. 26 step 3)' : '✗ Indicator 3 not satisfied — reassignment did not yield a pass on dominance test or prevalence index')))), React.createElement(Collapsible, {
     defaultOpen: false,
+    resetKey: collapsibleResetKey,
     label: React.createElement("span", {
       style: {
         fontSize: 11,
@@ -23250,6 +23258,7 @@ function WetlandApp() {
     }
   }, React.createElement(Collapsible, {
     label: "Legend",
+    resetKey: collapsibleResetKey,
     labelStyle: {
       padding: '5px 14px',
       background: 'var(--c-panel-2)',
@@ -23620,6 +23629,7 @@ function WetlandApp() {
     }
   }, "\u25C8 ", val.reason))))), React.createElement(Collapsible, {
     defaultOpen: false,
+    resetKey: collapsibleResetKey,
     label: "Problematic / Test Indicators \u2014 Arid West LRRs B, C, D",
     labelStyle: {
       fontFamily: 'var(--font-mono)', fontSize: 10,
@@ -23782,6 +23792,7 @@ function WetlandApp() {
     }, it.s)))))
   }, React.createElement(Collapsible, {
     label: "Legend",
+    resetKey: collapsibleResetKey,
     labelStyle: {
       padding: '5px 14px',
       background: 'var(--c-panel-2)',
@@ -24011,6 +24022,7 @@ function WetlandApp() {
     }
   }))), React.createElement(Collapsible, {
     defaultOpen: false,
+    resetKey: collapsibleResetKey,
     label: React.createElement("span", {
       style: {
         fontFamily: 'var(--font-mono)', fontSize: 10,
