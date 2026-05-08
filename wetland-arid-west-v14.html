@@ -18284,10 +18284,12 @@ function StratumTable({
   plotSize,
   onPlotSizeChange,
   bareGround,
-  onBareGroundChange
+  onBareGroundChange,
+  resetKey
 }) {
   const { key, label, hint, color, light } = stratum;
   const [open, setOpen] = useState(false);
+  useEffect(() => { if (resetKey > 0) setOpen(false); }, [resetKey]);
   const inputStyle = {
     background: 'var(--c-input)',
     border: '1px solid var(--c-rule-strong)',
@@ -21677,7 +21679,8 @@ function WetlandApp() {
       [st.key]: v
     })),
     bareGround: bareGround,
-    onBareGroundChange: setBareGround
+    onBareGroundChange: setBareGround,
+    resetKey: collapsibleResetKey
   })), React.createElement("div", {
     style: {
       display: 'flex',
