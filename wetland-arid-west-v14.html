@@ -528,12 +528,6 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
       .spgi-criteria-label { width:100%; }
     }
 
-    /* ── Redox rows: wrap after % field on narrow screens ── */
-    /* Munsell picker (~280px) + % (46px) naturally fills a phone row;
-       Type/Location then wrap to a second line automatically. */
-    @media (max-width:500px) {
-      .redox-inner { flex-wrap:wrap !important; }
-    }
 
     /* ── DT stats panel: 2×2 grid on narrow screens ── */
     .dt-stats-grid { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--c-rule); }
@@ -543,12 +537,12 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
       .dt-stats-grid > div:nth-child(4) { border-top:1px solid var(--c-rule); }
     }
 
-    /* ── Teal focus ring on all text inputs / selects / textareas ── */
+    /* ── Teal focus glow on all text inputs / selects / textareas ── */
     input:not([type=checkbox]):not([type=radio]):focus,
     textarea:focus,
     select:focus {
       outline: none;
-      box-shadow: 0 0 0 2px var(--c-pass) !important;
+      box-shadow: 0 0 0 1px var(--c-pass), 0 0 10px 2px var(--c-pass-glow) !important;
       border-color: var(--c-pass) !important;
     }
 
@@ -566,26 +560,29 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
       }
     }
 
-    /* ── Remarks wrapper: ensure resize handle is visible ── */
+    /* ── Remarks wrapper: native browser resize handle ── */
     .remarks-wrap { position:relative; }
-    .remarks-wrap textarea { display:block; }
-    /* Light mode */
-    .remarks-wrap::after {
-      content:'';
-      position:absolute;
-      bottom:3px; right:3px;
-      width:10px; height:10px;
-      background: linear-gradient(135deg,
-        transparent 30%,
-        var(--c-rule-strong) 30%, var(--c-rule-strong) 45%,
-        transparent 45%,
-        transparent 60%,
-        var(--c-rule-strong) 60%, var(--c-rule-strong) 75%,
-        transparent 75%
-      );
-      pointer-events:none;
-      border-radius:0 0 3px 0;
+    .remarks-wrap textarea {
+      display:block;
+      resize: vertical;
+      min-height: 44px;
     }
+    /* Style the native resize gripper */
+    .remarks-wrap textarea::-webkit-resizer {
+      background: var(--c-rule-strong);
+      border-radius: 0 0 3px 0;
+    }
+
+    /* ── Redox row responsive layout ── */
+    .redox-row { display:flex; align-items:flex-end; gap:4px; flex-wrap:wrap; }
+    .redox-munsell-pct { display:flex; gap:4px; align-items:flex-end; flex:0 0 auto; }
+    .redox-type-loc { display:flex; gap:4px; align-items:flex-end; flex:1 1 auto; min-width:240px; }
+
+    /* ── Results card: ✗ NOT MET should never wrap ── */
+    .result-verdict { white-space: nowrap; }
+
+    /* ── Light/dark toggle: fixed square dimensions ── */
+    .theme-toggle { width:32px; height:32px; padding:0; display:inline-flex; align-items:center; justify-content:center; }
   
 @media print {
   @page { margin: 1.5cm 1.8cm; }
@@ -17955,7 +17952,7 @@ function MunsellPicker({
     title: 'Measure color with camera',
     style: {
       background: 'var(--c-input)', border: '1px solid var(--c-rule-strong)', borderRadius: 4,
-      padding: '3px 7px', cursor: 'pointer', color: 'var(--c-ink-2)',
+      padding: '5px 7px', cursor: 'pointer', color: 'var(--c-ink-2)',
       fontSize: 14, flexShrink: 0, lineHeight: 1
     }
   }, '📷'),
@@ -19600,7 +19597,12 @@ function WetlandApp() {
     document.documentElement.setAttribute('data-theme', theme);
     try { localStorage.setItem('aw.theme', theme); } catch {}
   }, [theme]);
-  const switchTab = (tab) => { setActiveTab(tab); window.scrollTo(0, 0); };
+  const tabScrollPos = useRef({});
+  const switchTab = (tab) => {
+    tabScrollPos.current[activeTab] = window.scrollY;
+    setActiveTab(tab);
+    requestAnimationFrame(() => { window.scrollTo(0, tabScrollPos.current[tab] || 0); });
+  };
   const autoInferred = useMemo(() => inferHydricIndicators(horizons), [horizons]);
   const _effectiveSoilAutoBase = useMemo(() => {
     const base = {
@@ -20890,7 +20892,8 @@ function WetlandApp() {
       React.createElement("button", {
         onClick:()=>setTheme(t=>t==='light'?'dark':'light'),
         title:"Toggle theme",
-        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:"5px 9px",cursor:"pointer",fontSize:13,color:"var(--c-ink)",lineHeight:1,flexShrink:0}
+        className:"theme-toggle",
+        style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,cursor:"pointer",fontSize:13,color:"var(--c-ink)",lineHeight:1,flexShrink:0}
       }, theme==='light'?'\u263D':'\u2600')
     )
   , React.createElement("div", {className:"aw-tabs"},
@@ -21867,7 +21870,7 @@ function WetlandApp() {
   }, React.createElement("span", null, "Status"), React.createElement("span", {
     style: {
       textAlign: 'right',
-      paddingRight: 14
+      paddingRight: 6
     }
   }, "Total Cover (A)"), React.createElement("span", {
     style: {
@@ -21880,7 +21883,7 @@ function WetlandApp() {
   }, "Wt (B)"), React.createElement("span", {
     style: {
       textAlign: 'right',
-      paddingRight: 6
+      paddingRight: 2
     }
   }, "A\xD7B")), ['OBL', 'FACW', 'FAC', 'FACU', 'UPL'].map(st => {
     const cov = vegCalc.coverByStatus[st] || 0;
@@ -21977,7 +21980,7 @@ function WetlandApp() {
   }, "Totals"), React.createElement("div", {
     style: {
       textAlign: 'right',
-      paddingRight: 14,
+      paddingRight: 6,
       fontVariantNumeric: 'tabular-nums'
     }
   }, React.createElement("div", {
@@ -21994,7 +21997,7 @@ function WetlandApp() {
   }, "std: ", vegCalc.totalCover > 0 ? vegCalc.totalCover.toFixed(1) + '%' : '—')), React.createElement("div", null), React.createElement("div", null), React.createElement("div", {
     style: {
       textAlign: 'right',
-      paddingRight: 6,
+      paddingRight: 2,
       fontVariantNumeric: 'tabular-nums'
     }
   }, React.createElement("div", {
@@ -22589,7 +22592,7 @@ function WetlandApp() {
       className: "fade-in",
       style: {
         borderBottom: '2px solid var(--c-rule)',
-        background: hIdx % 2 === 0 ? 'var(--c-panel)' : 'var(--c-panel-2)'
+        background: 'var(--c-panel)'
       }
     }, React.createElement("div", {
       style: {
@@ -22606,23 +22609,22 @@ function WetlandApp() {
         alignItems: 'center',
         minHeight: 40
       }
-    }, React.createElement("span", null, "Horizon ", hIdx + 1), hIdx > 0 && React.createElement("button", {
+    }, React.createElement("span", null, "Horizon ", hIdx + 1), React.createElement("button", {
       onClick: () => removeHorizon(h.id),
       title: 'Remove horizon',
       style: {
         background: 'none',
         border: 'none',
         color: 'var(--c-sub)',
-        padding: 0,
-        fontSize: 16,
+        padding: '2px 6px',
+        fontSize: 13,
+        lineHeight: 1,
         cursor: 'pointer',
         flexShrink: 0,
-        width: 32,
-        height: 32,
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 6
+        borderRadius: 4
       }
     }, "\u2715")), React.createElement("div", {
       style: {
@@ -22719,8 +22721,7 @@ function WetlandApp() {
         flexDirection: 'column',
         gap: 3,
         flexShrink: 0,
-        marginLeft: 'auto',
-        alignItems: 'center'
+        marginLeft: 'auto'
       }
     }, React.createElement("div", {
       style: {
@@ -22737,8 +22738,9 @@ function WetlandApp() {
         border: '1px solid var(--c-rule-strong)',
         borderRadius: 4,
         color: 'var(--c-ink-2)',
-        padding: '4px 8px',
-        fontSize: 16,
+        padding: '5px 8px',
+        fontSize: 14,
+        lineHeight: 1,
         cursor: 'pointer',
         display: 'inline-flex',
         alignItems: 'center'
@@ -22828,24 +22830,20 @@ function WetlandApp() {
         key: rx.id,
         className: "fade-in",
         style: {
+          borderTop: rxIdx > 0 ? '1px solid var(--c-rule)' : undefined,
+          paddingTop: rxIdx > 0 ? 6 : 0,
+          paddingBottom: 6,
           display: 'flex',
           alignItems: 'flex-end',
-          gap: 4,
-          marginBottom: 6
+          gap: 4
         }
     }, React.createElement("div", {
-      className: "redox-inner",
-      style: {
-        display: 'flex',
-        gap: 4,
-        alignItems: 'flex-end',
-        flex: 1,
-        minWidth: 0
-      }
+      className: "redox-row",
+      style: { flex: 1, minWidth: 0 }
     }, React.createElement("div", {
-      style: {
-        flexShrink: 0
-      }
+      className: "redox-munsell-pct"
+    }, React.createElement("div", {
+      style: { flexShrink: 0 }
     }, rxIdx === 0 && React.createElement("div", {
       style: {
         fontFamily: 'var(--font-mono)', fontSize: 10,
@@ -22891,12 +22889,10 @@ function WetlandApp() {
         outline: 'none',
         textAlign: 'center'
       }
-    })), React.createElement("div", {
-      style: {
-        width: 140,
-        minWidth: 80,
-        flexShrink: 1
-      }
+    }))), React.createElement("div", {
+      className: "redox-type-loc"
+    }, React.createElement("div", {
+      style: { width: 140, minWidth: 80, flexShrink: 1 }
     }, rxIdx === 0 && React.createElement("div", {
       style: {
         fontFamily: 'var(--font-mono)', fontSize: 10,
@@ -22909,15 +22905,9 @@ function WetlandApp() {
       value: rx.type,
       onChange: v => updateRedox(h.id, rx.id, 'type', v),
       options: REDOX_TYPES,
-      style: {
-        width: '100%'
-      }
+      style: { width: '100%' }
     })), React.createElement("div", {
-      style: {
-        width: 120,
-        minWidth: 70,
-        flexShrink: 1
-      }
+      style: { width: 120, minWidth: 70, flexShrink: 1 }
     }, rxIdx === 0 && React.createElement("div", {
       style: {
         fontFamily: 'var(--font-mono)', fontSize: 10,
@@ -22930,10 +22920,8 @@ function WetlandApp() {
       value: rx.loc,
       onChange: v => updateRedox(h.id, rx.id, 'loc', v),
       options: REDOX_LOCS,
-      style: {
-        width: '100%'
-      }
-    }))), React.createElement("button", {
+      style: { width: '100%' }
+    })))), React.createElement("button", {
       onClick: () => removeRedox(h.id, rx.id),
       style: {
         background: 'none',
@@ -24227,6 +24215,7 @@ function WetlandApp() {
       marginBottom: 3
     }
   }, React.createElement("div", {
+    className: "result-verdict",
     style: {
       fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 700,
       color: f.met ? 'var(--c-pass)' : 'var(--c-fail)',
