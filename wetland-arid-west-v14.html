@@ -518,6 +518,74 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     .verdict-pass{box-shadow:0 0 48px var(--c-pass-glow);}
     .verdict-fail{box-shadow:0 0 48px var(--c-fail-glow);}
     textarea{font-family:var(--font-sans);}
+
+    /* ── Responsive SPGI criteria rows (NC / SD / NP / Typical Climatic) ── */
+    /* Wide: all on one line. Narrow (portrait phone): label takes full width,
+       pushing all checkboxes to a second line. */
+    .spgi-criteria-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+    .spgi-criteria-label { flex-shrink:0; }
+    @media (max-width:500px) {
+      .spgi-criteria-label { width:100%; }
+    }
+
+    /* ── Redox rows: wrap after % field on narrow screens ── */
+    /* Munsell picker (~280px) + % (46px) naturally fills a phone row;
+       Type/Location then wrap to a second line automatically. */
+    @media (max-width:500px) {
+      .redox-inner { flex-wrap:wrap !important; }
+    }
+
+    /* ── DT stats panel: 2×2 grid on narrow screens ── */
+    .dt-stats-grid { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--c-rule); }
+    @media (max-width:500px) {
+      .dt-stats-grid { grid-template-columns:repeat(2,1fr); }
+      .dt-stats-grid > div:nth-child(3) { border-left:none !important; border-top:1px solid var(--c-rule); }
+      .dt-stats-grid > div:nth-child(4) { border-top:1px solid var(--c-rule); }
+    }
+
+    /* ── Teal focus ring on all text inputs / selects / textareas ── */
+    input:not([type=checkbox]):not([type=radio]):focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--c-pass) !important;
+      border-color: var(--c-pass) !important;
+    }
+
+    /* ── Species dropdown: widen on mobile so Latin + common name show ── */
+    @media (max-width:500px) {
+      .dd-list {
+        min-width: min(340px, calc(100vw - 24px));
+        white-space: normal;
+      }
+      .dd-item {
+        white-space: normal;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 4px;
+      }
+    }
+
+    /* ── Remarks wrapper: ensure resize handle is visible ── */
+    .remarks-wrap { position:relative; }
+    .remarks-wrap textarea { display:block; }
+    /* Light mode */
+    .remarks-wrap::after {
+      content:'';
+      position:absolute;
+      bottom:3px; right:3px;
+      width:10px; height:10px;
+      background: linear-gradient(135deg,
+        transparent 30%,
+        var(--c-rule-strong) 30%, var(--c-rule-strong) 45%,
+        transparent 45%,
+        transparent 60%,
+        var(--c-rule-strong) 60%, var(--c-rule-strong) 75%,
+        transparent 75%
+      );
+      pointer-events:none;
+      border-radius:0 0 3px 0;
+    }
   
 @media print {
   @page { margin: 1.5cm 1.8cm; }
@@ -16290,7 +16358,7 @@ function MunsellPickerPopup({
     onClick: () => setPageIdx(i),
     style: {
       background: i === pageIdx ? 'var(--c-pass)' : 'var(--c-input)',
-      border: `1px solid ${i === pageIdx ? 'var(--c-pass-border)' : 'var(--c-rule-strong)'}`,
+      border: `1px solid ${i === pageIdx ? 'var(--c-pass)' : 'var(--c-rule-strong)'}`,
       color: i === pageIdx ? 'var(--c-action-fg)' : 'var(--c-sub)',
       borderRadius: 4,
       padding: '2px 7px',
@@ -18248,7 +18316,7 @@ function StratumTable({
       }
     },
       React.createElement("span", {
-        style: { fontSize: 11, color: 'var(--c-sub)', flexShrink: 0, width: 14, textAlign: 'center' }
+        style: { fontSize: 14, color: 'var(--c-sub)', flexShrink: 0, width: 16, textAlign: 'center' }
       }, open ? '▾' : '▸'),
       React.createElement("div", {
         style: { width: 3, height: 20, borderRadius: 2, background: light, flexShrink: 0 }
@@ -18644,7 +18712,7 @@ function IndRow({
         onClick: e => e.stopPropagation(),
         style:{display:'flex',alignItems:'center',gap:6}
       },
-        React.createElement("input", {type:"number",min:"0",step:"0.1",placeholder:"depth (in.)",value:measureVal||'',onChange:e=>onMeasureChange&&onMeasureChange(ind.id,e.target.value),style:{width:82,background:'var(--c-input)',border:`1px solid ${autoChecked?'var(--c-pass-border)':'var(--c-rule-strong)'}`,borderRadius:4,padding:'3px 6px',fontSize:14,color:'var(--c-ink)',outline:'none'}}),
+        React.createElement("input", {type:"number",min:"0",step:"0.1",placeholder:"depth (in.)",value:measureVal||'',onChange:e=>onMeasureChange&&onMeasureChange(ind.id,e.target.value),style:{width:82,background:'var(--c-input)',border:`1px solid ${autoChecked?'var(--c-pass)':'var(--c-rule-strong)'}`,borderRadius:4,padding:'3px 6px',fontSize:14,color:'var(--c-ink)',outline:'none'}}),
         React.createElement("span", {style:{fontFamily:'var(--font-sans)',fontSize:11,color:'var(--c-sub)'}}, ind.measureHint)
       ),
       (autoChecked && reasonText) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-full)',lineHeight:1.5}}, reasonText.replace(/^Auto-selected:\s*/i,'')),
@@ -21291,22 +21359,20 @@ function WetlandApp() {
       paddingBottom: 10
     }
   }, React.createElement("div", {
+    className: "spgi-criteria-row",
     style: {
       paddingLeft: 16,
       paddingRight: 16,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 12,
-      flexWrap: 'wrap'
+      gap: 12
     }
   }, React.createElement("div", {
+    className: "spgi-criteria-label",
     style: {
       fontFamily: 'var(--font-mono)', fontSize: 10,
       fontWeight: 700,
       color: 'var(--c-ink-2)',
       textTransform: 'uppercase',
-      letterSpacing: 'var(--ls-cap)',
-      flexShrink: 0
+      letterSpacing: 'var(--ls-cap)'
     }
   }, "Typical Climatic / Hydrologic Conditions"), React.createElement("label", {
     style: {
@@ -21340,23 +21406,21 @@ function WetlandApp() {
       color: 'var(--c-sub)'
     }
   }, "No"))), React.createElement("div", {
+    className: "spgi-criteria-row",
     style: {
       marginTop: 8,
       paddingLeft: 16,
       paddingRight: 16,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 12,
-      flexWrap: 'wrap'
+      gap: 12
     }
   }, React.createElement("div", {
+    className: "spgi-criteria-label",
     style: {
       fontFamily: 'var(--font-mono)', fontSize: 10,
       fontWeight: 700,
       color: 'var(--c-ink-2)',
       textTransform: 'uppercase',
-      letterSpacing: 'var(--ls-cap)',
-      flexShrink: 0
+      letterSpacing: 'var(--ls-cap)'
     }
   }, "Normal Circumstances"), React.createElement("label", {
     style: {
@@ -21395,25 +21459,21 @@ function WetlandApp() {
       color: 'var(--c-fail)'
     }
   }, "\u26A0 Atypical situation \u2014 Ch. 5 applies")), React.createElement("div", {
+    className: "spgi-criteria-row",
     style: {
       marginTop: 8,
       paddingLeft: 16,
       paddingRight: 16,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 10,
-      flexWrap: 'nowrap',
-      overflow: 'hidden'
+      gap: 10
     }
   }, React.createElement("div", {
+    className: "spgi-criteria-label",
     style: {
       fontFamily: 'var(--font-mono)', fontSize: 10,
       fontWeight: 700,
       color: 'var(--c-ink-2)',
       textTransform: 'uppercase',
-      letterSpacing: 'var(--ls-cap)',
-      flexShrink: 0,
-      whiteSpace: 'nowrap'
+      letterSpacing: 'var(--ls-cap)'
     }
   }, "Significantly Disturbed"), [['Vegetation', sigDistVeg, setSigDistVeg], ['Soil', sigDistSoil, setSigDistSoil], ['Hydrology', sigDistHydro, setSigDistHydro]].map(([lbl, val, setter]) => React.createElement("label", {
     key: lbl,
@@ -21444,25 +21504,21 @@ function WetlandApp() {
       visibility: sigDistVeg || sigDistSoil || sigDistHydro ? 'visible' : 'hidden'
     }
   }, "ACTIVE")), React.createElement("div", {
+    className: "spgi-criteria-row",
     style: {
       marginTop: 8,
       paddingLeft: 16,
       paddingRight: 16,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 10,
-      flexWrap: 'nowrap',
-      overflow: 'hidden'
+      gap: 10
     }
   }, React.createElement("div", {
+    className: "spgi-criteria-label",
     style: {
       fontFamily: 'var(--font-mono)', fontSize: 10,
       fontWeight: 700,
       color: 'var(--c-ink-2)',
       textTransform: 'uppercase',
-      letterSpacing: 'var(--ls-cap)',
-      flexShrink: 0,
-      whiteSpace: 'nowrap'
+      letterSpacing: 'var(--ls-cap)'
     }
   }, "Naturally Problematic"), [['Vegetation', natProbVeg, setNatProbVeg], ['Soil', natProbSoil, setNatProbSoil], ['Hydrology', natProbHydro, setNatProbHydro]].map(([lbl, val, setter]) => React.createElement("label", {
     key: lbl,
@@ -21505,7 +21561,7 @@ function WetlandApp() {
       letterSpacing: 'var(--ls-cap)',
       marginBottom: 4
     }
-  }, "Remarks"), React.createElement("textarea", {
+  }, "Remarks"), React.createElement("div", {className:"remarks-wrap"}, React.createElement("textarea", {
     key: 'remarks-spgi-' + remarksResetKey,
     value: spgiRemarks,
     onChange: e => setSpgiRemarks(e.target.value),
@@ -21524,7 +21580,7 @@ function WetlandApp() {
       boxSizing: 'border-box',
       fontFamily: 'IBM Plex Mono,monospace'
     }
-  }))), React.createElement(Card, {
+  })))), React.createElement(Card, {
     id: "module-vegetation",
     subtitle: "Module 1",
     borderColor: "#15803d",
@@ -21657,7 +21713,7 @@ function WetlandApp() {
     defaultOpen: false,
     label: React.createElement("span", {
       style: {
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: 700,
         color: 'var(--c-ink)',
         textTransform: 'uppercase',
@@ -21683,11 +21739,7 @@ function WetlandApp() {
       borderTop: '2px solid var(--c-rule)'
     }
   }, React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(4,1fr)',
-      borderTop: '1px solid var(--c-rule)'
-    }
+    className: "dt-stats-grid"
   }, [{
     l: 'Total Cover',
     v: vegCalc.totalCover > 0 ? vegCalc.totalCover.toFixed(1) + '%' : '—',
@@ -21751,7 +21803,7 @@ function WetlandApp() {
     defaultOpen: false,
     label: React.createElement("span", {
       style: {
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: 700,
         color: 'var(--c-ink)',
         textTransform: 'uppercase',
@@ -22011,7 +22063,7 @@ function WetlandApp() {
     defaultOpen: false,
     label: React.createElement("span", {
       style: {
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: 700,
         color: 'var(--c-ink)',
         textTransform: 'uppercase',
@@ -22327,7 +22379,7 @@ function WetlandApp() {
     defaultOpen: false,
     label: React.createElement("span", {
       style: {
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: 700,
         color: 'var(--c-ink)',
         textTransform: 'uppercase',
@@ -22441,7 +22493,7 @@ function WetlandApp() {
       letterSpacing: 'var(--ls-cap)',
       marginBottom: 4
     }
-  }, "Remarks"), React.createElement("textarea", {
+  }, "Remarks"), React.createElement("div", {className:"remarks-wrap"}, React.createElement("textarea", {
     key: 'remarks-veg-' + remarksResetKey,
     rows: 2,
     placeholder: "Field observations, notes, or qualifications...",
@@ -22461,7 +22513,7 @@ function WetlandApp() {
       fontFamily: 'var(--font-sans)',
       lineHeight: 1.5
     }
-  }))), React.createElement(Card, {
+  })))), React.createElement(Card, {
     id: "module-soils",
     subtitle: "Module 2",
     borderColor: "#92400e",
@@ -22554,15 +22606,25 @@ function WetlandApp() {
         alignItems: 'center',
         minHeight: 40
       }
-    }, React.createElement("span", null, "Horizon ", hIdx + 1), hIdx === 0 && React.createElement("span", {
+    }, React.createElement("span", null, "Horizon ", hIdx + 1), hIdx > 0 && React.createElement("button", {
+      onClick: () => removeHorizon(h.id),
+      title: 'Remove horizon',
       style: {
-        fontSize: 11,
+        background: 'none',
+        border: 'none',
         color: 'var(--c-sub)',
-        fontWeight: 400,
-        textTransform: 'none',
-        letterSpacing: 'normal'
+        padding: 0,
+        fontSize: 16,
+        cursor: 'pointer',
+        flexShrink: 0,
+        width: 32,
+        height: 32,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 6
       }
-    }, "Moist Munsell \xB7 depths in inches")), React.createElement("div", {
+    }, "\u2715")), React.createElement("div", {
       style: {
         display: 'flex',
         gap: 6,
@@ -22651,7 +22713,23 @@ function WetlandApp() {
       style: {
         minWidth: 130
       }
-    })), React.createElement("button", {
+    })), React.createElement("div", {
+      style: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 3,
+        flexShrink: 0,
+        marginLeft: 'auto',
+        alignItems: 'center'
+      }
+    }, React.createElement("div", {
+      style: {
+        fontFamily: 'var(--font-mono)', fontSize: 10,
+        color: 'var(--c-sub-2)',
+        textTransform: 'uppercase',
+        letterSpacing: 'var(--ls-cap)'
+      }
+    }, "Analyse"), React.createElement("button", {
       onClick: () => { document.documentElement.requestFullscreen?.().catch(()=>{}); setShowPedAnalyze(h.id); },
       title: 'Analyse ped colours with camera',
       style: {
@@ -22659,34 +22737,13 @@ function WetlandApp() {
         border: '1px solid var(--c-rule-strong)',
         borderRadius: 4,
         color: 'var(--c-ink-2)',
-        padding: '2px 6px',
-        fontSize: 11,
-        cursor: 'pointer',
-        flexShrink: 0,
-        marginLeft: 'auto',
-        marginBottom: 5,
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 3
-      }
-    }, '\ud83d\udcf7', React.createElement("span", null, "Analyse")), React.createElement("button", {
-      onClick: () => removeHorizon(h.id),
-      style: {
-        background: 'none',
-        border: 'none',
-        color: 'var(--c-sub)',
-        padding: 0,
+        padding: '4px 8px',
         fontSize: 16,
         cursor: 'pointer',
-        flexShrink: 0,
-        width: 36,
-        height: 36,
         display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 6
+        alignItems: 'center'
       }
-    }, "\u2715")), React.createElement("div", {
+    }, '\ud83d\udcf7'))), React.createElement("div", {
       style: {
         padding: '8px 12px 8px',
         borderTop: '1px solid var(--c-rule)'
@@ -22777,6 +22834,7 @@ function WetlandApp() {
           marginBottom: 6
         }
     }, React.createElement("div", {
+      className: "redox-inner",
       style: {
         display: 'flex',
         gap: 4,
@@ -23649,7 +23707,7 @@ function WetlandApp() {
       letterSpacing: 'var(--ls-cap)',
       marginBottom: 4
     }
-  }, "Remarks"), React.createElement("textarea", {
+  }, "Remarks"), React.createElement("div", {className:"remarks-wrap"}, React.createElement("textarea", {
     key: 'remarks-soil-' + remarksResetKey,
     rows: 4,
     placeholder: "Gleying, mottling, additional observations\u2026",
@@ -23669,7 +23727,7 @@ function WetlandApp() {
       fontFamily: 'var(--font-sans)',
       lineHeight: 1.5
     }
-  }))), React.createElement(Card, {
+  })))), React.createElement(Card, {
     id: "module-hydro",
     subtitle: "Module 3",
     borderColor: "#1e3a5f",
@@ -23935,7 +23993,7 @@ function WetlandApp() {
       letterSpacing: 'var(--ls-cap)',
       marginBottom: 4
     }
-  }, "Remarks"), React.createElement("textarea", {
+  }, "Remarks"), React.createElement("div", {className:"remarks-wrap"}, React.createElement("textarea", {
     key: 'remarks-hydro-' + remarksResetKey,
     rows: 2,
     placeholder: "Field observations, notes, or qualifications\u2026",
@@ -23955,7 +24013,7 @@ function WetlandApp() {
       fontFamily: 'var(--font-sans)',
       lineHeight: 1.5
     }
-  })), React.createElement(Collapsible, {
+  }))), React.createElement(Collapsible, {
     defaultOpen: false,
     label: React.createElement("span", {
       style: {
