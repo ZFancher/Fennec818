@@ -567,11 +567,6 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
       resize: vertical;
       min-height: 44px;
     }
-    /* Style the native resize gripper */
-    .remarks-wrap textarea::-webkit-resizer {
-      background: var(--c-rule-strong);
-      border-radius: 0 0 3px 0;
-    }
 
     /* ── Redox row responsive layout ── */
     .redox-row { display:flex; align-items:flex-end; gap:4px; flex-wrap:wrap; }
@@ -18749,7 +18744,9 @@ function Card({
     onClick: toggle,
     style: {
       background: headerBg || 'var(--c-panel-2)',
-      borderBottom: (!collapsible || open) ? `1px solid ${borderColor || 'var(--c-rule-strong)'}` : 'none',
+      borderBottom: `1px solid ${borderColor || 'var(--c-rule-strong)'}`,
+      borderBottomLeftRadius: collapsible && !open ? 7 : 0,
+      borderBottomRightRadius: collapsible && !open ? 7 : 0,
       padding: '13px 16px',
       display: 'flex',
       alignItems: 'center',
@@ -24196,20 +24193,24 @@ function WetlandApp() {
   }, [{
     label: 'Hydrophytic\nVegetation',
     met: vegMet,
+    bg: vegMet ? 'var(--c-pass-bg)' : 'var(--c-fail-bg)',
     note: vegCalc.domMet ? `Dominance: ${vegCalc.domPct}% hydro doms` : piGatedMet ? `Prevalence Index: ${vegCalc.pi?.toFixed(2)}` : morphVegGated ? (vegCalc.domMorph && vegCalc.domMorph.met ? `Ind.3 — Reassigned DT: ${vegCalc.domMorph.pct}% hydro doms` : '') + (vegCalc.domMorph && vegCalc.domMorph.met && vegCalc.piMorph && vegCalc.piMorph.met ? ' | ' : '') + (vegCalc.piMorph && vegCalc.piMorph.met ? `Ind.3 — Reassigned PI: ${vegCalc.piMorph.pi?.toFixed(2)}` : '') : probVegMet ? 'Problematic Hydrophytic Vegetation (Ch. 5)' : vegCalc.pi !== null ? `Dom: ${vegCalc.domPct}% | PI: ${vegCalc.pi?.toFixed(2)}` : 'No data entered'
   }, {
     label: 'Hydric\nSoils',
     met: soilsMet,
+    bg: soilsMet ? 'var(--c-pass-bg)' : 'var(--c-fail-bg)',
     note: numHydricActive >= 1 ? `${numHydricActive} standard indicator(s)${autoCount > 0 ? ' (' + autoCount + ' auto)' : ''}${soilProfileWarning ? ' — PROFILE INCOMPLETE' : ''}` : numHydricProb >= 1 && probValid ? `${numHydricProb} problematic indicator(s)` : 'No indicator active',
     warn: soilProfileWarning
   }, {
     label: 'Wetland\nHydrology',
     met: hydroMet,
+    bg: hydroMet ? 'var(--c-pass-bg)' : 'var(--c-fail-bg)',
     note: numP >= 1 ? `${numP} primary indicator(s)` : numS >= 2 ? `${numS} secondary indicators` : 'Insufficient indicators'
   }].map((f, i) => React.createElement("div", {
     key: i,
     style: {
       padding: '16px 16px',
+      background: f.bg,
       borderLeft: i > 0 ? `1px solid ${isWetland ? 'var(--c-pass)' : 'var(--c-fail)'}` : undefined
     }
   }, React.createElement("div", {
