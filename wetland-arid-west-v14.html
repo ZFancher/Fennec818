@@ -578,6 +578,9 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
 
     /* ── Light/dark toggle: fixed square dimensions ── */
     .theme-toggle { width:32px; height:32px; padding:0; display:inline-flex; align-items:center; justify-content:center; }
+
+    /* ── Collapsed card: hide sticky-footer top border so header looks identical open/closed ── */
+    .card-collapsed > div:last-child { border-top: none !important; }
   
 @media print {
   @page { margin: 1.5cm 1.8cm; }
@@ -11102,27 +11105,27 @@ const COMMON_ALIAS={
 // tx and bd both pull the per-status hue from --c-ind-*.
 const SC = {
   OBL: {
-    bg: 'var(--c-panel-2)',
+    bg: 'var(--c-bg)',
     tx: 'var(--c-ind-obl)',
     bd: 'var(--c-ind-obl)'
   },
   FACW: {
-    bg: 'var(--c-panel-2)',
+    bg: 'var(--c-bg)',
     tx: 'var(--c-ind-facw)',
     bd: 'var(--c-ind-facw)'
   },
   FAC: {
-    bg: 'var(--c-panel-2)',
+    bg: 'var(--c-bg)',
     tx: 'var(--c-ind-fac)',
     bd: 'var(--c-ind-fac)'
   },
   FACU: {
-    bg: 'var(--c-panel-2)',
+    bg: 'var(--c-bg)',
     tx: 'var(--c-ind-facu)',
     bd: 'var(--c-ind-facu)'
   },
   UPL: {
-    bg: 'var(--c-panel-2)',
+    bg: 'var(--c-bg)',
     tx: 'var(--c-ind-upl)',
     bd: 'var(--c-ind-upl)'
   }
@@ -18199,7 +18202,7 @@ function SpeciesSearch({
     className: "dd-list"
   }, filtered.map((p, i) => {
     const sc = SC[p.status] || {
-      bg: 'var(--c-panel-2)',
+      bg: 'var(--c-bg)',
       tx: 'var(--c-sub)',
       bd: 'var(--c-rule-strong)'
     };
@@ -18734,6 +18737,7 @@ function Card({
   const toggle = collapsible ? () => setOpen(o => !o) : null;
   return React.createElement("div", {
     id: id,
+    className: collapsible && !open ? 'card-collapsed' : undefined,
     style: {
       background: 'var(--c-panel)',
       border: `1px solid ${borderColor || 'var(--c-rule-strong)'}`,
@@ -18792,7 +18796,7 @@ function Card({
       whiteSpace: 'nowrap',
       ...badgeStyle
     }
-  }, badge)), (!collapsible || open) && children, (!collapsible || open) && stickyFooter);
+  }, badge)), (!collapsible || open) && children, stickyFooter);
 }
 function Collapsible({
   label,
@@ -24191,18 +24195,18 @@ function WetlandApp() {
   }, [{
     label: 'Hydrophytic\nVegetation',
     met: vegMet,
-    bg: 'var(--c-panel-2)',
+    bg: 'var(--c-bg)',
     note: vegCalc.domMet ? `Dominance: ${vegCalc.domPct}% hydro doms` : piGatedMet ? `Prevalence Index: ${vegCalc.pi?.toFixed(2)}` : morphVegGated ? (vegCalc.domMorph && vegCalc.domMorph.met ? `Ind.3 — Reassigned DT: ${vegCalc.domMorph.pct}% hydro doms` : '') + (vegCalc.domMorph && vegCalc.domMorph.met && vegCalc.piMorph && vegCalc.piMorph.met ? ' | ' : '') + (vegCalc.piMorph && vegCalc.piMorph.met ? `Ind.3 — Reassigned PI: ${vegCalc.piMorph.pi?.toFixed(2)}` : '') : probVegMet ? 'Problematic Hydrophytic Vegetation (Ch. 5)' : vegCalc.pi !== null ? `Dom: ${vegCalc.domPct}% | PI: ${vegCalc.pi?.toFixed(2)}` : 'No data entered'
   }, {
     label: 'Hydric\nSoils',
     met: soilsMet,
-    bg: 'var(--c-panel-2)',
+    bg: 'var(--c-bg)',
     note: numHydricActive >= 1 ? `${numHydricActive} standard indicator(s)${autoCount > 0 ? ' (' + autoCount + ' auto)' : ''}${soilProfileWarning ? ' — PROFILE INCOMPLETE' : ''}` : numHydricProb >= 1 && probValid ? `${numHydricProb} problematic indicator(s)` : 'No indicator active',
     warn: soilProfileWarning
   }, {
     label: 'Wetland\nHydrology',
     met: hydroMet,
-    bg: 'var(--c-panel-2)',
+    bg: 'var(--c-bg)',
     note: numP >= 1 ? `${numP} primary indicator(s)` : numS >= 2 ? `${numS} secondary indicators` : 'Insufficient indicators'
   }].map((f, i) => React.createElement("div", {
     key: i,
