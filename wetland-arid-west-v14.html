@@ -17952,8 +17952,8 @@ function MunsellPicker({
     title: 'Measure color with camera',
     style: {
       background: 'var(--c-input)', border: '1px solid var(--c-rule-strong)', borderRadius: 4,
-      padding: '5px 7px', cursor: 'pointer', color: 'var(--c-ink-2)',
-      fontSize: 14, flexShrink: 0, lineHeight: 1
+      padding: 0, width: 28, height: 28, cursor: 'pointer', color: 'var(--c-ink-2)',
+      fontSize: 14, flexShrink: 0, lineHeight: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center'
     }
   }, '📷'),
   showCamera && React.createElement(SoilCameraCapture, {
@@ -22616,15 +22616,16 @@ function WetlandApp() {
         background: 'none',
         border: 'none',
         color: 'var(--c-sub)',
-        padding: '2px 6px',
-        fontSize: 13,
-        lineHeight: 1,
+        padding: 0,
+        fontSize: 16,
         cursor: 'pointer',
         flexShrink: 0,
+        width: 32,
+        height: 32,
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 4
+        borderRadius: 6
       }
     }, "\u2715")), React.createElement("div", {
       style: {
@@ -22738,12 +22739,15 @@ function WetlandApp() {
         border: '1px solid var(--c-rule-strong)',
         borderRadius: 4,
         color: 'var(--c-ink-2)',
-        padding: '5px 8px',
+        padding: 0,
+        width: 28,
+        height: 28,
         fontSize: 14,
         lineHeight: 1,
         cursor: 'pointer',
         display: 'inline-flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
       }
     }, '\ud83d\udcf7'))), React.createElement("div", {
       style: {
