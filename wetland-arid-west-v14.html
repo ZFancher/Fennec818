@@ -574,9 +574,9 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     }
 
     /* ── Redox row responsive layout ── */
-    .redox-row { display:grid; grid-template-columns:auto 1fr 32px; gap:4px; align-items:end; }
-    .redox-munsell-pct { display:flex; gap:4px; align-items:flex-end; }
-    .redox-type-loc { display:flex; gap:4px; align-items:flex-end; min-width:0; }
+    .redox-row { display:flex; align-items:flex-end; gap:4px; flex-wrap:wrap; }
+    .redox-munsell-pct { display:flex; gap:4px; align-items:flex-end; flex:0 0 auto; }
+    .redox-type-loc { display:flex; gap:4px; align-items:flex-end; flex:1 1 auto; min-width:220px; }
 
     /* ── Results card: ✗ NOT MET should never wrap ── */
     .result-verdict { white-space: nowrap; }
@@ -22837,11 +22837,14 @@ function WetlandApp() {
         style: {
           borderTop: rxIdx > 0 ? '1px solid var(--c-rule)' : undefined,
           paddingTop: rxIdx > 0 ? 6 : 0,
-          paddingBottom: 6
+          paddingBottom: 6,
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 4
         }
     }, React.createElement("div", {
       className: "redox-row",
-      style: { minWidth: 0 }
+      style: { flex: 1, minWidth: 0 }
     }, React.createElement("div", {
       className: "redox-munsell-pct"
     }, React.createElement("div", {
@@ -22923,7 +22926,7 @@ function WetlandApp() {
       onChange: v => updateRedox(h.id, rx.id, 'loc', v),
       options: REDOX_LOCS,
       style: { width: '100%' }
-    }))), React.createElement("button", {
+    })))), React.createElement("button", {
       onClick: () => removeRedox(h.id, rx.id),
       style: {
         background: 'none',
@@ -22933,6 +22936,8 @@ function WetlandApp() {
         fontSize: 16,
         cursor: 'pointer',
         flexShrink: 0,
+        alignSelf: 'flex-start',
+        marginTop: rxIdx === 0 ? 15 : 0,
         width: 32,
         height: 32,
         display: 'inline-flex',
@@ -22940,7 +22945,7 @@ function WetlandApp() {
         justifyContent: 'center',
         borderRadius: 6
       }
-    }, "✕")))), React.createElement("button", {
+    }, "✕"))), React.createElement("button", {
       onClick: () => addRedox(h.id),
       style: {
         fontSize: 12,
@@ -23720,8 +23725,8 @@ function WetlandApp() {
   })))), React.createElement(Card, {
     id: "module-hydro",
     subtitle: "Module 3",
-    borderColor: "#1e3a5f",
-    headerBg: "rgba(30,58,95,0.15)",
+    borderColor: "#1d4ed8",
+    headerBg: "rgba(29,78,216,0.12)",
     title: "Wetland Hydrology",
     collapsible: true,
     defaultOpen: true,
