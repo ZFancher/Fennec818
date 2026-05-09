@@ -17792,7 +17792,6 @@ function SoilCameraCapture({ onSelect, onClose }) {
         const w = window.open('', '_blank');
         if (w) { w.document.write(generateReferenceCardHTML()); w.document.close(); }
       },
-      title: 'Print reference card',
       style: {
         position: 'absolute', top: 54, right: 16, zIndex: 1,
         background: 'rgba(0,0,0,0.55)', color: '#fff',
@@ -17895,6 +17894,7 @@ function MunsellPicker({
     }
   }, React.createElement("div", {
     onClick: () => setShowPopup(true),
+    title: 'Munsell color picker',
     style: {
       width: 38,
       height: 38,
@@ -17967,7 +17967,7 @@ function MunsellPicker({
   }, c))),
   React.createElement('button', {
     onClick: () => { document.documentElement.requestFullscreen?.().catch(()=>{}); setShowCamera(true); },
-    title: 'Measure color with camera',
+    title: 'Detect single color',
     style: {
       background: 'var(--c-input)', border: '1px solid var(--c-rule-strong)', borderRadius: 4,
       padding: 0, width: 38, height: 38, cursor: 'pointer',
@@ -20875,7 +20875,6 @@ function WetlandApp() {
       flashBtn(e.currentTarget);
       setShowExportModal(true);
     },
-    title: "Export / Import form data",
     style: {
       background: 'var(--c-add-bg)',
       border: '1px solid var(--c-add-emphasis)',
@@ -20925,7 +20924,7 @@ function WetlandApp() {
       }, "\u2193\u2191"),
       React.createElement("button", {
         onClick: e => { flashBtn(e.currentTarget); setTimeout(()=>resetForm(),450); },
-        title: "Clear all",
+        title: "New sample/Full clear",
         style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:0,cursor:"pointer",fontSize:14,color:"var(--c-fail)",flexShrink:0,width:32,height:32,display:"inline-flex",alignItems:"center",justifyContent:"center",alignSelf:"flex-end",marginBottom:13}
       }, "\u2715"),
       React.createElement("button", {
@@ -22658,7 +22657,6 @@ function WetlandApp() {
       }
     }, React.createElement("span", null, "Horizon ", hIdx + 1), React.createElement("button", {
       onClick: () => removeHorizon(h.id),
-      title: 'Remove horizon',
       style: {
         background: 'none',
         border: 'none',
@@ -22780,7 +22778,7 @@ function WetlandApp() {
       }
     }, "Analyse"), React.createElement("button", {
       onClick: () => { document.documentElement.requestFullscreen?.().catch(()=>{}); setShowPedAnalyze(h.id); },
-      title: 'Analyse ped colours with camera',
+      title: 'Full ped face analysis',
       style: {
         background: 'none',
         border: '1px solid var(--c-rule-strong)',
