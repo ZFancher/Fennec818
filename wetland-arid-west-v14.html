@@ -17898,7 +17898,7 @@ function MunsellPicker({
     style: { display: 'flex', gap: 4, marginBottom: 3 }
   },
     React.createElement("div", { style: { ..._lblStyle, flex: 1 } }, rowLabel || ''),
-    React.createElement("div", { style: { ..._lblStyle, width: 38, textAlign: 'center' } }, "%"),
+    React.createElement("div", { style: { ..._lblStyle, width: 38 } }, "%"),
     React.createElement("div", { style: { width: 38 } })
   ),
   React.createElement("div", {
@@ -22865,7 +22865,7 @@ function WetlandApp() {
           paddingTop: rxIdx > 0 ? 6 : 0,
           paddingBottom: 6,
           display: 'flex',
-          alignItems: 'flex-start',
+          alignItems: 'center',
           gap: 4
         }
     }, React.createElement("div", {
@@ -22926,8 +22926,6 @@ function WetlandApp() {
         fontSize: 16,
         cursor: 'pointer',
         flexShrink: 0,
-        alignSelf: 'flex-start',
-        marginTop: 15,
         width: 32,
         height: 32,
         display: 'inline-flex',
