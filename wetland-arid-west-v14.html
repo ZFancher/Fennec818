@@ -17854,7 +17854,10 @@ function MunsellPicker({
   hue,
   value,
   chroma,
-  onChange
+  onChange,
+  pct,
+  onPctChange,
+  showPctLabel
 }) {
   const [showPopup, setShowPopup] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
@@ -17890,7 +17893,7 @@ function MunsellPicker({
     style: {
       display: 'flex',
       gap: 4,
-      alignItems: 'center'
+      alignItems: 'flex-end'
     }
   }, React.createElement("div", {
     onClick: () => setShowPopup(true),
@@ -17965,6 +17968,18 @@ function MunsellPicker({
     key: c,
     value: c
   }, c))),
+  pct !== undefined && React.createElement("div", {
+    style: { display: 'flex', flexDirection: 'column', gap: 3, flexShrink: 0 }
+  },
+    showPctLabel && React.createElement("div", {
+      style: { fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--c-sub-2)', textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)' }
+    }, "%"),
+    React.createElement("input", {
+      type: "number", placeholder: "%", value: pct, min: "0", max: "100",
+      onChange: e => onPctChange(e.target.value),
+      style: { width: 38, background: 'var(--c-input)', border: '1px solid var(--c-rule-strong)', borderRadius: 4, padding: '4px 3px', fontSize: 10, color: 'var(--c-ink)', outline: 'none', textAlign: 'center' }
+    })
+  ),
   React.createElement('button', {
     onClick: () => { document.documentElement.requestFullscreen?.().catch(()=>{}); setShowCamera(true); },
     title: 'Detect single color',
@@ -22832,39 +22847,10 @@ function WetlandApp() {
       hue: mc.hue,
       value: mc.value,
       chroma: mc.chroma,
-      onChange: (part, v) => updateMatrixColor(h.id, mc.id, part === 'hue' ? 'hue' : part === 'val' ? 'value' : 'chroma', v)
-    })), React.createElement("div", {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 3,
-        flexShrink: 0
-      }
-    }, mcIdx === 0 && React.createElement("div", {
-      style: {
-        fontFamily: 'var(--font-mono)', fontSize: 10,
-        color: 'var(--c-sub-2)',
-        textTransform: 'uppercase',
-        letterSpacing: 'var(--ls-cap)'
-      }
-    }, "%"), React.createElement("input", {
-      type: "number",
-      placeholder: "%",
-      value: mc.pct,
-      min: "0",
-      max: "100",
-      onChange: e => updateMatrixColor(h.id, mc.id, 'pct', e.target.value),
-      style: {
-        width: 38,
-        background: 'var(--c-input)',
-        border: '1px solid var(--c-rule-strong)',
-        borderRadius: 4,
-        padding: '4px 3px',
-        fontSize: 10,
-        color: 'var(--c-ink)',
-        outline: 'none',
-        textAlign: 'center'
-      }
+      onChange: (part, v) => updateMatrixColor(h.id, mc.id, part === 'hue' ? 'hue' : part === 'val' ? 'value' : 'chroma', v),
+      pct: mc.pct,
+      onPctChange: v => updateMatrixColor(h.id, mc.id, 'pct', v),
+      showPctLabel: mcIdx === 0
     }))), React.createElement("div", {
       style: {
         width: 18,
@@ -22905,39 +22891,10 @@ function WetlandApp() {
       hue: rx.hue,
       value: rx.value,
       chroma: rx.chroma,
-      onChange: (part, v) => updateRedox(h.id, rx.id, part === 'hue' ? 'hue' : part === 'val' ? 'value' : 'chroma', v)
-    })), React.createElement("div", {
-      style: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 3,
-        flexShrink: 0
-      }
-    }, React.createElement("div", {
-      style: {
-        fontFamily: 'var(--font-mono)', fontSize: 10,
-        color: 'var(--c-sub-2)',
-        textTransform: 'uppercase',
-        letterSpacing: 'var(--ls-cap)'
-      }
-    }, "%"), React.createElement("input", {
-      type: "number",
-      placeholder: "%",
-      value: rx.pct,
-      min: "0",
-      max: "100",
-      onChange: e => updateRedox(h.id, rx.id, 'pct', e.target.value),
-      style: {
-        width: 38,
-        background: 'var(--c-input)',
-        border: '1px solid var(--c-rule-strong)',
-        borderRadius: 4,
-        padding: '4px 3px',
-        fontSize: 10,
-        color: 'var(--c-ink)',
-        outline: 'none',
-        textAlign: 'center'
-      }
+      onChange: (part, v) => updateRedox(h.id, rx.id, part === 'hue' ? 'hue' : part === 'val' ? 'value' : 'chroma', v),
+      pct: rx.pct,
+      onPctChange: v => updateRedox(h.id, rx.id, 'pct', v),
+      showPctLabel: true
     }))), React.createElement("div", {
       className: "redox-type-loc"
     }, React.createElement("div", {
