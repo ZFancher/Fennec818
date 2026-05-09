@@ -19936,7 +19936,7 @@ function WetlandApp() {
   const isWetland = vegMet && soilsMet && hydroMet;
   const consistencyWarnings = useMemo(() => {
     const w = [];
-    if (soilProfileWarning) w.push({ code: 'W6', msg: `Data Sheet Incomplete - Soil Profile Data Required. ${soilWarnDetail} A complete profile description is required to support any hydric soil determination under the USACE three-factor methodology. This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer.` });
+    if (soilProfileWarning) w.push({ code: 'W6', msg: 'Data Sheet Incomplete - Additional Soil Profile Data Required. Depth (both bounds), texture, and percentages of matrix color and redox features must all be filled in. A complete profile description is required to support any hydric soil determination under the USACE three-factor methodology. This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer.' });
     if (vegCalc.domPct >= 70 && numHydricActive === 0 && autoCount === 0) w.push({
       code: 'W1',
       msg: 'Dominant vegetation is strongly hydrophytic (≥70% OBL/FACW) but no hydric soil indicators are active. Verify soil profile data or consider problematic soils (Ch. 5).'
@@ -22864,14 +22864,10 @@ function WetlandApp() {
         style: {
           borderTop: rxIdx > 0 ? '1px solid var(--c-rule)' : undefined,
           paddingTop: rxIdx > 0 ? 6 : 0,
-          paddingBottom: 6,
-          display: 'flex',
-          alignItems: 'flex-end',
-          gap: 4
+          paddingBottom: 6
         }
     }, React.createElement("div", {
-      className: "redox-row",
-      style: { flex: 1, minWidth: 0 }
+      className: "redox-row"
     }, React.createElement("div", {
       className: "redox-munsell-pct"
     }, React.createElement("div", {
@@ -22885,7 +22881,24 @@ function WetlandApp() {
       onPctChange: v => updateRedox(h.id, rx.id, 'pct', v),
       showPctLabel: true,
       rowLabel: "Redox Feature"
-    }))), React.createElement("div", {
+    })), React.createElement("button", {
+      onClick: () => removeRedox(h.id, rx.id),
+      style: {
+        background: 'none',
+        border: 'none',
+        color: 'var(--c-sub)',
+        padding: 0,
+        fontSize: 16,
+        cursor: 'pointer',
+        flexShrink: 0,
+        width: 32,
+        height: 32,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 6
+      }
+    }, "✕")), React.createElement("div", {
       className: "redox-type-loc"
     }, React.createElement("div", {
       style: { width: 140, minWidth: 80, flexShrink: 1 }
@@ -22917,24 +22930,7 @@ function WetlandApp() {
       onChange: v => updateRedox(h.id, rx.id, 'loc', v),
       options: REDOX_LOCS,
       style: { width: '100%' }
-    })))), React.createElement("button", {
-      onClick: () => removeRedox(h.id, rx.id),
-      style: {
-        background: 'none',
-        border: 'none',
-        color: 'var(--c-sub)',
-        padding: 0,
-        fontSize: 16,
-        cursor: 'pointer',
-        flexShrink: 0,
-        width: 32,
-        height: 32,
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 6
-      }
-    }, "✕"))), React.createElement("button", {
+    })))))) , React.createElement("button", {
       onClick: () => addRedox(h.id),
       style: {
         fontSize: 12,
