@@ -22815,7 +22815,7 @@ function WetlandApp() {
       }
     }, '\ud83d\udcf7'))), React.createElement("div", {
       style: {
-        padding: '4px 12px 4px',
+        padding: '4px 12px 0',
         borderTop: '1px solid var(--c-rule)'
       }
     }, (h.matrixColors || []).map((mc, mcIdx) => React.createElement("div", {
@@ -22825,7 +22825,7 @@ function WetlandApp() {
         display: 'flex',
         alignItems: 'flex-end',
         gap: 4,
-        marginBottom: 8
+        marginBottom: 4
       }
     }, React.createElement("div", {
       style: {
@@ -22855,7 +22855,7 @@ function WetlandApp() {
       }
     })))), React.createElement("div", {
       style: {
-        padding: '4px 16px 8px 12px',
+        padding: '0 12px 4px',
         borderTop: '1px solid var(--c-rule)'
       }
     }, h.redoxRows.map((rx, rxIdx) => React.createElement("div", {
@@ -22863,8 +22863,12 @@ function WetlandApp() {
         className: "fade-in",
         style: {
           borderTop: rxIdx > 0 ? '1px solid var(--c-rule)' : undefined,
-          paddingTop: rxIdx > 0 ? 6 : 0,
-          paddingBottom: 6
+          paddingTop: 4,
+          paddingBottom: 4,
+          display: 'grid',
+          gridTemplateColumns: '1fr auto',
+          alignItems: 'start',
+          gap: 4
         }
     }, React.createElement("div", {
       className: "redox-row"
@@ -22881,24 +22885,7 @@ function WetlandApp() {
       onPctChange: v => updateRedox(h.id, rx.id, 'pct', v),
       showPctLabel: true,
       rowLabel: "Redox Feature"
-    })), React.createElement("button", {
-      onClick: () => removeRedox(h.id, rx.id),
-      style: {
-        background: 'none',
-        border: 'none',
-        color: 'var(--c-sub)',
-        padding: 0,
-        fontSize: 16,
-        cursor: 'pointer',
-        flexShrink: 0,
-        width: 32,
-        height: 32,
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 6
-      }
-    }, "✕")), React.createElement("div", {
+    }))), React.createElement("div", {
       className: "redox-type-loc"
     }, React.createElement("div", {
       style: { width: 140, minWidth: 80, flexShrink: 1 }
@@ -22930,7 +22917,24 @@ function WetlandApp() {
       onChange: v => updateRedox(h.id, rx.id, 'loc', v),
       options: REDOX_LOCS,
       style: { width: '100%' }
-    })))))) , React.createElement("button", {
+    })))), React.createElement("button", {
+      onClick: () => removeRedox(h.id, rx.id),
+      style: {
+        background: 'none',
+        border: 'none',
+        color: 'var(--c-sub)',
+        padding: 0,
+        fontSize: 16,
+        cursor: 'pointer',
+        flexShrink: 0,
+        width: 32,
+        height: 32,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 6
+      }
+    }, "✕"))), React.createElement("button", {
       onClick: () => addRedox(h.id),
       style: {
         fontSize: 12,
