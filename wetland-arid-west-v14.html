@@ -24147,23 +24147,32 @@ function WetlandApp() {
   }, React.createElement(React.Fragment, null, "USACE Wetland Determination", React.createElement("br", null), "Three-Factor Summary")), React.createElement("span", {
     style: {
       fontFamily: 'var(--font-sans)', fontSize: 10,
-      color: isWetland ? 'var(--c-pass)' : 'var(--c-fail)'
+      color: isWetland ? 'var(--c-pass)' : 'var(--c-fail)',
+      whiteSpace: 'nowrap'
     }
-  }, "ERDC/EL TR-08-28 / ", React.createElement("span", {style:{whiteSpace:'nowrap'}}, "ENG 6116-1 (Sep 2024)"))), React.createElement("div", {
+  }, "ERDC/EL TR-08-28 / ENG 6116-1 (Sep 2024)")), React.createElement("div", {
     style: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-end',
       gap: 1
     }
-  }, (siteInfo.samplePointId || siteInfo.sampleDate || siteInfo.projectName || siteInfo.investigator || siteInfo.lrr) && React.createElement("span", {
+  }, (siteInfo.samplePointId || siteInfo.sampleDate) && React.createElement("span", {
+    style: {
+      fontFamily: 'var(--font-sans)', fontSize: 10,
+      color: isWetland ? 'var(--c-pass)' : 'var(--c-fail)',
+      opacity: 0.75,
+      whiteSpace: 'nowrap'
+    }
+  }, [siteInfo.samplePointId && `SP ${siteInfo.samplePointId}`, siteInfo.sampleDate].filter(Boolean).join(' \xB7 ')),
+  (siteInfo.projectName || siteInfo.investigator || siteInfo.lrr) && React.createElement("span", {
     style: {
       fontFamily: 'var(--font-sans)', fontSize: 10,
       color: isWetland ? 'var(--c-pass)' : 'var(--c-fail)',
       opacity: 0.75,
       textAlign: 'right'
     }
-  }, [siteInfo.samplePointId && `SP ${siteInfo.samplePointId}`, siteInfo.sampleDate, siteInfo.projectName, siteInfo.investigator, siteInfo.lrr && `LRR ${siteInfo.lrr}${siteInfo.mlra ? ` \xB7 MLRA ${siteInfo.mlra}` : ''}`].filter(Boolean).join(' \xB7 ')))), normalCirc === false && React.createElement("div", {
+  }, [siteInfo.projectName, siteInfo.investigator, siteInfo.lrr && `LRR ${siteInfo.lrr}${siteInfo.mlra ? ` \xB7 MLRA ${siteInfo.mlra}` : ''}`].filter(Boolean).join(' \xB7 ')))), normalCirc === false && React.createElement("div", {
     style: {
       margin: '8px 12px',
       padding: '8px 12px',
