@@ -578,12 +578,13 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
       }
     }
 
-    /* ── Remarks wrapper: native browser resize handle ── */
+    /* ── Remarks wrapper: native resize on desktop, auto-expand on mobile ── */
     .remarks-wrap { position:relative; }
     .remarks-wrap textarea {
       display:block;
       resize: vertical;
       min-height: 44px;
+      overflow-y: hidden;
     }
 
     /* ── Redox row responsive layout ── */
@@ -17895,8 +17896,8 @@ function MunsellPicker({
   }, React.createElement("div", {
     onClick: () => setShowPopup(true),
     style: {
-      aspectRatio: '1',
-      alignSelf: 'stretch',
+      width: 30,
+      height: 30,
       borderRadius: 4,
       background: approxRgb,
       border: '1px solid var(--c-rule-strong)',
@@ -17969,7 +17970,7 @@ function MunsellPicker({
     title: 'Measure color with camera',
     style: {
       background: 'var(--c-input)', border: '1px solid var(--c-rule-strong)', borderRadius: 4,
-      padding: 0, aspectRatio: '1', alignSelf: 'stretch', cursor: 'pointer', color: 'var(--c-ink-2)',
+      padding: 0, width: 30, height: 30, cursor: 'pointer', color: 'var(--c-ink-2)',
       fontSize: 14, flexShrink: 0, lineHeight: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center'
     }
   }, '📷'),
@@ -24397,6 +24398,12 @@ function WetlandApp() {
   }, "USACE \xB7 ERDC/EL TR-08-28 \xB7 ENG Form 6116-1 \xB7 2022 NWPL v3.6 \xB7 NRCS Field Indicators of Hydric Soils in the United States v9.3")));
 }
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(React.createElement(WetlandApp, null));</script>
+root.render(React.createElement(WetlandApp, null));
+document.addEventListener('input', function(e) {
+  if (e.target.matches('.remarks-wrap textarea')) {
+    e.target.style.height = 'auto';
+    e.target.style.height = e.target.scrollHeight + 'px';
+  }
+});</script>
 </body>
 </html>
