@@ -24141,7 +24141,7 @@ function WetlandApp() {
       letterSpacing: 'var(--ls-cap)', fontWeight: 700,
       color: isWetland ? 'var(--c-pass)' : 'var(--c-fail)'
     }
-  }, "USACE Wetland Determination \xB7 Three-Factor Summary"), (siteInfo.projectName || siteInfo.samplePointId || siteInfo.investigator) && React.createElement("span", {
+  }, React.createElement(React.Fragment, null, "USACE Wetland Determination", React.createElement("br", null), "Three-Factor Summary")), (siteInfo.projectName || siteInfo.samplePointId || siteInfo.investigator) && React.createElement("span", {
     style: {
       fontFamily: 'var(--font-sans)', fontSize: 10,
       color: isWetland ? 'var(--c-pass)' : 'var(--c-fail)',
