@@ -19936,6 +19936,7 @@ function WetlandApp() {
   const isWetland = vegMet && soilsMet && hydroMet;
   const consistencyWarnings = useMemo(() => {
     const w = [];
+    if (soilProfileWarning) w.push({ code: 'W6', msg: `Data Sheet Incomplete - Soil Profile Data Required. ${soilWarnDetail} A complete profile description is required to support any hydric soil determination under the USACE three-factor methodology. This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer.` });
     if (vegCalc.domPct >= 70 && numHydricActive === 0 && autoCount === 0) w.push({
       code: 'W1',
       msg: 'Dominant vegetation is strongly hydrophytic (≥70% OBL/FACW) but no hydric soil indicators are active. Verify soil profile data or consider problematic soils (Ch. 5).'
@@ -20042,7 +20043,7 @@ function WetlandApp() {
       }
     }
     return w;
-  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, hydroMet]);
+  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, hydroMet, soilProfileWarning, soilWarnDetail]);
   const criteriaCount = [vegMet, soilsMet, hydroMet].filter(Boolean).length;
   const passBadge = {
     background: 'rgba(20,184,166,0.15)',
@@ -22814,7 +22815,7 @@ function WetlandApp() {
       }
     }, '\ud83d\udcf7'))), React.createElement("div", {
       style: {
-        padding: '8px 12px 8px',
+        padding: '4px 12px 4px',
         borderTop: '1px solid var(--c-rule)'
       }
     }, (h.matrixColors || []).map((mc, mcIdx) => React.createElement("div", {
@@ -22854,7 +22855,7 @@ function WetlandApp() {
       }
     })))), React.createElement("div", {
       style: {
-        padding: '8px 16px 8px 12px',
+        padding: '4px 16px 8px 12px',
         borderTop: '1px solid var(--c-rule)'
       }
     }, h.redoxRows.map((rx, rxIdx) => React.createElement("div", {
@@ -22865,7 +22866,7 @@ function WetlandApp() {
           paddingTop: rxIdx > 0 ? 6 : 0,
           paddingBottom: 6,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-end',
           gap: 4
         }
     }, React.createElement("div", {
@@ -22988,7 +22989,7 @@ function WetlandApp() {
         lineHeight: 1.4
       }
     }, "→ Contrast: " + horizonContrastSummary(h))));
-  }), (soilProfileWarning || profileShallow || horizonGaps) && React.createElement("div", {
+  }), (profileShallow || horizonGaps) && React.createElement("div", {
     style: {
       margin: '6px 12px 2px',
       padding: '8px 12px',
@@ -22996,39 +22997,7 @@ function WetlandApp() {
       border: '1px solid rgba(251,191,36,0.2)',
       borderRadius: 6
     }
-  }, soilProfileWarning && React.createElement("div", {
-    style: {
-      marginBottom: (profileShallow || horizonGaps) ? 8 : 0
-    }
-  }, React.createElement("div", {
-    style: {
-      display: 'flex',
-      alignItems: 'flex-end',
-      gap: 7,
-      marginBottom: 3
-    }
-  }, React.createElement("span", {
-    style: {
-      fontSize: 12,
-      color: 'var(--c-warn)',
-      flexShrink: 0,
-      lineHeight: 1
-    }
-  }, "\u26A0"), React.createElement("span", {
-    style: {
-      fontFamily: 'var(--font-mono)', fontSize: 10,
-      textTransform: 'uppercase',
-      letterSpacing: 'var(--ls-cap)',
-      color: 'var(--c-warn)',
-      fontWeight: 700
-    }
-  }, "Soil Profile Data Required")), React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: 'var(--c-ink-2)',
-      lineHeight: 1.5
-    }
-  }, soilWarnDetail, " A complete soil profile description is required documentation to support any hydric soil determination. ", React.createElement("span", {style: {color: 'var(--c-fail)'}}, "This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer."))), !!profileShallow && React.createElement("div", null, React.createElement("div", {
+  }, !!profileShallow && React.createElement("div", null, React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'flex-end',
@@ -23058,7 +23027,7 @@ function WetlandApp() {
     }
   }, "Deepest horizon ends at ", profileMaxDepth, " in. One or more hydric soil indicators require data to at least ", profileShallow, " in. Indicators requiring layers within that depth may not have been detectable with the current profile.")), horizonGaps && React.createElement("div", {
     style: {
-      marginTop: (soilProfileWarning || profileShallow) ? 8 : 0
+      marginTop: profileShallow ? 8 : 0
     }
   }, React.createElement("div", {
     style: {
@@ -24248,7 +24217,7 @@ function WetlandApp() {
       fontFamily: 'var(--font-sans)', fontSize: 12,
       color: 'var(--c-ink-2)', lineHeight: 1.7
     }
-  }, isWetland ? `All three criteria satisfied. Hydrophytic vegetation ${vegCalc.domMet ? `(dominance: ${vegCalc.domPct}%)` : piGatedMet ? `(PI: ${vegCalc.pi?.toFixed(2)})` : vegCalc.domMorph?.met ? `(Ind.3 reassigned Dominance Test: ${vegCalc.domMorph.pct}%)` : vegCalc.piMorph?.met ? `(Ind.3 reassigned Prevalence Index: ${vegCalc.piMorph.pi?.toFixed(2)})` : probVegMet ? `(Ch. 5 — Problematic Hydrophytic Vegetation)` : `(PI: ${vegCalc.pi?.toFixed(2)})`}, hydric soils (${numHydricActive} active indicator(s)${autoCount > 0 ? ', ' + autoCount + ' auto-selected' : ''}${soilNoHorizonWarning ? ' — no profile recorded' : ''}), and wetland hydrology (${numP >= 1 ? numP + ' primary' : numS + ' secondary'} indicator(s)). Consistent with USACE definition (33 CFR 328.3).` : `${criteriaCount}/3 criteria met. ` + [!vegMet && `Vegetation: dom. ${vegCalc.domPct}% (need >50%); PI: ${vegCalc.pi !== null ? vegCalc.pi.toFixed(2) + ' (need ≤3.0)' : 'no data'}.`, !soilsMet && `Soils: no standard or usable problematic hydric indicator active.`, !hydroMet && `Hydrology: ${numP} primary, ${numS} secondary (need ≥1 primary or ≥2 secondary).`].filter(Boolean).join(' '))))), (soilProfileWarning || consistencyWarnings.length > 0) && React.createElement("div", {
+  }, isWetland ? `All three criteria satisfied. Hydrophytic vegetation ${vegCalc.domMet ? `(dominance: ${vegCalc.domPct}%)` : piGatedMet ? `(PI: ${vegCalc.pi?.toFixed(2)})` : vegCalc.domMorph?.met ? `(Ind.3 reassigned Dominance Test: ${vegCalc.domMorph.pct}%)` : vegCalc.piMorph?.met ? `(Ind.3 reassigned Prevalence Index: ${vegCalc.piMorph.pi?.toFixed(2)})` : probVegMet ? `(Ch. 5 — Problematic Hydrophytic Vegetation)` : `(PI: ${vegCalc.pi?.toFixed(2)})`}, hydric soils (${numHydricActive} active indicator(s)${autoCount > 0 ? ', ' + autoCount + ' auto-selected' : ''}${soilNoHorizonWarning ? ' — no profile recorded' : ''}), and wetland hydrology (${numP >= 1 ? numP + ' primary' : numS + ' secondary'} indicator(s)). Consistent with USACE definition (33 CFR 328.3).` : `${criteriaCount}/3 criteria met. ` + [!vegMet && `Vegetation: dom. ${vegCalc.domPct}% (need >50%); PI: ${vegCalc.pi !== null ? vegCalc.pi.toFixed(2) + ' (need ≤3.0)' : 'no data'}.`, !soilsMet && `Soils: no standard or usable problematic hydric indicator active.`, !hydroMet && `Hydrology: ${numP} primary, ${numS} secondary (need ≥1 primary or ≥2 secondary).`].filter(Boolean).join(' '))))), consistencyWarnings.length > 0 && React.createElement("div", {
     style: {
       marginBottom: 8,
       padding: '8px 12px',
@@ -24256,41 +24225,7 @@ function WetlandApp() {
       border: '1px solid rgba(146,64,14,0.5)',
       borderRadius: 8
     }
-  }, soilProfileWarning && React.createElement("div", {
-    style: {
-      marginBottom: consistencyWarnings.length > 0 ? 10 : 0
-    }
-  }, React.createElement("div", {
-    style: {
-      display: 'flex',
-      alignItems: 'flex-end',
-      gap: 8,
-      marginBottom: 3
-    }
-  }, React.createElement("span", {
-    style: {
-      fontSize: 12,
-      flexShrink: 0,
-      lineHeight: 1,
-      marginBottom: 1,
-      color: 'var(--c-warn)'
-    }
-  }, "\u26A0"), React.createElement("span", {
-    style: {
-      fontFamily: 'var(--font-mono)', fontSize: 10,
-      textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)',
-      color: 'var(--c-warn)', fontWeight: 700
-    }
-  }, "Data Sheet Incomplete \u2014 Soil Profile Not Recorded")), React.createElement("div", {
-    style: {
-      fontFamily: 'var(--font-sans)', fontSize: 12,
-      color: 'var(--c-ink-2)', lineHeight: 1.6
-    }
-  }, soilWarnDetail, " A complete profile description is required to support any hydric soil determination under the USACE three-factor methodology.", React.createElement("span", {
-    style: {
-      color: 'var(--c-fail)'
-    }
-  }, " This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer."))), consistencyWarnings.length > 0 && React.createElement("div", null, React.createElement("div", {
+  }, React.createElement("div", null, React.createElement("div", {
     style: {
       display: 'flex',
       alignItems: 'flex-end',
