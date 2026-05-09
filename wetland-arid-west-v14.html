@@ -17895,8 +17895,8 @@ function MunsellPicker({
   }, React.createElement("div", {
     onClick: () => setShowPopup(true),
     style: {
-      width: 28,
-      height: 28,
+      aspectRatio: '1',
+      alignSelf: 'stretch',
       borderRadius: 4,
       background: approxRgb,
       border: '1px solid var(--c-rule-strong)',
@@ -17969,7 +17969,7 @@ function MunsellPicker({
     title: 'Measure color with camera',
     style: {
       background: 'var(--c-input)', border: '1px solid var(--c-rule-strong)', borderRadius: 4,
-      padding: 0, width: 28, height: 28, cursor: 'pointer', color: 'var(--c-ink-2)',
+      padding: 0, aspectRatio: '1', alignSelf: 'stretch', cursor: 'pointer', color: 'var(--c-ink-2)',
       fontSize: 14, flexShrink: 0, lineHeight: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center'
     }
   }, '📷'),
@@ -21333,6 +21333,7 @@ function WetlandApp() {
     type: "number",
     min: "0",
     max: "100",
+    placeholder: "%",
     value: siteInfo.slope || '',
     onChange: e => si('slope', e.target.value),
     autoComplete: "off",
@@ -23167,7 +23168,7 @@ function WetlandApp() {
   }, React.createElement("div", {
     style: {
       display: 'flex',
-      gap: 12,
+      gap: 8,
       flexWrap: 'nowrap',
       alignItems: 'flex-start'
     }
@@ -23185,7 +23186,7 @@ function WetlandApp() {
       textTransform: 'uppercase',
       letterSpacing: 'var(--ls-cap)'
     }
-  }, "Restrictive Layer Type", React.createElement("br", null), "(if observed)"), React.createElement(Sel, {
+  }, "Restrictive Layer", React.createElement("br", null), "Type (if observed)"), React.createElement(Sel, {
     value: restrictiveType,
     onChange: setRestrictiveType,
     options: RESTRICT_TYPES,
@@ -23241,8 +23242,8 @@ function WetlandApp() {
     onClick: () => setShowSoilProfileDiagram(true),
     title: "View Soil Profile Diagram",
     style: {
-      width: 28,
-      height: 28,
+      width: 36,
+      height: 36,
       padding: 0,
       border: '1px solid var(--c-rule-strong)',
       borderRadius: 4,
@@ -23250,12 +23251,12 @@ function WetlandApp() {
       background: 'none',
       overflow: 'hidden',
       display: 'block',
-      flexShrink: 0,
-      marginTop: 3
+      flexShrink: 0
     }
   }, React.createElement("svg", {
-    width: 28,
-    height: 28,
+    viewBox: "0 0 28 28",
+    width: '100%',
+    height: '100%',
     style: {
       display: 'block'
     }
@@ -24139,7 +24140,8 @@ function WetlandApp() {
     style: {
       fontFamily: 'var(--font-mono)', fontSize: 10, textTransform: 'uppercase',
       letterSpacing: 'var(--ls-cap)', fontWeight: 700,
-      color: isWetland ? 'var(--c-pass)' : 'var(--c-fail)'
+      color: isWetland ? 'var(--c-pass)' : 'var(--c-fail)',
+      whiteSpace: 'nowrap'
     }
   }, React.createElement(React.Fragment, null, "USACE Wetland Determination", React.createElement("br", null), "Three-Factor Summary")), (siteInfo.projectName || siteInfo.samplePointId || siteInfo.investigator) && React.createElement("span", {
     style: {
@@ -24157,14 +24159,14 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontFamily: 'var(--font-sans)', fontSize: 10,
-      color: isWetland ? 'var(--c-pass)' : 'var(--c-fail)',
-      whiteSpace: 'nowrap'
+      color: isWetland ? 'var(--c-pass)' : 'var(--c-fail)'
     }
-  }, "ERDC/EL TR-08-28 / ENG 6116-1 (Sep 2024)"), siteInfo.lrr && React.createElement("span", {
+  }, "ERDC/EL TR-08-28 / ", React.createElement("span", {style:{whiteSpace:'nowrap'}}, "ENG 6116-1 (Sep 2024)")), siteInfo.lrr && React.createElement("span", {
     style: {
       fontFamily: 'var(--font-sans)', fontSize: 10,
       color: isWetland ? 'var(--c-pass)' : 'var(--c-fail)',
-      opacity: 0.75
+      opacity: 0.75,
+      whiteSpace: 'nowrap'
     }
   }, "LRR ", siteInfo.lrr, siteInfo.mlra ? ` · MLRA ${siteInfo.mlra}` : ''))), normalCirc === false && React.createElement("div", {
     style: {
