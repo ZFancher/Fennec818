@@ -649,12 +649,6 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
 
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  @keyframes btnFlash {
-    0%   { outline: 3px solid rgba(255,255,255,0.0); outline-offset: 0px; }
-    30%  { outline: 3px solid rgba(255,255,255,0.55); outline-offset: 1px; }
-    100% { outline: 3px solid rgba(255,255,255,0.0); outline-offset: 0px; }
-  }
-  .btn-flash { animation: btnFlash 0.4s ease-out; }
 
   /* ── Tab visibility ──────────────────────────────────────────────── */
   .aw-app[data-tab="site"]  #module-vegetation,
@@ -19144,13 +19138,6 @@ function WetlandApp() {
   const [showPedAnalyze, setShowPedAnalyze] = useState(null); // horizon id | null
   const [pdfTemplate, setPdfTemplate] = useState(null);
   const [pdfTemplateName, setPdfTemplateName] = useState('');
-  function flashBtn(el) {
-    if (!el) return;
-    el.classList.remove('btn-flash');
-    void el.offsetWidth;
-    el.classList.add('btn-flash');
-    setTimeout(() => el.classList.remove('btn-flash'), 450);
-  }
   const [siteInfo, setSiteInfo] = useState({
     projectName: '',
     applicant: '',
@@ -20787,144 +20774,7 @@ function WetlandApp() {
       fontSize: 11,
       color: 'var(--c-disabled)'
     }
-  }, "Filename: WD-", (siteInfo.samplePointId || 'form').replace(/[^a-zA-Z0-9_\-]/g, '_'), "-", new Date().toISOString().slice(0, 10), ".pdf")))), React.createElement("div", {style:{display:'none'}}, React.createElement("header", {
-    style: {
-      maxWidth: 960,
-      margin: '0 auto 18px'
-    }
-  }, React.createElement("div", {
-    style: {
-      borderBottom: '1px solid var(--c-rule)',
-      paddingBottom: 12
-    }
-  }, React.createElement("div", {
-    style: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      gap: 8,
-      marginBottom: 6
-    }
-  }, React.createElement("div", {
-    style: {
-      display: 'flex',
-      gap: 4,
-      alignItems: 'center'
-    }
-  }, React.createElement("div", {
-    style: {
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      background: 'var(--c-ind-obl)',
-      flexShrink: 0,
-      boxShadow: '0 0 7px var(--c-pass-glow)'
-    }
-  }), React.createElement("div", {
-    style: {
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      background: 'var(--c-ind-facw)',
-      flexShrink: 0,
-      boxShadow: '0 0 7px var(--c-pass-glow)'
-    }
-  }), React.createElement("div", {
-    style: {
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      background: 'var(--c-ind-fac)',
-      flexShrink: 0,
-      boxShadow: '0 0 7px var(--c-pass-glow)'
-    }
-  }), React.createElement("div", {
-    style: {
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      background: 'var(--c-ind-facu)',
-      flexShrink: 0,
-      boxShadow: '0 0 7px var(--c-fail-glow)'
-    }
-  }), React.createElement("div", {
-    style: {
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      background: 'var(--c-ind-upl)',
-      flexShrink: 0,
-      boxShadow: '0 0 7px var(--c-fail-glow)'
-    }
-  })), React.createElement("div", null, React.createElement("h1", {
-    style: {
-      fontFamily: 'var(--font-mono)', fontSize: 16,
-      fontWeight: 700,
-      color: 'var(--c-ink)',
-      margin: 0,
-      lineHeight: 1.4,
-      textTransform: 'uppercase',
-      letterSpacing: 'var(--ls-cap)'
-    }
-  }, "ADS Plus - Wetland Determination Data Form", React.createElement("br", null), React.createElement("span", {
-    style: {
-      fontSize: 13,
-      fontWeight: 700,
-      color: 'var(--c-sub)',
-      textTransform: 'none',
-      letterSpacing: 'normal'
-    }
-  }, "Arid West Region")), React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: 'var(--c-sub)',
-      marginTop: 2
-    }
-  }, "Version 1.0 \xB7 Three-Factor Approach \xB7 Hydrophytic Vegetation \xB7 Hydric Soils \xB7 Wetland Hydrology \xB7 Auto-Saved"))), React.createElement("div", {
-    style: {
-      paddingLeft: 0,
-      display: 'flex',
-      gap: 6,
-      flexShrink: 0,
-      flexWrap: 'wrap',
-      marginTop: 8
-    }
-  }, React.createElement("button", {
-    onClick: e => {
-      flashBtn(e.currentTarget);
-      setShowExportModal(true);
-    },
-    style: {
-      background: 'var(--c-add-bg)',
-      border: '1px solid var(--c-add-emphasis)',
-      borderRadius: 6,
-      padding: '6px 12px',
-      fontSize: 11,
-      color: 'var(--c-add-emphasis)',
-      cursor: 'pointer',
-      fontFamily: 'IBM Plex Mono,monospace',
-      letterSpacing: '0.05em',
-      textTransform: 'uppercase'
-    }
-  }, "\u2193\u2191 Export / Import"), React.createElement("button", {
-    onClick: e => {
-      flashBtn(e.currentTarget);
-      setTimeout(() => resetForm(), 450);
-    },
-    style: {
-      background: 'var(--c-fail-bg)',
-      border: '1px solid var(--c-fail)',
-      borderRadius: 6,
-      padding: '6px 12px',
-      fontSize: 11,
-      color: 'var(--c-fail)',
-      cursor: 'pointer',
-      fontFamily: 'IBM Plex Mono,monospace',
-      letterSpacing: '0.05em',
-      textTransform: 'uppercase'
-    }
-  }, "\u2715 Clear")))))
-  , React.createElement("div", {className:"aw-topbar"},
+  }, "Filename: WD-", (siteInfo.samplePointId || 'form').replace(/[^a-zA-Z0-9_\-]/g, '_'), "-", new Date().toISOString().slice(0, 10), ".pdf"))))  , React.createElement("div", {className:"aw-topbar"},
       React.createElement("div", {style:{flex:1,minWidth:0,display:'flex',flexDirection:'column',gap:2,justifyContent:'center'}},
         React.createElement("div", {style:{display:'flex',gap:4,alignItems:'center',marginBottom:1}},
           React.createElement("span", {style:{width:7,height:7,borderRadius:'50%',background:'var(--c-ind-obl)',display:'inline-block'}}),
@@ -20937,12 +20787,12 @@ function WetlandApp() {
         React.createElement("div", {style:{fontFamily:"var(--font-sans)",fontSize:15,fontWeight:600,letterSpacing:"-0.01em",color:"var(--c-ink)",lineHeight:1.2}}, "Wetland Determination Data Form")
       ),
       React.createElement("button", {
-        onClick: e => { flashBtn(e.currentTarget); setShowExportModal(true); },
+        onClick: () => setShowExportModal(true),
         title: "Export / Import",
         style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:0,cursor:"pointer",fontSize:14,color:"var(--c-ink-2)",flexShrink:0,width:32,height:32,display:"inline-flex",alignItems:"center",justifyContent:"center",alignSelf:"flex-end",marginBottom:13}
       }, "\u2193\u2191"),
       React.createElement("button", {
-        onClick: e => { flashBtn(e.currentTarget); setTimeout(()=>resetForm(),450); },
+        onClick: () => resetForm(),
         title: "New sample/Full clear",
         style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:0,cursor:"pointer",fontSize:14,color:"var(--c-fail)",flexShrink:0,width:32,height:32,display:"inline-flex",alignItems:"center",justifyContent:"center",alignSelf:"flex-end",marginBottom:13}
       }, "\u2715"),
