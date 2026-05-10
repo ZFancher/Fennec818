@@ -19252,6 +19252,26 @@ function WetlandApp() {
     const diff = el.getBoundingClientRect().top - top;
     if (Math.abs(diff) > 1 && Math.abs(diff) < window.innerHeight * 0.6) window.scrollBy(0, diff);
   });
+  useEffect(() => {
+    const tags = ['INPUT', 'SELECT', 'TEXTAREA'];
+    let savedScrollY = 0;
+    function onPointerDown(e) {
+      if (tags.includes(e.target?.tagName)) savedScrollY = window.scrollY;
+    }
+    function onBlur(e) {
+      if (!tags.includes(e.target?.tagName)) return;
+      // blur fires before the iOS keyboard begins its close animation, so
+      // scrolling here is hidden under the keyboard — the correct position
+      // is revealed as the keyboard slides away with no visible snap.
+      window.scrollTo({ top: savedScrollY, left: 0, behavior: 'instant' });
+    }
+    document.addEventListener('pointerdown', onPointerDown, true);
+    document.addEventListener('blur', onBlur, true);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown, true);
+      document.removeEventListener('blur', onBlur, true);
+    };
+  }, []);
   const [morphAdaptEntries, setMorphAdaptEntries] = useState([]);
   const [probHydroVeg, setProbHydroVeg] = useState(false);
   const [probHydroVegRemarks, setProbHydroVegRemarks] = useState('');
