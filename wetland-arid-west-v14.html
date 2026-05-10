@@ -512,7 +512,7 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   </style>
   <style>
     *,*::before,*::after{box-sizing:border-box;}
-    html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden;}
     html,body{margin:0;padding:0;}
     body{overflow-y:scroll;}
     button,input,select,textarea{font:inherit;}
@@ -19260,7 +19260,11 @@ function WetlandApp() {
       if (tags.includes(e.target.tagName)) meta.content = 'width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0';
     }
     function unlock(e) {
-      if (tags.includes(e.target.tagName)) meta.content = orig;
+      if (!tags.includes(e.target.tagName)) return;
+      meta.content = orig;
+      // iOS Safari landscape: keyboard dismissal can leave a non-zero scrollX,
+      // shifting scrollable content right of the fixed topbar/navtabs.
+      setTimeout(() => { if (window.scrollX !== 0) window.scrollTo(0, window.scrollY); }, 100);
     }
     // iOS Safari preserves zoom level across orientation changes, causing extreme
     // zoom jumps. Briefly enforce initial-scale=1,maximum-scale=1 on rotation to
