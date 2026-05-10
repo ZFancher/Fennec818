@@ -696,6 +696,11 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     font-size: 14px !important; min-height: 38px !important;
     font-family: var(--font-sans) !important;
   }
+  /* iOS Safari zooms in on focus when font-size < 16px. Bump to 16px on iOS
+     only to suppress that behavior without touching the viewport meta tag. */
+  @supports (-webkit-touch-callout: none) {
+    #aw-modules input, #aw-modules select, #aw-modules textarea { font-size: 16px !important; }
+  }
   #aw-modules label { font-size: 12px !important; }
 
   /* ── Section tab strip ───────────────────────────────────────────── */
@@ -19252,34 +19257,27 @@ function WetlandApp() {
     if (Math.abs(diff) > 1 && Math.abs(diff) < window.innerHeight * 0.6) window.scrollBy(0, diff);
   });
   useEffect(() => {
-    const meta = document.querySelector('meta[name=viewport]');
-    if (!meta) return;
-    const orig = meta.content;
     const tags = ['INPUT', 'SELECT', 'TEXTAREA'];
-    function lock(e) {
-      if (tags.includes(e.target.tagName)) meta.content = 'width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0';
-    }
-    function unlock(e) {
-      if (!tags.includes(e.target.tagName)) return;
-      meta.content = orig;
-      // iOS Safari landscape: keyboard dismissal can leave a non-zero scrollX,
-      // shifting scrollable content right of the fixed topbar/navtabs.
+    // iOS Safari landscape: keyboard dismissal can leave a non-zero scrollX,
+    // shifting scrollable content right of the fixed topbar/navtabs.
+    function onBlur(e) {
+      if (!tags.includes(e.target?.tagName)) return;
       setTimeout(() => { if (window.scrollX !== 0) window.scrollTo(0, window.scrollY); }, 100);
     }
     // iOS Safari preserves zoom level across orientation changes, causing extreme
     // zoom jumps. Briefly enforce initial-scale=1,maximum-scale=1 on rotation to
     // force the browser to reset its zoom state, then restore whatever was active.
     function resetOnRotate() {
+      const meta = document.querySelector('meta[name=viewport]');
+      if (!meta) return;
       const cur = meta.content;
       meta.content = 'width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover';
       setTimeout(() => { meta.content = cur; }, 500);
     }
-    document.addEventListener('focus', lock, true);
-    document.addEventListener('blur', unlock, true);
+    document.addEventListener('blur', onBlur, true);
     window.addEventListener('orientationchange', resetOnRotate);
     return () => {
-      document.removeEventListener('focus', lock, true);
-      document.removeEventListener('blur', unlock, true);
+      document.removeEventListener('blur', onBlur, true);
       window.removeEventListener('orientationchange', resetOnRotate);
     };
   }, []);
