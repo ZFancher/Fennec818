@@ -19262,11 +19262,21 @@ function WetlandApp() {
     function unlock(e) {
       if (tags.includes(e.target.tagName)) meta.content = orig;
     }
+    // iOS Safari preserves zoom level across orientation changes, causing extreme
+    // zoom jumps. Briefly enforce initial-scale=1,maximum-scale=1 on rotation to
+    // force the browser to reset its zoom state, then restore whatever was active.
+    function resetOnRotate() {
+      const cur = meta.content;
+      meta.content = 'width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover';
+      setTimeout(() => { meta.content = cur; }, 500);
+    }
     document.addEventListener('focus', lock, true);
     document.addEventListener('blur', unlock, true);
+    window.addEventListener('orientationchange', resetOnRotate);
     return () => {
       document.removeEventListener('focus', lock, true);
       document.removeEventListener('blur', unlock, true);
+      window.removeEventListener('orientationchange', resetOnRotate);
     };
   }, []);
   const [morphAdaptEntries, setMorphAdaptEntries] = useState([]);
