@@ -15861,8 +15861,7 @@ function MunsellPickerPopup({
         overflowY: 'auto',
         flex: 1,
         paddingTop: 5,
-        touchAction: 'pan-y',
-        overscrollBehavior: 'contain'
+        touchAction: 'pan-y'
       }
     }, values.map(v => React.createElement("div", {
       key: v,
@@ -15929,8 +15928,7 @@ function MunsellPickerPopup({
         overflowY: 'auto',
         flex: 1,
         paddingTop: 5,
-        touchAction: 'pan-y',
-        overscrollBehavior: 'contain'
+        touchAction: 'pan-y'
       }
     }, React.createElement("div", {
       style: {
@@ -16017,8 +16015,7 @@ function MunsellPickerPopup({
         overflowY: 'auto',
         flex: 1,
         paddingTop: 5,
-        touchAction: 'pan-y',
-        overscrollBehavior: 'contain'
+        touchAction: 'pan-y'
       }
     }, rows.map(row => React.createElement("div", {
       key: row.label,
@@ -16086,8 +16083,7 @@ function MunsellPickerPopup({
         overflowY: 'auto',
         flex: 1,
         paddingTop: 5,
-        touchAction: 'pan-y',
-        overscrollBehavior: 'contain'
+        touchAction: 'pan-y'
       }
     }, values.map(v => React.createElement("div", {
       key: v,
@@ -16172,8 +16168,7 @@ function MunsellPickerPopup({
         overflowY: 'auto',
         flex: 1,
         paddingTop: 5,
-        touchAction: 'pan-y',
-        overscrollBehavior: 'contain'
+        touchAction: 'pan-y'
       }
     }, allValues.map(v => React.createElement("div", {
       key: v,
@@ -16241,14 +16236,6 @@ function MunsellPickerPopup({
       }
     }));
   }
-  useEffect(() => {
-    const y = window.scrollY;
-    Object.assign(document.body.style, { overflow: 'hidden', position: 'fixed', top: `-${y}px`, width: '100%' });
-    return () => {
-      Object.assign(document.body.style, { overflow: '', position: '', top: '', width: '' });
-      window.scrollTo(0, y);
-    };
-  }, []);
   return React.createElement("div", {
     style: {
       position: 'fixed',
@@ -16258,8 +16245,7 @@ function MunsellPickerPopup({
       display: 'flex',
       alignItems: 'flex-start',
       justifyContent: 'center',
-      padding: '5vh 16px',
-      touchAction: 'none'
+      padding: '5vh 16px'
     },
     onClick: e => {
       if (e.target === e.currentTarget) onClose();
@@ -16508,14 +16494,6 @@ function SoilProfileModal({
   for (let d = 0; d <= maxDepth + 1; d += tickInterval) ticks.push(d);
   const rDepthN = Number(restrictiveDepth);
   const hasRestrict = restrictiveType && restrictiveType !== 'None observed' && restrictiveDepth && rDepthN <= maxDepth;
-  useEffect(() => {
-    const y = window.scrollY;
-    Object.assign(document.body.style, { overflow: 'hidden', position: 'fixed', top: `-${y}px`, width: '100%' });
-    return () => {
-      Object.assign(document.body.style, { overflow: '', position: '', top: '', width: '' });
-      window.scrollTo(0, y);
-    };
-  }, []);
   return React.createElement("div", {
     style: {
       position: 'fixed',
@@ -16524,8 +16502,7 @@ function SoilProfileModal({
       zIndex: 9999,
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      touchAction: 'none'
+      justifyContent: 'center'
     },
     onClick: e => {
       if (e.target === e.currentTarget) onClose();
@@ -16589,7 +16566,6 @@ function SoilProfileModal({
       display: 'flex',
       flexDirection: 'column',
       overflow: 'auto',
-      overscrollBehavior: 'contain',
       flex: 1
     }
   }, React.createElement("div", {
