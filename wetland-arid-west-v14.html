@@ -2,7 +2,7 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <meta name="apple-mobile-web-app-title" content="ADS Arid West"/>
@@ -696,11 +696,7 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     font-size: 14px !important; min-height: 38px !important;
     font-family: var(--font-sans) !important;
   }
-  /* iOS Safari zooms in on focus when font-size < 16px. Bump to 16px on iOS
-     only to suppress that behavior without touching the viewport meta tag. */
-  @supports (-webkit-touch-callout: none) {
-    #aw-modules input, #aw-modules select, #aw-modules textarea { font-size: 16px !important; }
-  }
+
   #aw-modules label { font-size: 12px !important; }
 
   /* ── Section tab strip ───────────────────────────────────────────── */
@@ -19256,31 +19252,6 @@ function WetlandApp() {
     const diff = el.getBoundingClientRect().top - top;
     if (Math.abs(diff) > 1 && Math.abs(diff) < window.innerHeight * 0.6) window.scrollBy(0, diff);
   });
-  useEffect(() => {
-    const tags = ['INPUT', 'SELECT', 'TEXTAREA'];
-    // iOS Safari landscape: keyboard dismissal can leave a non-zero scrollX,
-    // shifting scrollable content right of the fixed topbar/navtabs.
-    function onBlur(e) {
-      if (!tags.includes(e.target?.tagName)) return;
-      setTimeout(() => { if (window.scrollX !== 0) window.scrollTo(0, window.scrollY); }, 100);
-    }
-    // iOS Safari preserves zoom level across orientation changes, causing extreme
-    // zoom jumps. Briefly enforce initial-scale=1,maximum-scale=1 on rotation to
-    // force the browser to reset its zoom state, then restore whatever was active.
-    function resetOnRotate() {
-      const meta = document.querySelector('meta[name=viewport]');
-      if (!meta) return;
-      const cur = meta.content;
-      meta.content = 'width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover';
-      setTimeout(() => { meta.content = cur; }, 500);
-    }
-    document.addEventListener('blur', onBlur, true);
-    window.addEventListener('orientationchange', resetOnRotate);
-    return () => {
-      document.removeEventListener('blur', onBlur, true);
-      window.removeEventListener('orientationchange', resetOnRotate);
-    };
-  }, []);
   const [morphAdaptEntries, setMorphAdaptEntries] = useState([]);
   const [probHydroVeg, setProbHydroVeg] = useState(false);
   const [probHydroVegRemarks, setProbHydroVegRemarks] = useState('');
