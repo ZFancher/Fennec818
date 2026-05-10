@@ -18632,9 +18632,9 @@ function HydricRow({
         ? React.createElement("span", {style:pillStyle('var(--c-auto-combo-bg)','var(--c-auto-combo)','var(--c-auto-combo)')}, "COMBO ◆")
         : null;
   const lrrTag = ind.lrr && !ind.testLRR && (lrrMismatch || !ind.lrr.includes('All LRRs'))
-    ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, ind.lrr.split(';')[0].trim(), lrrMismatch?' ⚠':'')
+    ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, (ind.lrr.match(/LRR [A-Z]/)||[ind.lrr.split(';')[0].trim()])[0])
     : ind.testLRR
-      ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, ind.testLRR)
+      ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, (ind.testLRR.match(/LRR [A-Z]/)||[ind.testLRR])[0])
       : null;
   const hasSubContent = (isAuto && autoReason) || (isPartial && !checked && autoReason) || (isPartial && checked) || exp;
   return React.createElement("div", {
@@ -18705,9 +18705,9 @@ function IndRow({
       ? React.createElement("span", {style:pillStyle('var(--c-auto-partial-bg)','var(--c-auto-partial)','var(--c-auto-partial)')}, "PARTIAL ◑")
       : null;
   const lrrTag = ind.lrr && !ind.testLRR && (lrrMismatch || !ind.lrr.includes('All LRRs'))
-    ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, ind.lrr.split(';')[0].trim(), lrrMismatch?' ⚠':'')
+    ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, (ind.lrr.match(/LRR [A-Z]/)||[ind.lrr.split(';')[0].trim()])[0])
     : ind.testLRR
-      ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, ind.testLRR)
+      ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, (ind.testLRR.match(/LRR [A-Z]/)||[ind.testLRR])[0])
       : null;
   const hasSubContent = ind.measureHint || (autoChecked && reasonText) || isAutoPartial || (autoPartial && checked) || exp || !!warningBox;
   return React.createElement("div", {
