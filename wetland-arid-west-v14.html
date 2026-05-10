@@ -19252,30 +19252,6 @@ function WetlandApp() {
     const diff = el.getBoundingClientRect().top - top;
     if (Math.abs(diff) > 1 && Math.abs(diff) < window.innerHeight * 0.6) window.scrollBy(0, diff);
   });
-  useEffect(() => {
-    const tags = ['INPUT', 'SELECT', 'TEXTAREA'];
-    let savedScrollY = 0;
-    let timer = null;
-    function onFocus(e) {
-      if (!tags.includes(e.target?.tagName)) return;
-      clearTimeout(timer);
-      savedScrollY = window.scrollY;
-    }
-    function onBlur(e) {
-      if (!tags.includes(e.target?.tagName)) return;
-      clearTimeout(timer);
-      const y = savedScrollY;
-      // Wait for iOS keyboard dismiss animation (~300ms) before restoring position.
-      timer = setTimeout(() => { window.scrollTo({ top: y, left: 0, behavior: 'instant' }); }, 350);
-    }
-    document.addEventListener('focus', onFocus, true);
-    document.addEventListener('blur', onBlur, true);
-    return () => {
-      document.removeEventListener('focus', onFocus, true);
-      document.removeEventListener('blur', onBlur, true);
-      clearTimeout(timer);
-    };
-  }, []);
   const [morphAdaptEntries, setMorphAdaptEntries] = useState([]);
   const [probHydroVeg, setProbHydroVeg] = useState(false);
   const [probHydroVegRemarks, setProbHydroVegRemarks] = useState('');
