@@ -650,9 +650,9 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   @keyframes spin { to { transform: rotate(360deg); } }
 
   @keyframes btnFlash {
-    0%   { box-shadow: 0 0 0 0px rgba(255,255,255,0.0); }
-    30%  { box-shadow: 0 0 0 3px rgba(255,255,255,0.55); }
-    100% { box-shadow: 0 0 0 0px rgba(255,255,255,0.0); }
+    0%   { outline: 3px solid rgba(255,255,255,0.0); outline-offset: 0px; }
+    30%  { outline: 3px solid rgba(255,255,255,0.55); outline-offset: 1px; }
+    100% { outline: 3px solid rgba(255,255,255,0.0); outline-offset: 0px; }
   }
   .btn-flash { animation: btnFlash 0.4s ease-out; }
 
@@ -15794,7 +15794,7 @@ function MunsellPickerPopup({
         if (dragOriginRef.current) {
           const dx = e.clientX - dragOriginRef.current.x;
           const dy = e.clientY - dragOriginRef.current.y;
-          if (Math.sqrt(dx * dx + dy * dy) > 6) {
+          if (dx * dx + dy * dy > 36) {
             clearTimeout(longTimerRef.current);
             dragOriginRef.current = null;
           }
@@ -15820,7 +15820,7 @@ function MunsellPickerPopup({
           const t = e.touches[0];
           const dx = t.clientX - dragOriginRef.current.x;
           const dy = t.clientY - dragOriginRef.current.y;
-          if (Math.sqrt(dx * dx + dy * dy) > 6) {
+          if (dx * dx + dy * dy > 36) {
             clearTimeout(longTimerRef.current);
             dragOriginRef.current = null;
           }
@@ -17113,7 +17113,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       }
     }).catch(() => {});
 
-    let lastDetect = 0;
+    let lastDetect = 0, lastFrame = 0;
     function loop() {
       animRef.current = requestAnimationFrame(loop);
       if (phaseRef.current !== 'position') return;
@@ -17121,6 +17121,9 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       const canvas = overlayRef.current;
       const grab   = grabCanvasRef.current;
       if (!video || !canvas || !grab || video.readyState < 2) return;
+
+      const now = Date.now();
+      if (now - lastFrame < 33) return; lastFrame = now;
 
       const W = canvas.offsetWidth, H = canvas.offsetHeight;
       if (!W || !H) return;
@@ -17146,7 +17149,6 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       grab.width=detW; grab.height=detH;
       grab.getContext('2d').drawImage(video, srcX, srcY, srcW, srcH, 0, 0, detW, detH);
 
-      const now = Date.now();
       if (now - lastDetect > 130) {
         lastDetect = now;
         try {
@@ -17207,13 +17209,11 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       const sx = grab ? W / grab.width : 1;
       const sy = grab ? H / grab.height : 1;
       const c = det.corners;
-      ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 4;
       ctx.strokeStyle = '#14b8a6'; ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(c[0].x*sx, c[0].y*sy); ctx.lineTo(c[1].x*sx, c[1].y*sy);
       ctx.lineTo(c[2].x*sx, c[2].y*sy); ctx.lineTo(c[3].x*sx, c[3].y*sy);
       ctx.closePath(); ctx.stroke();
-      ctx.shadowBlur = 0;
       det.regions.forEach((reg, i) => {
         ctx.strokeStyle = CARD_REFERENCE_PATCHES[i].hex; ctx.lineWidth = 2;
         ctx.strokeRect((reg.cx - reg.r) * sx, (reg.cy - reg.r) * sy, reg.r * 2 * sx, reg.r * 2 * sy);
@@ -17605,10 +17605,14 @@ function SoilCameraCapture({ onSelect, onClose }) {
       if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.play().catch(() => {}); }
     }).catch(err => console.warn('Camera access denied:', err));
 
+    let lastFrame = 0;
     function loop() {
       animRef.current = requestAnimationFrame(loop);
       const video = videoRef.current, canvas = canvasRef.current, grabCanvas = grabCanvasRef.current;
       if (!video || !canvas || !grabCanvas || video.readyState < 2) return;
+
+      const now = Date.now();
+      if (now - lastFrame < 33) return; lastFrame = now;
 
       const W = canvas.offsetWidth, H = canvas.offsetHeight;
       if (!W || !H) return;
@@ -17634,7 +17638,6 @@ function SoilCameraCapture({ onSelect, onClose }) {
       capturedFrameRef.current = grabCanvas;
 
       // Throttled ArUco detection (~8 fps)
-      const now = Date.now();
       if (now - lastDetectRef.current > 130) {
         lastDetectRef.current = now;
         const result = measureCard(grabCanvas);
@@ -17658,13 +17661,11 @@ function SoilCameraCapture({ onSelect, onClose }) {
       const det = detectionRef.current;
       if (det) {
         const c = det.corners;
-        ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 4;
         ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.moveTo(c[0].x, c[0].y); ctx.lineTo(c[1].x, c[1].y);
         ctx.lineTo(c[2].x, c[2].y); ctx.lineTo(c[3].x, c[3].y);
         ctx.closePath(); ctx.stroke();
-        ctx.shadowBlur = 0;
 
         det.regions.forEach((reg, i) => {
           ctx.strokeStyle = CARD_REFERENCE_PATCHES[i].hex; ctx.lineWidth = 2;
@@ -17676,13 +17677,12 @@ function SoilCameraCapture({ onSelect, onClose }) {
       const sp = soilPointRef.current;
       if (sp) {
         const cr = soilSampleRRef.current;
-        ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 3;
         ctx.strokeStyle = 'var(--c-auto-partial)'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(sp.x, sp.y, cr, 0, Math.PI * 2); ctx.stroke();
         ctx.beginPath();
         ctx.moveTo(sp.x - cr - 8, sp.y); ctx.lineTo(sp.x + cr + 8, sp.y);
         ctx.moveTo(sp.x, sp.y - cr - 8); ctx.lineTo(sp.x, sp.y + cr + 8);
-        ctx.stroke(); ctx.shadowBlur = 0;
+        ctx.stroke();
       }
     }
     animRef.current = requestAnimationFrame(loop);
