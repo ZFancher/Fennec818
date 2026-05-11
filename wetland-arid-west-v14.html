@@ -742,6 +742,17 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     #aw-modules { max-width: 1100px !important; gap: 20px !important; }
   }
 
+  /* ── Munsell picker popup — portrait / mobile ────────────────────── */
+  @media (orientation: portrait) {
+    .munsell-popup-outer {
+      padding-top: calc(5vh + env(safe-area-inset-top, 0px)) !important;
+    }
+    .munsell-popup-inner {
+      min-width: unset !important;
+      width: calc(100vw - 32px) !important;
+    }
+  }
+
 </style>
 </head>
 <body style="background:var(--c-bg);color:var(--c-ink);margin:0;">
@@ -15878,7 +15889,8 @@ function MunsellPickerPopup({
         width: labelW,
         flexShrink: 0,
         textAlign: 'right',
-        fontSize: 8,
+        fontSize: 9,
+        fontWeight: 700,
         color: 'var(--c-sub)',
         paddingRight: 3,
         overflow: 'hidden'
@@ -15914,6 +15926,7 @@ function MunsellPickerPopup({
         flexShrink: 0,
         textAlign: 'center',
         fontSize: 9,
+        fontWeight: 700,
         color: 'var(--c-sub)'
       }
     }, "/", c))), React.createElement("div", {
@@ -15964,6 +15977,7 @@ function MunsellPickerPopup({
           flexShrink: 0,
           textAlign: 'right',
           fontSize: 9,
+          fontWeight: 700,
           color: 'var(--c-sub)',
           paddingRight: 3
         }
@@ -16032,7 +16046,8 @@ function MunsellPickerPopup({
         width: labelW,
         flexShrink: 0,
         textAlign: 'right',
-        fontSize: 8,
+        fontSize: 9,
+        fontWeight: 700,
         color: 'var(--c-sub)',
         paddingRight: 3,
         overflow: 'hidden'
@@ -16068,6 +16083,7 @@ function MunsellPickerPopup({
         flexShrink: 0,
         textAlign: 'center',
         fontSize: 9,
+        fontWeight: 700,
         color: 'var(--c-sub)'
       }
     }, v, "/"))), React.createElement("div", {
@@ -16100,7 +16116,8 @@ function MunsellPickerPopup({
         width: 50,
         flexShrink: 0,
         textAlign: 'right',
-        fontSize: 8,
+        fontSize: 9,
+        fontWeight: 700,
         color: 'var(--c-sub)',
         paddingRight: 3,
         overflow: 'hidden'
@@ -16136,6 +16153,7 @@ function MunsellPickerPopup({
         flexShrink: 0,
         textAlign: 'center',
         fontSize: 9,
+        fontWeight: 700,
         color: 'var(--c-sub)'
       }
     }, "/", col.c))), React.createElement("div", {
@@ -16185,7 +16203,8 @@ function MunsellPickerPopup({
         width: labelW,
         flexShrink: 0,
         textAlign: 'right',
-        fontSize: 8,
+        fontSize: 9,
+        fontWeight: 700,
         color: 'var(--c-sub)',
         paddingRight: 3,
         overflow: 'hidden'
@@ -16239,6 +16258,7 @@ function MunsellPickerPopup({
     }));
   }
   return React.createElement("div", {
+    className: 'munsell-popup-outer',
     style: {
       position: 'fixed',
       inset: 0,
@@ -16253,6 +16273,7 @@ function MunsellPickerPopup({
       if (e.target === e.currentTarget) onClose();
     }
   }, React.createElement("div", {
+    className: 'munsell-popup-inner',
     style: {
       background: 'var(--c-panel)',
       border: '1px solid var(--c-rule-strong)',
