@@ -16327,10 +16327,10 @@ function MunsellPickerPopup({
     }
   }, "\u2715"), React.createElement("div", {
     style: {
-      position: 'relative',
-      textAlign: 'center',
-      paddingLeft: 36,
-      paddingRight: 36,
+      display: 'grid',
+      gridTemplateColumns: '28px 1fr 28px',
+      alignItems: 'center',
+      gap: 8,
       marginBottom: 12,
       flexShrink: 0
     }
@@ -16338,10 +16338,6 @@ function MunsellPickerPopup({
     onClick: () => setPageIdx(i => Math.max(0, i - 1)),
     disabled: pageIdx === 0,
     style: {
-      position: 'absolute',
-      left: 0,
-      top: '50%',
-      transform: 'translateY(-50%)',
       background: 'var(--c-input)',
       border: '1px solid var(--c-rule-strong)',
       color: pageIdx === 0 ? 'var(--c-rule-strong)' : 'var(--c-ink)',
@@ -16355,6 +16351,10 @@ function MunsellPickerPopup({
       justifyContent: 'center'
     }
   }, "\u2039"), React.createElement("div", {
+    style: {
+      textAlign: 'center'
+    }
+  }, React.createElement("div", {
     style: {
       fontSize: 14,
       fontWeight: 700,
@@ -16374,14 +16374,10 @@ function MunsellPickerPopup({
       marginTop: 2,
       fontWeight: 500
     }
-  }, "Do not use for official soil color determinations \u2014 Reference Only!"), React.createElement("button", {
+  }, "Do not use for official soil color determinations \u2014 Reference Only!")), React.createElement("button", {
     onClick: () => setPageIdx(i => Math.min(ACTIVE_MUNSELL_PAGES.length - 1, i + 1)),
     disabled: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1,
     style: {
-      position: 'absolute',
-      right: 0,
-      top: '50%',
-      transform: 'translateY(-50%)',
       background: 'var(--c-input)',
       border: '1px solid var(--c-rule-strong)',
       color: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1 ? 'var(--c-rule-strong)' : 'var(--c-ink)',
