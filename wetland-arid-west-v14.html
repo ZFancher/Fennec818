@@ -745,7 +745,7 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   /* ── Munsell picker popup — portrait / mobile ────────────────────── */
   @media (orientation: portrait) {
     .munsell-popup-outer {
-      padding-top: env(safe-area-inset-top, 0px) !important;
+      padding-top: max(env(safe-area-inset-top, 0px), 8px) !important;
     }
     .munsell-popup-inner {
       min-width: unset !important;
@@ -762,9 +762,6 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
 
   /* ── Munsell picker popup — in-browser portrait (chrome visible) ─── */
   @media (display-mode: browser) and (orientation: portrait) {
-    .munsell-popup-outer {
-      padding-top: 8px !important;
-    }
     .munsell-popup-inner {
       max-height: 90dvh !important;
     }
