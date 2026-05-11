@@ -16307,21 +16307,30 @@ function MunsellPickerPopup({
       overflow: 'hidden',
       boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      position: 'relative'
     }
-  }, React.createElement("div", {
+  }, React.createElement("button", {
+    onClick: onClose,
+    style: {
+      position: 'absolute',
+      top: 10,
+      right: 10,
+      background: 'none',
+      border: 'none',
+      color: 'var(--c-fail)',
+      fontSize: 21,
+      cursor: 'pointer',
+      padding: '0 2px',
+      lineHeight: 1,
+      zIndex: 1
+    }
+  }, "\u2715"), React.createElement("div", {
     style: {
       display: 'flex',
-      alignItems: 'stretch',
+      alignItems: 'center',
       gap: 8,
       marginBottom: 12,
-      flexShrink: 0
-    }
-  }, React.createElement("div", {
-    style: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'flex-end',
       flexShrink: 0
     }
   }, React.createElement("button", {
@@ -16340,7 +16349,7 @@ function MunsellPickerPopup({
       alignItems: 'center',
       justifyContent: 'center'
     }
-  }, "\u2039")), React.createElement("div", {
+  }, "\u2039"), React.createElement("div", {
     style: {
       flex: 1,
       textAlign: 'center'
@@ -16365,26 +16374,7 @@ function MunsellPickerPopup({
       marginTop: 2,
       fontWeight: 500
     }
-  }, "Do not use for official soil color determinations \u2014 Reference Only!")), React.createElement("div", {
-    style: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: 6,
-      flexShrink: 0
-    }
-  }, React.createElement("button", {
-    onClick: onClose,
-    style: {
-      background: 'none',
-      border: 'none',
-      color: 'var(--c-fail)',
-      fontSize: 21,
-      cursor: 'pointer',
-      padding: '0 2px',
-      lineHeight: 1
-    }
-  }, "\u2715"), React.createElement("button", {
+  }, "Do not use for official soil color determinations \u2014 Reference Only!")), React.createElement("button", {
     onClick: () => setPageIdx(i => Math.min(ACTIVE_MUNSELL_PAGES.length - 1, i + 1)),
     disabled: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1,
     style: {
@@ -16400,7 +16390,7 @@ function MunsellPickerPopup({
       alignItems: 'center',
       justifyContent: 'center'
     }
-  }, "\u203A"))), React.createElement("div", {
+  }, "\u203A")), React.createElement("div", {
     style: {
       display: 'flex',
       gap: 3,
