@@ -7,9 +7,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <meta name="apple-mobile-web-app-title" content="ADS Arid West"/>
   <title>USACE Wetland Determination — Arid West v13</title>
+  <script>(function(){var p=(navigator.userAgentData&&navigator.userAgentData.platform||navigator.platform||'').toLowerCase();if(p.indexOf('win')===0)document.documentElement.classList.add('windows');}());</script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,100..900&display=swap" rel="stylesheet"/>
   <script>/**
  * @license React
  * react.production.min.js
@@ -514,7 +515,8 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     *,*::before,*::after{box-sizing:border-box;}
     html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
     html,body{margin:0;padding:0;}
-    body{overflow-y:scroll;}
+    body{overflow-y:scroll;text-rendering:optimizeLegibility;font-optical-sizing:auto;}
+    .windows body{font-weight:450;}
     button,input,select,textarea{font:inherit;}
     img,svg{display:block;}
     *{scrollbar-width:none;}
