@@ -760,6 +760,19 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     }
   }
 
+  /* ── Munsell picker popup — in-browser portrait (chrome visible) ─── */
+  @media (display-mode: browser) and (orientation: portrait) {
+    .munsell-popup-outer {
+      padding-top: 8px !important;
+    }
+    .munsell-popup-inner {
+      max-height: 90dvh !important;
+    }
+    .munsell-popup-grid {
+      overflow-y: auto !important;
+    }
+  }
+
 </style>
 </head>
 <body style="background:var(--c-bg);color:var(--c-ink);margin:0;">
