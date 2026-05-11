@@ -16312,7 +16312,7 @@ function MunsellPickerPopup({
   }, React.createElement("div", {
     style: {
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       gap: 8,
       marginBottom: 12,
       flexShrink: 0
@@ -16325,8 +16325,8 @@ function MunsellPickerPopup({
       border: '1px solid var(--c-rule-strong)',
       color: pageIdx === 0 ? 'var(--c-rule-strong)' : 'var(--c-ink)',
       borderRadius: 5,
-      width: 34,
-      height: 34,
+      width: 28,
+      height: 28,
       fontSize: 16,
       cursor: pageIdx === 0 ? 'not-allowed' : 'pointer',
       display: 'flex',
@@ -16336,23 +16336,38 @@ function MunsellPickerPopup({
     }
   }, "\u2039"), React.createElement("div", {
     style: {
-      flex: 1
-    }
-  }, React.createElement("div", {
-    style: {
-      display: 'flex',
-      alignItems: 'center'
-    }
-  }, React.createElement("div", {
-    style: {
       flex: 1,
+      textAlign: 'center'
+    }
+  }, React.createElement("div", {
+    style: {
       fontSize: 14,
       fontWeight: 700,
       color: 'var(--c-ink)',
-      letterSpacing: '0.06em',
-      textAlign: 'center'
+      letterSpacing: '0.06em'
     }
-  }, page.label), React.createElement("button", {
+  }, page.label), React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: 'var(--c-sub)',
+      marginTop: 1
+    }
+  }, pageIdx + 1, " of ", ACTIVE_MUNSELL_PAGES.length, " \u2014 Click to select", React.createElement("br", null), "Long-press for large view"), React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: 'var(--c-fail)',
+      marginTop: 2,
+      fontWeight: 500
+    }
+  }, "Do not use for official soil color determinations \u2014 Reference Only!")), React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 6,
+      flexShrink: 0
+    }
+  }, React.createElement("button", {
     onClick: onClose,
     style: {
       background: 'none',
@@ -16361,25 +16376,9 @@ function MunsellPickerPopup({
       fontSize: 19,
       cursor: 'pointer',
       padding: '0 2px',
-      lineHeight: 1,
-      flexShrink: 0
+      lineHeight: 1
     }
-  }, "\u2715")), React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: 'var(--c-sub)',
-      marginTop: 1,
-      textAlign: 'center'
-    }
-  }, pageIdx + 1, " of ", ACTIVE_MUNSELL_PAGES.length, " \u2014 Click to select", React.createElement("br", null), "Long-press for large view"), React.createElement("div", {
-    style: {
-      fontSize: 9,
-      color: 'var(--c-fail)',
-      marginTop: 2,
-      fontWeight: 500,
-      textAlign: 'center'
-    }
-  }, "Do not use for official soil color determinations \u2014 Reference Only!")), React.createElement("button", {
+  }, "\u2715"), React.createElement("button", {
     onClick: () => setPageIdx(i => Math.min(ACTIVE_MUNSELL_PAGES.length - 1, i + 1)),
     disabled: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1,
     style: {
@@ -16387,16 +16386,15 @@ function MunsellPickerPopup({
       border: '1px solid var(--c-rule-strong)',
       color: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1 ? 'var(--c-rule-strong)' : 'var(--c-ink)',
       borderRadius: 5,
-      width: 34,
-      height: 34,
+      width: 28,
+      height: 28,
       fontSize: 16,
       cursor: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1 ? 'not-allowed' : 'pointer',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0
+      justifyContent: 'center'
     }
-  }, "\u203A")), React.createElement("div", {
+  }, "\u203A"))), React.createElement("div", {
     style: {
       display: 'flex',
       gap: 3,
