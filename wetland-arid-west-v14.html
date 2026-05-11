@@ -713,7 +713,7 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
     flex: 1; padding: 8px 4px;
     border: none; border-top: 2px solid var(--c-rule);
     background: transparent;
-    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
     letter-spacing: var(--ls-cap); text-transform: uppercase;
     color: var(--c-sub-2); cursor: pointer;
     min-height: 44px; line-height: 1;
@@ -16307,30 +16307,16 @@ function MunsellPickerPopup({
       overflow: 'hidden',
       boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'column'
     }
   }, React.createElement("div", {
-    style: { position: 'relative', paddingTop: 24, marginBottom: 12, flexShrink: 0 }
-  }, React.createElement("button", {
-    onClick: onClose,
     style: {
-      position: 'absolute',
-      top: 0,
-      right: 0,
-      background: 'none',
-      border: 'none',
-      color: 'var(--c-fail)',
-      fontSize: 18,
-      cursor: 'pointer',
-      padding: 0,
-      lineHeight: 1
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+      marginBottom: 12,
+      flexShrink: 0
     }
-  }, "\u2715"), React.createElement("div", {
-    style: { display: 'table', width: '100%', tableLayout: 'fixed' }
-  }, React.createElement("div", {
-    style: { display: 'table-row' }
-  }, React.createElement("div", {
-    style: { display: 'table-cell', width: 36, verticalAlign: 'middle', textAlign: 'center' }
   }, React.createElement("button", {
     onClick: () => setPageIdx(i => Math.max(0, i - 1)),
     disabled: pageIdx === 0,
@@ -16339,25 +16325,16 @@ function MunsellPickerPopup({
       border: '1px solid var(--c-rule-strong)',
       color: pageIdx === 0 ? 'var(--c-rule-strong)' : 'var(--c-ink)',
       borderRadius: 5,
-      width: 28,
-      height: 28,
+      width: 34,
+      height: 34,
       fontSize: 16,
       cursor: pageIdx === 0 ? 'not-allowed' : 'pointer',
-      display: 'inline-flex',
+      display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      flexShrink: 0
     }
-  }, "\u2039")), React.createElement("div", {
-    style: { display: 'table-cell', verticalAlign: 'middle', textAlign: 'center' }
-  }, React.createElement("div", {
-    style: { fontSize: 14, fontWeight: 700, color: 'var(--c-ink)', letterSpacing: '0.06em' }
-  }, page.label), React.createElement("div", {
-    style: { fontSize: 10, color: 'var(--c-sub)', marginTop: 1 }
-  }, pageIdx + 1, " of ", ACTIVE_MUNSELL_PAGES.length, " \u2014 Click to select", React.createElement("br", null), "Long-press for large view"), React.createElement("div", {
-    style: { fontSize: 9, color: 'var(--c-fail)', marginTop: 2, fontWeight: 500 }
-  }, "Do not use for official soil color determinations \u2014 Reference Only!")), React.createElement("div", {
-    style: { display: 'table-cell', width: 36, verticalAlign: 'middle', textAlign: 'center' }
-  }, React.createElement("button", {
+  }, "\u2039"), React.createElement("button", {
     onClick: () => setPageIdx(i => Math.min(ACTIVE_MUNSELL_PAGES.length - 1, i + 1)),
     disabled: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1,
     style: {
@@ -16365,15 +16342,54 @@ function MunsellPickerPopup({
       border: '1px solid var(--c-rule-strong)',
       color: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1 ? 'var(--c-rule-strong)' : 'var(--c-ink)',
       borderRadius: 5,
-      width: 28,
-      height: 28,
+      width: 34,
+      height: 34,
       fontSize: 16,
       cursor: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1 ? 'not-allowed' : 'pointer',
-      display: 'inline-flex',
+      display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      flexShrink: 0
     }
-  }, "\u203A")))))), React.createElement("div", {
+  }, "\u203A"), React.createElement("div", {
+    style: {
+      flex: 1,
+      textAlign: 'center'
+    }
+  }, React.createElement("div", {
+    style: {
+      fontSize: 14,
+      fontWeight: 700,
+      color: 'var(--c-ink)',
+      letterSpacing: '0.06em'
+    }
+  }, page.label), React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: 'var(--c-sub)',
+      marginTop: 1
+    }
+  }, pageIdx + 1, " of ", ACTIVE_MUNSELL_PAGES.length, " \u2014 Click to select", React.createElement("br", null), "Long-press for large view"), React.createElement("div", {
+    style: {
+      fontSize: 9,
+      color: 'var(--c-fail)',
+      marginTop: 2,
+      fontWeight: 500
+    }
+  }, "Do not use for official soil color determinations \u2014 Reference Only!")), React.createElement("button", {
+    onClick: onClose,
+    style: {
+      background: 'var(--c-fail-bg)',
+      border: '1px solid var(--c-fail)',
+      color: 'var(--c-fail)',
+      borderRadius: 5,
+      width: 34,
+      height: 34,
+      fontSize: 14,
+      cursor: 'pointer',
+      flexShrink: 0
+    }
+  }, "\u2715")), React.createElement("div", {
     style: {
       display: 'flex',
       gap: 3,
@@ -20805,8 +20821,8 @@ function WetlandApp() {
           React.createElement("span", {style:{width:7,height:7,borderRadius:'50%',background:'var(--c-ind-facu)',display:'inline-block'}}),
           React.createElement("span", {style:{width:7,height:7,borderRadius:'50%',background:'var(--c-ind-upl)',display:'inline-block'}})
         ),
-        React.createElement("div", {style:{fontFamily:"var(--font-mono)",fontSize:10,fontWeight:700,letterSpacing:"0.16em",color:"var(--c-sub)",textTransform:"uppercase",lineHeight:1.2}}, "ADS Adapt \xB7 Arid West Region"),
-        React.createElement("div", {style:{fontFamily:"var(--font-sans)",fontSize:16,fontWeight:600,letterSpacing:"-0.01em",color:"var(--c-ink)",lineHeight:1.2}}, "Wetland Determination Data Form")
+        React.createElement("div", {style:{fontFamily:"var(--font-mono)",fontSize:10,fontWeight:700,letterSpacing:"0.16em",color:"var(--c-sub)",textTransform:"uppercase",lineHeight:1.2}}, "ADS Plus \xB7 Arid West Region"),
+        React.createElement("div", {style:{fontFamily:"var(--font-sans)",fontSize:15,fontWeight:600,letterSpacing:"-0.01em",color:"var(--c-ink)",lineHeight:1.2}}, "Wetland Determination Data Form")
       ),
       React.createElement("button", {
         onClick: () => setShowExportModal(true),
@@ -22120,7 +22136,7 @@ function WetlandApp() {
       style: {
         background: 'none',
         border: 'none',
-        color: 'var(--c-fail)',
+        color: 'var(--c-sub)',
         padding: '2px 7px',
         fontSize: 12,
         cursor: 'pointer',
@@ -22551,7 +22567,7 @@ function WetlandApp() {
       style: {
         background: 'none',
         border: 'none',
-        color: 'var(--c-fail)',
+        color: 'var(--c-sub)',
         padding: 0,
         fontSize: 16,
         cursor: 'pointer',
@@ -22794,7 +22810,7 @@ function WetlandApp() {
       style: {
         background: 'none',
         border: 'none',
-        color: 'var(--c-fail)',
+        color: 'var(--c-sub)',
         padding: 0,
         fontSize: 16,
         cursor: 'pointer',
