@@ -751,6 +751,10 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
       min-width: unset !important;
       width: calc(100vw - 32px) !important;
     }
+    .munsell-popup-grid {
+      overflow-x: auto !important;
+      touch-action: pan-x pan-y !important;
+    }
   }
 
 </style>
@@ -15870,6 +15874,7 @@ function MunsellPickerPopup({
     const chromas = [...new Set(chips.map(c => c.c))].sort((a, b) => Number(a) - Number(b));
     const labelW = 50;
     return React.createElement("div", {
+      className: 'munsell-popup-grid',
       style: {
         overflowY: 'auto',
         flex: 1,
@@ -15939,6 +15944,7 @@ function MunsellPickerPopup({
     columns
   }) {
     return React.createElement("div", {
+      className: 'munsell-popup-grid',
       style: {
         overflowY: 'auto',
         flex: 1,
@@ -16027,6 +16033,7 @@ function MunsellPickerPopup({
     const valueCols = ['9.5', '9', '8.5', '8'];
     const labelW = 50;
     return React.createElement("div", {
+      className: 'munsell-popup-grid',
       style: {
         overflowY: 'auto',
         flex: 1,
@@ -16097,6 +16104,7 @@ function MunsellPickerPopup({
     columns
   }) {
     return React.createElement("div", {
+      className: 'munsell-popup-grid',
       style: {
         overflowY: 'auto',
         flex: 1,
@@ -16184,6 +16192,7 @@ function MunsellPickerPopup({
     const allValues = [...new Set(columns.flatMap(col => col.chips.map(c => c.v)))].sort((a, b) => Number(b) - Number(a));
     const labelW = 50;
     return React.createElement("div", {
+      className: 'munsell-popup-grid',
       style: {
         overflowY: 'auto',
         flex: 1,
