@@ -20277,7 +20277,6 @@ function WetlandApp() {
   function applyImportedState(s) {
     ignoreGpsRef.current = true;
     gpsJsonLockedRef.current = true;
-    setGpsAcquiredAt(null);
     if (s.siteInfo) {
       const si = {
         ...s.siteInfo
