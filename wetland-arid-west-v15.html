@@ -21192,10 +21192,10 @@ function WetlandApp() {
         _gpsIsLock && React.createElement(React.Fragment, null,
           !gpsFromJson && React.createElement("button", {
             onClick: acquireLocation,
-            style: { fontSize: 10, color: 'var(--c-warn)', background: 'none', border: '1px solid var(--c-warn)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6', flexShrink: 0 }
+            style: { fontSize: 10, color: 'var(--c-pass)', background: 'none', border: '1px solid var(--c-pass)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6', flexShrink: 0 }
           }, "Re-acquire"),
           React.createElement("span", {
-            style: { fontSize: 10, color: gpsStatus === 'gps' ? 'var(--c-pass)' : 'var(--c-auto-partial)' }
+            style: { fontSize: 10, color: gpsStatus === 'approx' ? 'var(--c-auto-partial)' : 'var(--c-pass)' }
           }, gpsStatus === 'gps' ? 'GPS' : gpsStatus === 'wifi' ? 'WiFi/Cell' : 'Approx',
             " \xB7 \xB1", gpsAccuracy, "m",
             gpsFromJson && ' (from JSON)')),
