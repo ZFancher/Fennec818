@@ -21203,7 +21203,7 @@ function WetlandApp() {
           React.createElement("span", { style: { fontSize: 10, color: 'var(--c-fail)' } }, "Location access denied"),
           React.createElement("button", {
             onClick: acquireLocation,
-            style: { marginTop: 5, fontSize: 10, color: 'var(--c-warn)', background: 'none', border: '1px solid var(--c-warn)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
+            style: { marginTop: 5, fontSize: 10, color: 'var(--c-fail)', background: 'var(--c-fail-bg)', border: '1px solid var(--c-fail)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
           }, "Retry")),
         gpsStatus === 'error' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Location unavailable — enter coordinates manually"),
         gpsStatus === 'unavailable' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Geolocation not available in this browser"))
