@@ -21178,14 +21178,14 @@ function WetlandApp() {
       outline: 'none',
       boxSizing: 'border-box'
     }
-  })))), React.createElement(React.Fragment, null,
+  })))), React.createElement("div", {
+      style: { marginTop: 5, minHeight: 22, display: 'flex', alignItems: 'center', gap: 8 }
+    },
       !gpsStatus && React.createElement("button", {
         onClick: acquireLocation,
-        style: { display: 'block', marginTop: 5, fontSize: 10, color: 'var(--c-pass)', background: 'none', border: '1px solid var(--c-pass)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
+        style: { fontSize: 10, color: 'var(--c-pass)', background: 'none', border: '1px solid var(--c-pass)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
       }, "Acquire Coordinates"),
-      gpsStatus && React.createElement("div", {
-        style: { marginTop: 5, display: 'flex', alignItems: 'center', gap: 8 }
-      },
+      gpsStatus && React.createElement(React.Fragment, null,
         gpsStatus === 'acquiring' && React.createElement("span", {
           style: { fontSize: 10, color: 'var(--c-sub)', fontStyle: 'italic' }
         }, "Acquiring location\u2026"),
