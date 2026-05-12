@@ -21164,7 +21164,13 @@ function WetlandApp() {
   }, lbl), React.createElement("input", {
     type: "text",
     value: siteInfo[key],
-    onChange: e => si(key, e.target.value),
+    onChange: e => {
+      si(key, e.target.value);
+      if ((key === 'lat' || key === 'lng') && gpsFromJson) {
+        setGpsFromJson(false);
+        gpsJsonLockedRef.current = false;
+      }
+    },
     autoComplete: "off",
     style: {
       width: '100%',
@@ -21181,7 +21187,7 @@ function WetlandApp() {
       style: { marginTop: 8, minHeight: 22, display: 'flex', alignItems: 'center', gap: 8 }
     },
       !gpsStatus && React.createElement("button", {
-        onClick: acquireLocation,
+        onClick: () => acquireLocation(),
         style: { fontSize: 10, color: 'var(--c-pass)', background: 'none', border: '1px solid var(--c-pass)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
       }, "Acquire Coordinates"),
       gpsStatus && React.createElement(React.Fragment, null,
@@ -21190,7 +21196,7 @@ function WetlandApp() {
         }, "Acquiring location\u2026"),
         _gpsIsLock && React.createElement(React.Fragment, null,
           !gpsFromJson && React.createElement("button", {
-            onClick: acquireLocation,
+            onClick: () => acquireLocation(),
             style: { fontSize: 10, color: 'var(--c-pass)', background: 'none', border: '1px solid var(--c-pass)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6', flexShrink: 0 }
           }, "Re-acquire"),
           React.createElement("span", {
@@ -21200,7 +21206,7 @@ function WetlandApp() {
             gpsFromJson && ' (from JSON)')),
         gpsStatus === 'denied' && React.createElement(React.Fragment, null,
           React.createElement("button", {
-            onClick: acquireLocation,
+            onClick: () => acquireLocation(),
             style: { fontSize: 10, color: 'var(--c-fail)', background: 'none', border: '1px solid var(--c-fail)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6', flexShrink: 0 }
           }, "Retry"),
           React.createElement("span", { style: { fontSize: 10, color: 'var(--c-fail)' } }, "Location access denied")),
