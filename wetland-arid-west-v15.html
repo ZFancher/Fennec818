@@ -19245,9 +19245,9 @@ function WetlandApp() {
       }
       if (!('geolocation' in navigator)) return 'unavailable';
       if (window.location.protocol === 'file:' && /Chrome\//.test(navigator.userAgent) && !/Edg\/|OPR\//.test(navigator.userAgent)) return 'error';
-      return 'acquiring';
+      return null;
     } catch {
-      return 'acquiring';
+      return null;
     }
   });
   const [gpsAccuracy, setGpsAccuracy] = useState(() => {
