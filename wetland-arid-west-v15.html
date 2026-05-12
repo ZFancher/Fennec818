@@ -21190,21 +21190,21 @@ function WetlandApp() {
           style: { fontSize: 10, color: 'var(--c-sub)', fontStyle: 'italic' }
         }, "Acquiring location\u2026"),
         _gpsIsLock && React.createElement(React.Fragment, null,
+          !gpsFromJson && React.createElement("button", {
+            onClick: acquireLocation,
+            style: { fontSize: 10, color: 'var(--c-warn)', background: 'none', border: '1px solid var(--c-warn)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6', flexShrink: 0 }
+          }, "Re-acquire"),
           React.createElement("span", {
             style: { fontSize: 10, color: gpsStatus === 'gps' ? 'var(--c-pass)' : 'var(--c-auto-partial)' }
           }, gpsStatus === 'gps' ? 'GPS' : gpsStatus === 'wifi' ? 'WiFi/Cell' : 'Approx',
             " \xB7 \xB1", gpsAccuracy, "m",
-            gpsFromJson && ' (from JSON)'),
-          !gpsFromJson && React.createElement("button", {
-            onClick: acquireLocation,
-            style: { marginTop: 5, fontSize: 10, color: 'var(--c-warn)', background: 'none', border: '1px solid var(--c-warn)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
-          }, "Re-acquire")),
+            gpsFromJson && ' (from JSON)')),
         gpsStatus === 'denied' && React.createElement(React.Fragment, null,
-          React.createElement("span", { style: { fontSize: 10, color: 'var(--c-fail)' } }, "Location access denied"),
           React.createElement("button", {
             onClick: acquireLocation,
-            style: { marginTop: 5, fontSize: 10, color: 'var(--c-fail)', background: 'var(--c-fail-bg)', border: '1px solid var(--c-fail)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
-          }, "Retry")),
+            style: { fontSize: 10, color: 'var(--c-fail)', background: 'var(--c-fail-bg)', border: '1px solid var(--c-fail)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6', flexShrink: 0 }
+          }, "Retry"),
+          React.createElement("span", { style: { fontSize: 10, color: 'var(--c-fail)' } }, "Location access denied")),
         gpsStatus === 'error' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Location unavailable — enter coordinates manually"),
         gpsStatus === 'unavailable' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Geolocation not available in this browser"))
     )), React.createElement("div", {
