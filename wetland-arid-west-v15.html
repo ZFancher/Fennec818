@@ -19257,13 +19257,30 @@ function WetlandApp() {
       return null;
     }
   });
-  const [gpsFromJson, setGpsFromJson] = useState(false);
+  const [gpsFromJson, setGpsFromJson] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('wetland_arid_v11') || '{}').gpsFromJson === true; }
+    catch { return false; }
+  });
+  const [gpsAcquiredAt, setGpsAcquiredAt] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('wetland_arid_v11') || '{}').gpsAcquiredAt ?? null; }
+    catch { return null; }
+  });
+  const [gpsStaleWarnDismissed, setGpsStaleWarnDismissed] = useState(false);
   const ignoreGpsRef = useRef(false);
+  const gpsJsonLockedRef = useRef(
+    (() => { try { return JSON.parse(localStorage.getItem('wetland_arid_v11') || '{}').gpsFromJson === true; } catch { return false; } })()
+  );
+  const [gpsTick, setGpsTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setGpsTick(n => n + 1), 60000);
+    return () => clearInterval(id);
+  }, []);
   const si = (k, v) => setSiteInfo(p => ({
     ...p,
     [k]: v
   }));
   const acquireLocation = useCallback(() => {
+    if (gpsJsonLockedRef.current) return;
     ignoreGpsRef.current = false;
     setGpsFromJson(false);
     if (!('geolocation' in navigator)) {
@@ -19289,6 +19306,8 @@ function WetlandApp() {
         datum: 'WGS 84'
       }));
       setGpsAccuracy(acc);
+      setGpsAcquiredAt(Date.now());
+      setGpsStaleWarnDismissed(false);
       setGpsStatus(acc <= 10 ? 'gps' : acc <= 100 ? 'wifi' : 'approx');
     };
     const onFail = err => {
@@ -19626,6 +19645,9 @@ function WetlandApp() {
     setBareGround('');
     setGpsStatus(null);
     setGpsAccuracy(null);
+    setGpsAcquiredAt(null);
+    setGpsStaleWarnDismissed(false);
+    gpsJsonLockedRef.current = false;
     setRemarksResetKey(k => k + 1);
     setCollapsibleResetKey(k => k + 1);
     acquireLocation();
@@ -19716,14 +19738,16 @@ function WetlandApp() {
           probHydrology,
           probHydrologyRemarks,
           gpsStatus,
-          gpsAccuracy
+          gpsAccuracy,
+          gpsFromJson,
+          gpsAcquiredAt
         }));
       } catch (e) {
         console.warn('Failed to save form:', e);
       }
     }, 600);
     return () => clearTimeout(t);
-  }, [siteInfo, strata, horizons, restrictiveType, restrictiveDepth, chkHydric, chkHydricProb, chkP, chkS, hydroMeasure, plotSizes, bareGround, bioticCrust, normalCirc, sigDistVeg, sigDistSoil, sigDistHydro, natProbVeg, natProbSoil, natProbHydro, spgiRemarks, vegRemarks, soilRemarks, hydroRemarks, morphAdaptEntries, probHydroVeg, probHydroVegRemarks, probHydrology, probHydrologyRemarks, gpsStatus, gpsAccuracy]);
+  }, [siteInfo, strata, horizons, restrictiveType, restrictiveDepth, chkHydric, chkHydricProb, chkP, chkS, hydroMeasure, plotSizes, bareGround, bioticCrust, normalCirc, sigDistVeg, sigDistSoil, sigDistHydro, natProbVeg, natProbSoil, natProbHydro, spgiRemarks, vegRemarks, soilRemarks, hydroRemarks, morphAdaptEntries, probHydroVeg, probHydroVegRemarks, probHydrology, probHydrologyRemarks, gpsStatus, gpsAccuracy, gpsFromJson, gpsAcquiredAt]);
   const [activeTab, setActiveTab] = useState('site');
   const [theme, setTheme] = useState(() => {
     try { return localStorage.getItem('aw.theme') || 'light'; } catch { return 'light'; }
@@ -20273,6 +20297,8 @@ function WetlandApp() {
   }
   function applyImportedState(s) {
     ignoreGpsRef.current = true;
+    gpsJsonLockedRef.current = true;
+    setGpsAcquiredAt(null);
     if (s.siteInfo) {
       const si = {
         ...s.siteInfo
@@ -21141,52 +21167,52 @@ function WetlandApp() {
       outline: 'none',
       boxSizing: 'border-box'
     }
-  })))), gpsStatus && React.createElement("div", {
-    style: {
-      marginTop: 5,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 8
-    }
-  }, gpsStatus === 'acquiring' && React.createElement("span", {
-    style: {
-      fontSize: 10,
-      color: 'var(--c-sub)',
-      fontStyle: 'italic'
-    }
-  }, "Acquiring location\u2026"), (gpsStatus === 'gps' || gpsStatus === 'wifi' || gpsStatus === 'approx') && React.createElement("span", {
-    style: {
-      fontSize: 10,
-      color: gpsStatus === 'gps' ? 'var(--c-pass)' : 'var(--c-auto-partial)'
-    }
-  }, gpsStatus === 'gps' ? 'GPS' : gpsStatus === 'wifi' ? 'WiFi/Cell' : 'Approx', " \xB7 \xB1", gpsAccuracy, "m", gpsFromJson ? ' (from JSON)' : ''), gpsStatus === 'denied' && React.createElement(React.Fragment, null, React.createElement("span", {
-    style: {
-      fontSize: 10,
-      color: 'var(--c-fail)'
-    }
-  }, "Location access denied"), React.createElement("button", {
-    onClick: acquireLocation,
-    style: {
-      fontSize: 10,
-      color: 'var(--c-sub)',
-      background: 'none',
-      border: '1px solid var(--c-rule-strong)',
-      borderRadius: 3,
-      padding: '1px 6px',
-      cursor: 'pointer',
-      lineHeight: '1.6'
-    }
-  }, "Retry")), gpsStatus === 'error' && React.createElement(React.Fragment, null, React.createElement("span", {
-    style: {
-      fontSize: 10,
-      color: 'var(--c-sub)'
-    }
-  }, "Location unavailable — enter coordinates manually")), gpsStatus === 'unavailable' && React.createElement("span", {
-    style: {
-      fontSize: 10,
-      color: 'var(--c-sub)'
-    }
-  }, "Geolocation not available in this browser"))), React.createElement("div", {
+  })))), (() => {
+    void gpsTick;
+    const isLock = gpsStatus === 'gps' || gpsStatus === 'wifi' || gpsStatus === 'approx';
+    const ageMin = gpsAcquiredAt ? Math.floor((Date.now() - gpsAcquiredAt) / 60000) : null;
+    const ageLabel = ageMin === null ? '' : ageMin < 1 ? ' \xB7 just now' : ` \xB7 ${ageMin}m ago`;
+    const showStaleBanner = isLock && !gpsFromJson && gpsAcquiredAt && (Date.now() - gpsAcquiredAt) > 600000 && !gpsStaleWarnDismissed;
+    return React.createElement(React.Fragment, null,
+      gpsStatus && React.createElement("div", {
+        style: { marginTop: 5, display: 'flex', alignItems: 'center', gap: 8 }
+      },
+        gpsStatus === 'acquiring' && React.createElement("span", {
+          style: { fontSize: 10, color: 'var(--c-sub)', fontStyle: 'italic' }
+        }, "Acquiring location\u2026"),
+        isLock && React.createElement(React.Fragment, null,
+          React.createElement("span", {
+            style: { fontSize: 10, color: gpsStatus === 'gps' ? 'var(--c-pass)' : 'var(--c-auto-partial)' }
+          }, gpsStatus === 'gps' ? 'GPS' : gpsStatus === 'wifi' ? 'WiFi/Cell' : 'Approx',
+            " \xB7 \xB1", gpsAccuracy, "m",
+            gpsFromJson ? ' (from JSON)' : ageLabel),
+          !gpsFromJson && React.createElement("button", {
+            onClick: acquireLocation,
+            style: { fontSize: 10, color: 'var(--c-sub)', background: 'none', border: '1px solid var(--c-rule-strong)', borderRadius: 3, padding: '1px 6px', cursor: 'pointer', lineHeight: '1.6' }
+          }, "Retry")),
+        gpsStatus === 'denied' && React.createElement(React.Fragment, null,
+          React.createElement("span", { style: { fontSize: 10, color: 'var(--c-fail)' } }, "Location access denied"),
+          React.createElement("button", {
+            onClick: acquireLocation,
+            style: { fontSize: 10, color: 'var(--c-sub)', background: 'none', border: '1px solid var(--c-rule-strong)', borderRadius: 3, padding: '1px 6px', cursor: 'pointer', lineHeight: '1.6' }
+          }, "Retry")),
+        gpsStatus === 'error' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Location unavailable — enter coordinates manually"),
+        gpsStatus === 'unavailable' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Geolocation not available in this browser")),
+      showStaleBanner && React.createElement("div", {
+        style: { marginTop: 6, padding: '6px 10px', background: 'rgba(245,158,11,0.12)', border: '1px solid var(--c-warn)', borderRadius: 5, display: 'flex', alignItems: 'center', gap: 8 }
+      },
+        React.createElement("span", { style: { fontSize: 10, color: 'var(--c-warn)', flex: 1 } },
+          "GPS acquired ", ageMin, " min ago — re-acquire if you've moved to your sample point."),
+        React.createElement("button", {
+          onClick: acquireLocation,
+          style: { fontSize: 10, color: 'var(--c-warn)', background: 'none', border: '1px solid var(--c-warn)', borderRadius: 3, padding: '1px 6px', cursor: 'pointer', lineHeight: '1.6', flexShrink: 0 }
+        }, "Re-acquire"),
+        React.createElement("button", {
+          onClick: () => setGpsStaleWarnDismissed(true),
+          style: { fontSize: 12, color: 'var(--c-sub)', background: 'none', border: 'none', padding: '0 2px', cursor: 'pointer', lineHeight: 1, flexShrink: 0 }
+        }, "\xD7"))
+    );
+  })(), React.createElement("div", {
     style: {
       borderTop: '1px solid var(--c-rule)',
       paddingTop: 10,
