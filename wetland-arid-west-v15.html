@@ -17025,11 +17025,27 @@ function SoilProfileModal({
     }, h.redoxRows.map((rx, ri) => React.createElement("div", {
       key: ri,
       style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6
+      }
+    }, React.createElement("div", {
+      style: {
+        width: 16,
+        height: 16,
+        borderRadius: 3,
+        background: munsellChipRGB(rx.hue, rx.value, rx.chroma) || '#888',
+        border: '1px solid var(--c-rule)',
+        flexShrink: 0
+      }
+    }), React.createElement("span", {
+      style: {
         fontSize: 10,
         color: 'var(--c-sub-2)',
-        fontFamily: 'var(--font-mono)'
+        fontFamily: 'var(--font-mono)',
+        whiteSpace: 'nowrap'
       }
-    }, [rx.pct ? `${rx.pct}%` : null, rx.type || null, rx.loc || null, (rx.hue || rx.value || rx.chroma) ? `${rx.hue} ${rx.value}/${rx.chroma}` : null].filter(Boolean).join(' · ')))), h.remarks && React.createElement("div", {
+    }, [rx.pct ? `${rx.pct}%` : null, rx.type || null, rx.loc || null, (rx.hue || rx.value || rx.chroma) ? `${rx.hue} ${rx.value}/${rx.chroma}` : null].filter(Boolean).join(' · '))))), h.remarks && React.createElement("div", {
       style: {
         marginTop: 3,
         fontSize: 10,
