@@ -19257,11 +19257,15 @@ function WetlandApp() {
       return null;
     }
   });
+  const [gpsFromJson, setGpsFromJson] = useState(false);
+  const ignoreGpsRef = useRef(false);
   const si = (k, v) => setSiteInfo(p => ({
     ...p,
     [k]: v
   }));
   const acquireLocation = useCallback(() => {
+    ignoreGpsRef.current = false;
+    setGpsFromJson(false);
     if (!('geolocation' in navigator)) {
       setGpsStatus('unavailable');
       return;
@@ -19274,6 +19278,7 @@ function WetlandApp() {
     }
     setGpsStatus('acquiring');
     const onSuccess = pos => {
+      if (ignoreGpsRef.current) return;
       const lat = pos.coords.latitude.toFixed(6);
       const lng = pos.coords.longitude.toFixed(6);
       const acc = Math.round(pos.coords.accuracy);
@@ -19287,11 +19292,14 @@ function WetlandApp() {
       setGpsStatus(acc <= 10 ? 'gps' : acc <= 100 ? 'wifi' : 'approx');
     };
     const onFail = err => {
+      if (ignoreGpsRef.current) return;
       if (err.code === 1) {
         setGpsStatus('denied');
         return;
       }
-      navigator.geolocation.getCurrentPosition(onSuccess, () => setGpsStatus('error'), {
+      navigator.geolocation.getCurrentPosition(onSuccess, () => {
+        if (!ignoreGpsRef.current) setGpsStatus('error');
+      }, {
         enableHighAccuracy: false,
         timeout: 4000,
         maximumAge: 60000
@@ -20264,6 +20272,7 @@ function WetlandApp() {
     URL.revokeObjectURL(url);
   }
   function applyImportedState(s) {
+    ignoreGpsRef.current = true;
     if (s.siteInfo) {
       const si = {
         ...s.siteInfo
@@ -20300,6 +20309,7 @@ function WetlandApp() {
     if (s.probHydrologyRemarks !== undefined) setProbHydrologyRemarks(s.probHydrologyRemarks);
     if (s.gpsStatus !== undefined) setGpsStatus(s.gpsStatus);
     if (s.gpsAccuracy !== undefined) setGpsAccuracy(s.gpsAccuracy);
+    setGpsFromJson(!!(s.siteInfo?.lat || s.siteInfo?.lng));
   }
   async function exportPdf() {
     if (!pdfTemplate) {
@@ -21149,7 +21159,7 @@ function WetlandApp() {
       fontSize: 10,
       color: gpsStatus === 'gps' ? 'var(--c-pass)' : 'var(--c-auto-partial)'
     }
-  }, gpsStatus === 'gps' ? 'GPS' : gpsStatus === 'wifi' ? 'WiFi/Cell' : 'Approx', " \xB7 \xB1", gpsAccuracy, "m"), gpsStatus === 'denied' && React.createElement(React.Fragment, null, React.createElement("span", {
+  }, gpsStatus === 'gps' ? 'GPS' : gpsStatus === 'wifi' ? 'WiFi/Cell' : 'Approx', " \xB7 \xB1", gpsAccuracy, "m", gpsFromJson ? ' (from JSON)' : ''), gpsStatus === 'denied' && React.createElement(React.Fragment, null, React.createElement("span", {
     style: {
       fontSize: 10,
       color: 'var(--c-fail)'
