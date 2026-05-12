@@ -19165,6 +19165,8 @@ function WetlandApp() {
   const [normalCirc, setNormalCirc] = useState(null);
   const [spgiRemarks, setSpgiRemarks] = useState('');
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showClearModal, setShowClearModal] = useState(false);
+  const [saveBeforeClear, setSaveBeforeClear] = useState(null);
   const [showSoilProfileDiagram, setShowSoilProfileDiagram] = useState(false);
   const [showPedAnalyze, setShowPedAnalyze] = useState(null); // horizon id | null
   const [pdfTemplate, setPdfTemplate] = useState(null);
@@ -19575,6 +19577,10 @@ function WetlandApp() {
     setRemarksResetKey(k => k + 1);
     setCollapsibleResetKey(k => k + 1);
     acquireLocation();
+  }
+  function resetFormFull() {
+    resetForm();
+    setSiteInfo(prev => ({ ...prev, projectName: '', applicant: '', cityCounty: '', stateField: '' }));
   }
   const SAVE_KEY = 'wetland_arid_v11';
   useEffect(() => {
@@ -20807,7 +20813,97 @@ function WetlandApp() {
       fontSize: 11,
       color: 'var(--c-disabled)'
     }
-  }, "Filename: WD-", (siteInfo.samplePointId || 'form').replace(/[^a-zA-Z0-9_\-]/g, '_'), "-", new Date().toISOString().slice(0, 10), ".pdf"))))  , React.createElement("div", {className:"aw-topbar"},
+  }, "Filename: WD-", (siteInfo.samplePointId || 'form').replace(/[^a-zA-Z0-9_\-]/g, '_'), "-", new Date().toISOString().slice(0, 10), ".pdf"))))
+  , showClearModal && React.createElement("div", {
+    onClick: e => { if (e.target === e.currentTarget) { setShowClearModal(false); setSaveBeforeClear(null); } },
+    style: { position:'fixed', inset:0, background:'rgba(0,0,0,0.82)', zIndex:9000, display:'flex', alignItems:'center', justifyContent:'center', padding:'5vh 16px' }
+  }, React.createElement("div", {
+    style: { background:'var(--c-panel)', border:'1px solid var(--c-rule)', borderRadius:12, width:'100%', maxWidth:400, boxShadow:'0 24px 80px rgba(0,0,0,0.7)' }
+  },
+    React.createElement("div", {
+      style: { display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 20px', borderBottom:'1px solid var(--c-rule)' }
+    },
+      React.createElement("div", {
+        style: { fontSize:11, fontWeight:700, color:'var(--c-ink)', letterSpacing:'var(--ls-cap)', textTransform:'uppercase' }
+      }, "Clear Form"),
+      React.createElement("button", {
+        onClick: () => { setShowClearModal(false); setSaveBeforeClear(null); },
+        style: { background:'var(--c-fail-bg)', border:'1px solid var(--c-fail)', color:'var(--c-fail)', borderRadius:5, width:34, height:34, fontSize:14, cursor:'pointer', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center' }
+      }, "✕")
+    ),
+    React.createElement("div", {
+      style: { padding:'18px 20px', borderBottom:'1px solid var(--c-rule)' }
+    },
+      React.createElement("div", {
+        style: { fontSize:13, fontWeight:500, color:'var(--c-ink)', marginBottom:14, lineHeight:1.4 }
+      }, "Save your data before clearing?"),
+      React.createElement("div", { style: { display:'flex', gap:8 } },
+        React.createElement("button", {
+          onClick: () => { exportJson(); setSaveBeforeClear(true); },
+          style: {
+            flex:1, padding:'9px 0', borderRadius:6, fontSize:12, fontWeight:600, cursor:'pointer',
+            border: saveBeforeClear === true ? '1px solid var(--c-pass)' : '1px solid var(--c-rule-strong)',
+            background: saveBeforeClear === true ? 'var(--c-pass-bg)' : 'var(--c-panel-2)',
+            color: saveBeforeClear === true ? 'var(--c-pass)' : 'var(--c-ink-2)',
+            letterSpacing:'var(--ls-cap)', textTransform:'uppercase'
+          }
+        }, "Yes — Save"),
+        React.createElement("button", {
+          onClick: () => setSaveBeforeClear(false),
+          style: {
+            flex:1, padding:'9px 0', borderRadius:6, fontSize:12, fontWeight:600, cursor:'pointer',
+            border: saveBeforeClear === false ? '1px solid var(--c-fail)' : '1px solid var(--c-rule-strong)',
+            background: saveBeforeClear === false ? 'var(--c-fail-bg)' : 'var(--c-panel-2)',
+            color: saveBeforeClear === false ? 'var(--c-fail)' : 'var(--c-ink-2)',
+            letterSpacing:'var(--ls-cap)', textTransform:'uppercase'
+          }
+        }, "No")
+      )
+    ),
+    React.createElement("div", {
+      style: { padding:'18px 20px', display:'flex', flexDirection:'column', gap:10 }
+    },
+      React.createElement("button", {
+        disabled: saveBeforeClear === null,
+        onClick: saveBeforeClear !== null ? () => { resetForm(); setShowClearModal(false); setSaveBeforeClear(null); } : undefined,
+        style: {
+          padding:'11px 14px', borderRadius:6, fontSize:11, fontWeight:700, textAlign:'left',
+          cursor: saveBeforeClear !== null ? 'pointer' : 'not-allowed',
+          border: saveBeforeClear !== null ? '1px solid var(--c-pass)' : '1px solid var(--c-rule)',
+          background: saveBeforeClear !== null ? 'var(--c-pass-bg)' : 'var(--c-panel)',
+          color: saveBeforeClear !== null ? 'var(--c-pass)' : 'var(--c-disabled)',
+          letterSpacing:'var(--ls-cap)', textTransform:'uppercase',
+          transition:'background 0.15s, border-color 0.15s, color 0.15s'
+        }
+      },
+        "New Sample Point",
+        React.createElement("div", {
+          style: { fontSize:10, fontWeight:400, marginTop:3, textTransform:'none', letterSpacing:'normal',
+            color: saveBeforeClear !== null ? 'var(--c-pass)' : 'var(--c-disabled)', opacity:0.8 }
+        }, "Retains project & location data")
+      ),
+      React.createElement("button", {
+        disabled: saveBeforeClear === null,
+        onClick: saveBeforeClear !== null ? () => { resetFormFull(); setShowClearModal(false); setSaveBeforeClear(null); } : undefined,
+        style: {
+          padding:'11px 14px', borderRadius:6, fontSize:11, fontWeight:700, textAlign:'left',
+          cursor: saveBeforeClear !== null ? 'pointer' : 'not-allowed',
+          border: saveBeforeClear !== null ? '1px solid var(--c-fail)' : '1px solid var(--c-rule)',
+          background: saveBeforeClear !== null ? 'var(--c-fail-bg)' : 'var(--c-panel)',
+          color: saveBeforeClear !== null ? 'var(--c-fail)' : 'var(--c-disabled)',
+          letterSpacing:'var(--ls-cap)', textTransform:'uppercase',
+          transition:'background 0.15s, border-color 0.15s, color 0.15s'
+        }
+      },
+        "New Site",
+        React.createElement("div", {
+          style: { fontSize:10, fontWeight:400, marginTop:3, textTransform:'none', letterSpacing:'normal',
+            color: saveBeforeClear !== null ? 'var(--c-fail)' : 'var(--c-disabled)', opacity:0.8 }
+        }, "Clears all data including project & location")
+      )
+    )
+  ))
+  , React.createElement("div", {className:"aw-topbar"},
       React.createElement("div", {style:{flex:1,minWidth:0,display:'flex',flexDirection:'column',gap:2,justifyContent:'center'}},
         React.createElement("div", {style:{display:'flex',gap:4,alignItems:'center',marginBottom:4}},
           React.createElement("span", {style:{width:8,height:8,borderRadius:'50%',background:'var(--c-ind-obl)',display:'inline-block'}}),
@@ -20825,7 +20921,7 @@ function WetlandApp() {
         style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:0,cursor:"pointer",fontSize:12,color:"var(--c-ink-2)",flexShrink:0,width:28,height:28,display:"inline-flex",alignItems:"center",justifyContent:"center",alignSelf:"flex-end",marginBottom:13}
       }, "\u2193\u2191"),
       React.createElement("button", {
-        onClick: () => resetForm(),
+        onClick: () => { setSaveBeforeClear(null); setShowClearModal(true); },
         title: "New sample/Full clear",
         style:{background:"transparent",border:"1px solid var(--c-rule)",borderRadius:6,padding:0,cursor:"pointer",fontSize:12,color:"var(--c-fail)",flexShrink:0,width:28,height:28,display:"inline-flex",alignItems:"center",justifyContent:"center",alignSelf:"flex-end",marginBottom:13}
       }, "\u2715"),
