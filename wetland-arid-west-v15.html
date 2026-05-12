@@ -20641,6 +20641,10 @@ function WetlandApp() {
       alert('PDF export failed: ' + err.message);
     }
   }
+  const _gpsIsLock = gpsStatus === 'gps' || gpsStatus === 'wifi' || gpsStatus === 'approx';
+  const _gpsAgeMin = gpsAcquiredAt ? Math.floor((Date.now() - gpsAcquiredAt) / 60000) : null;
+  const _gpsAgeLabel = _gpsAgeMin === null ? '' : _gpsAgeMin < 1 ? ' \xB7 just now' : ' \xB7 ' + _gpsAgeMin + 'm ago';
+  const _gpsShowStale = _gpsIsLock && !gpsFromJson && gpsAcquiredAt && (Date.now() - gpsAcquiredAt) > 600000 && !gpsStaleWarnDismissed;
   return React.createElement("div", {
     className: 'aw-app',
     'data-tab': activeTab,
@@ -21167,25 +21171,19 @@ function WetlandApp() {
       outline: 'none',
       boxSizing: 'border-box'
     }
-  })))), (() => {
-    void gpsTick;
-    const isLock = gpsStatus === 'gps' || gpsStatus === 'wifi' || gpsStatus === 'approx';
-    const ageMin = gpsAcquiredAt ? Math.floor((Date.now() - gpsAcquiredAt) / 60000) : null;
-    const ageLabel = ageMin === null ? '' : ageMin < 1 ? ' \xB7 just now' : ` \xB7 ${ageMin}m ago`;
-    const showStaleBanner = isLock && !gpsFromJson && gpsAcquiredAt && (Date.now() - gpsAcquiredAt) > 600000 && !gpsStaleWarnDismissed;
-    return React.createElement(React.Fragment, null,
+  })))), React.createElement(React.Fragment, null,
       gpsStatus && React.createElement("div", {
         style: { marginTop: 5, display: 'flex', alignItems: 'center', gap: 8 }
       },
         gpsStatus === 'acquiring' && React.createElement("span", {
           style: { fontSize: 10, color: 'var(--c-sub)', fontStyle: 'italic' }
         }, "Acquiring location\u2026"),
-        isLock && React.createElement(React.Fragment, null,
+        _gpsIsLock && React.createElement(React.Fragment, null,
           React.createElement("span", {
             style: { fontSize: 10, color: gpsStatus === 'gps' ? 'var(--c-pass)' : 'var(--c-auto-partial)' }
           }, gpsStatus === 'gps' ? 'GPS' : gpsStatus === 'wifi' ? 'WiFi/Cell' : 'Approx',
             " \xB7 \xB1", gpsAccuracy, "m",
-            gpsFromJson ? ' (from JSON)' : ageLabel),
+            gpsFromJson ? ' (from JSON)' : _gpsAgeLabel),
           !gpsFromJson && React.createElement("button", {
             onClick: acquireLocation,
             style: { fontSize: 10, color: 'var(--c-sub)', background: 'none', border: '1px solid var(--c-rule-strong)', borderRadius: 3, padding: '1px 6px', cursor: 'pointer', lineHeight: '1.6' }
@@ -21198,11 +21196,11 @@ function WetlandApp() {
           }, "Retry")),
         gpsStatus === 'error' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Location unavailable — enter coordinates manually"),
         gpsStatus === 'unavailable' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Geolocation not available in this browser")),
-      showStaleBanner && React.createElement("div", {
+      _gpsShowStale && React.createElement("div", {
         style: { marginTop: 6, padding: '6px 10px', background: 'rgba(245,158,11,0.12)', border: '1px solid var(--c-warn)', borderRadius: 5, display: 'flex', alignItems: 'center', gap: 8 }
       },
         React.createElement("span", { style: { fontSize: 10, color: 'var(--c-warn)', flex: 1 } },
-          "GPS acquired ", ageMin, " min ago — re-acquire if you've moved to your sample point."),
+          "GPS acquired ", _gpsAgeMin, " min ago — re-acquire if you've moved to your sample point."),
         React.createElement("button", {
           onClick: acquireLocation,
           style: { fontSize: 10, color: 'var(--c-warn)', background: 'none', border: '1px solid var(--c-warn)', borderRadius: 3, padding: '1px 6px', cursor: 'pointer', lineHeight: '1.6', flexShrink: 0 }
@@ -21211,8 +21209,7 @@ function WetlandApp() {
           onClick: () => setGpsStaleWarnDismissed(true),
           style: { fontSize: 12, color: 'var(--c-sub)', background: 'none', border: 'none', padding: '0 2px', cursor: 'pointer', lineHeight: 1, flexShrink: 0 }
         }, "\xD7"))
-    );
-  })(), React.createElement("div", {
+    ), React.createElement("div", {
     style: {
       borderTop: '1px solid var(--c-rule)',
       paddingTop: 10,
