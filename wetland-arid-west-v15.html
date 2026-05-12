@@ -16520,7 +16520,7 @@ function SoilProfileModal({
     const normP = i => (Number(colors[i]?.pct) || 0) / totalPct * 100;
     const css = colors.map(c => munsellChipRGB(c.hue, c.value, c.chroma) || '#3a2c1e');
     const pid = `dpM${String(h.id).replace(/[^a-z0-9]/gi, '_')}`;
-    const redoxWithPct = (h.redoxRows || []).filter(rx => Number(rx.pct) > 0);
+    const redoxWithPct = (h.redoxRows || []).filter(rx => Number(rx.pct) > 0).sort((a, b) => Number(b.pct) - Number(a.pct));
     return {
       h,
       top,
@@ -16691,11 +16691,26 @@ function SoilProfileModal({
       fill: css[1]
     }));
   }),
-    ...hzData.flatMap(({h, redoxWithPct}) => redoxWithPct.map(rx => {
-      const rxPid = `dpR${String(h.id).replace(/[^a-z0-9]/gi,'_')}_${String(rx.id).replace(/[^a-z0-9]/gi,'_')}`;
-      return React.createElement("pattern", {key: rxPid, id: rxPid, width: S, height: S, patternUnits: "userSpaceOnUse"},
-        React.createElement("circle", {cx: S/2, cy: S/2, r: dotR(Number(rx.pct)), fill: munsellChipRGB(rx.hue, rx.value, rx.chroma) || '#888'}));
-    }))
+    ...hzData.filter(d => d.redoxWithPct.length > 0).map(({h, redoxWithPct: rx}) => {
+      const rxPid = `dpRX${String(h.id).replace(/[^a-z0-9]/gi,'_')}`;
+      const c = i => munsellChipRGB(rx[i].hue, rx[i].value, rx[i].chroma) || '#888';
+      const r = i => dotR(Number(rx[i].pct));
+      // Position 0: center circle (most prominent, largest pct)
+      // Position 1: 4 corner quarter-circles (tile together = 1 full circle)
+      // Position 2: top+bottom edge half-circles (tile together = 1 full circle)
+      const children = [React.createElement("circle", {key:"p0", cx: S/2, cy: S/2, r: r(0), fill: c(0)})];
+      if (rx.length >= 2) children.push(
+        React.createElement("circle", {key:"p1a", cx: 0,   cy: 0,   r: r(1), fill: c(1)}),
+        React.createElement("circle", {key:"p1b", cx: S,   cy: 0,   r: r(1), fill: c(1)}),
+        React.createElement("circle", {key:"p1c", cx: 0,   cy: S,   r: r(1), fill: c(1)}),
+        React.createElement("circle", {key:"p1d", cx: S,   cy: S,   r: r(1), fill: c(1)}),
+      );
+      if (rx.length >= 3) children.push(
+        React.createElement("circle", {key:"p2a", cx: S/2, cy: 0,   r: r(2), fill: c(2)}),
+        React.createElement("circle", {key:"p2b", cx: S/2, cy: S,   r: r(2), fill: c(2)}),
+      );
+      return React.createElement("pattern", {key: rxPid, id: rxPid, width: S, height: S, patternUnits: "userSpaceOnUse"}, ...children);
+    })
   ]), ticks.map(d => {
     const y = py(d);
     return React.createElement("g", {
@@ -16735,9 +16750,10 @@ function SoilProfileModal({
       height: ht,
       fill: fill,
       stroke: "none"
-    }), ...redoxWithPct.map(rx => {
-      const rxPid = `dpR${String(h.id).replace(/[^a-z0-9]/gi,'_')}_${String(rx.id).replace(/[^a-z0-9]/gi,'_')}`;
-      return React.createElement("rect", {key: rxPid, x: BAR_X, y: top, width: BAR_W, height: ht, fill: `url(#${rxPid})`, stroke: "none"});
+    }), redoxWithPct.length > 0 && React.createElement("rect", {
+      x: BAR_X, y: top, width: BAR_W, height: ht,
+      fill: `url(#dpRX${String(h.id).replace(/[^a-z0-9]/gi,'_')})`,
+      stroke: "none"
     }), i > 0 && React.createElement("line", {
       x1: BAR_X,
       y1: top,
