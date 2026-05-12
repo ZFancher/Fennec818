@@ -20869,9 +20869,9 @@ function WetlandApp() {
         style: {
           padding:'11px 14px', borderRadius:6, fontSize:11, fontWeight:700, textAlign:'left',
           cursor: saveBeforeClear !== null ? 'pointer' : 'not-allowed',
-          border: saveBeforeClear !== null ? '1px solid var(--c-pass)' : '1px solid var(--c-rule)',
-          background: saveBeforeClear !== null ? 'var(--c-pass-bg)' : 'var(--c-panel)',
-          color: saveBeforeClear !== null ? 'var(--c-pass)' : 'var(--c-disabled)',
+          border: saveBeforeClear !== null ? '1px solid var(--c-warn)' : '1px solid var(--c-rule)',
+          background: saveBeforeClear !== null ? 'var(--c-warn-bg)' : 'var(--c-panel)',
+          color: saveBeforeClear !== null ? 'var(--c-warn)' : 'var(--c-disabled)',
           letterSpacing:'var(--ls-cap)', textTransform:'uppercase',
           transition:'background 0.15s, border-color 0.15s, color 0.15s'
         }
@@ -20879,7 +20879,7 @@ function WetlandApp() {
         "New Sample Point",
         React.createElement("div", {
           style: { fontSize:10, fontWeight:400, marginTop:3, textTransform:'none', letterSpacing:'normal',
-            color: saveBeforeClear !== null ? 'var(--c-pass)' : 'var(--c-disabled)', opacity:0.8 }
+            color: saveBeforeClear !== null ? 'var(--c-warn)' : 'var(--c-disabled)', opacity:0.8 }
         }, "Retains project & location data")
       ),
       React.createElement("button", {
