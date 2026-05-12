@@ -20715,7 +20715,7 @@ function WetlandApp() {
           setGpsExportWarnTarget(null);
           acquireLocation(() => { target === 'json' ? exportJson() : exportPdf(); setShowExportModal(false); });
         },
-        style: { fontSize: 12, fontWeight: 600, color: 'var(--c-pass)', background: 'var(--c-pass-bg)', border: '1px solid var(--c-pass)', borderRadius: 6, padding: '9px 14px', cursor: 'pointer', fontFamily: 'Inter,system-ui,sans-serif', textAlign: 'left' }
+        style: { fontSize: 12, fontWeight: 600, color: 'var(--c-pass)', background: 'none', border: '1px solid var(--c-pass)', borderRadius: 6, padding: '9px 14px', cursor: 'pointer', fontFamily: 'Inter,system-ui,sans-serif', textAlign: 'left' }
       }, "Acquire Coordinates & Export"),
       React.createElement("button", {
         onClick: () => { const target = gpsExportWarnTarget; setGpsExportWarnTarget(null); target === 'json' ? exportJson() : exportPdf(); setShowExportModal(false); },
@@ -21181,7 +21181,7 @@ function WetlandApp() {
   })))), React.createElement(React.Fragment, null,
       !gpsStatus && React.createElement("button", {
         onClick: acquireLocation,
-        style: { display: 'block', marginTop: 5, fontSize: 10, color: 'var(--c-pass)', background: 'var(--c-pass-bg)', border: '1px solid var(--c-pass)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
+        style: { display: 'block', marginTop: 5, fontSize: 10, color: 'var(--c-pass)', background: 'none', border: '1px solid var(--c-pass)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
       }, "Acquire Coordinates"),
       gpsStatus && React.createElement("div", {
         style: { marginTop: 5, display: 'flex', alignItems: 'center', gap: 8 }
@@ -21202,7 +21202,7 @@ function WetlandApp() {
         gpsStatus === 'denied' && React.createElement(React.Fragment, null,
           React.createElement("button", {
             onClick: acquireLocation,
-            style: { fontSize: 10, color: 'var(--c-fail)', background: 'var(--c-fail-bg)', border: '1px solid var(--c-fail)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6', flexShrink: 0 }
+            style: { fontSize: 10, color: 'var(--c-fail)', background: 'none', border: '1px solid var(--c-fail)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6', flexShrink: 0 }
           }, "Retry"),
           React.createElement("span", { style: { fontSize: 10, color: 'var(--c-fail)' } }, "Location access denied")),
         gpsStatus === 'error' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Location unavailable — enter coordinates manually"),
