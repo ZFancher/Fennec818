@@ -19209,6 +19209,7 @@ function WetlandApp() {
   const [normalCirc, setNormalCirc] = useState(null);
   const [spgiRemarks, setSpgiRemarks] = useState('');
   const [showExportModal, setShowExportModal] = useState(false);
+  const [gpsExportWarnTarget, setGpsExportWarnTarget] = useState(null);
   const [showClearModal, setShowClearModal] = useState(false);
   const [saveBeforeClear, setSaveBeforeClear] = useState(null);
   const [showSoilProfileDiagram, setShowSoilProfileDiagram] = useState(false);
@@ -19261,25 +19262,15 @@ function WetlandApp() {
     try { return JSON.parse(localStorage.getItem('wetland_arid_v11') || '{}').gpsFromJson === true; }
     catch { return false; }
   });
-  const [gpsAcquiredAt, setGpsAcquiredAt] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('wetland_arid_v11') || '{}').gpsAcquiredAt ?? null; }
-    catch { return null; }
-  });
-  const [gpsStaleWarnDismissed, setGpsStaleWarnDismissed] = useState(false);
   const ignoreGpsRef = useRef(false);
   const gpsJsonLockedRef = useRef(
     (() => { try { return JSON.parse(localStorage.getItem('wetland_arid_v11') || '{}').gpsFromJson === true; } catch { return false; } })()
   );
-  const [gpsTick, setGpsTick] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setGpsTick(n => n + 1), 60000);
-    return () => clearInterval(id);
-  }, []);
   const si = (k, v) => setSiteInfo(p => ({
     ...p,
     [k]: v
   }));
-  const acquireLocation = useCallback(() => {
+  const acquireLocation = useCallback((onDone) => {
     if (gpsJsonLockedRef.current) return;
     ignoreGpsRef.current = false;
     setGpsFromJson(false);
@@ -19306,9 +19297,8 @@ function WetlandApp() {
         datum: 'WGS 84'
       }));
       setGpsAccuracy(acc);
-      setGpsAcquiredAt(Date.now());
-      setGpsStaleWarnDismissed(false);
       setGpsStatus(acc <= 10 ? 'gps' : acc <= 100 ? 'wifi' : 'approx');
+      if (onDone) onDone();
     };
     const onFail = err => {
       if (ignoreGpsRef.current) return;
@@ -19645,12 +19635,9 @@ function WetlandApp() {
     setBareGround('');
     setGpsStatus(null);
     setGpsAccuracy(null);
-    setGpsAcquiredAt(null);
-    setGpsStaleWarnDismissed(false);
     gpsJsonLockedRef.current = false;
     setRemarksResetKey(k => k + 1);
     setCollapsibleResetKey(k => k + 1);
-    acquireLocation();
   }
   function resetFormFull() {
     resetForm();
@@ -19697,13 +19684,6 @@ function WetlandApp() {
     }
   }, []);
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('wetland_arid_v11') || '{}');
-      if (saved.siteInfo?.lat || saved.siteInfo?.lng) return;
-    } catch {}
-    acquireLocation();
-  }, [acquireLocation]);
-  useEffect(() => {
     const t = setTimeout(() => {
       try {
         localStorage.setItem(SAVE_KEY, JSON.stringify({
@@ -19739,15 +19719,14 @@ function WetlandApp() {
           probHydrologyRemarks,
           gpsStatus,
           gpsAccuracy,
-          gpsFromJson,
-          gpsAcquiredAt
+          gpsFromJson
         }));
       } catch (e) {
         console.warn('Failed to save form:', e);
       }
     }, 600);
     return () => clearTimeout(t);
-  }, [siteInfo, strata, horizons, restrictiveType, restrictiveDepth, chkHydric, chkHydricProb, chkP, chkS, hydroMeasure, plotSizes, bareGround, bioticCrust, normalCirc, sigDistVeg, sigDistSoil, sigDistHydro, natProbVeg, natProbSoil, natProbHydro, spgiRemarks, vegRemarks, soilRemarks, hydroRemarks, morphAdaptEntries, probHydroVeg, probHydroVegRemarks, probHydrology, probHydrologyRemarks, gpsStatus, gpsAccuracy, gpsFromJson, gpsAcquiredAt]);
+  }, [siteInfo, strata, horizons, restrictiveType, restrictiveDepth, chkHydric, chkHydricProb, chkP, chkS, hydroMeasure, plotSizes, bareGround, bioticCrust, normalCirc, sigDistVeg, sigDistSoil, sigDistHydro, natProbVeg, natProbSoil, natProbHydro, spgiRemarks, vegRemarks, soilRemarks, hydroRemarks, morphAdaptEntries, probHydroVeg, probHydroVegRemarks, probHydrology, probHydrologyRemarks, gpsStatus, gpsAccuracy, gpsFromJson]);
   const [activeTab, setActiveTab] = useState('site');
   const [theme, setTheme] = useState(() => {
     try { return localStorage.getItem('aw.theme') || 'light'; } catch { return 'light'; }
@@ -20642,9 +20621,6 @@ function WetlandApp() {
     }
   }
   const _gpsIsLock = gpsStatus === 'gps' || gpsStatus === 'wifi' || gpsStatus === 'approx';
-  const _gpsAgeMin = gpsAcquiredAt ? Math.floor((Date.now() - gpsAcquiredAt) / 60000) : null;
-  const _gpsAgeLabel = _gpsAgeMin === null ? '' : _gpsAgeMin < 1 ? ' \xB7 just now' : ' \xB7 ' + _gpsAgeMin + 'm ago';
-  const _gpsShowStale = _gpsIsLock && !gpsFromJson && gpsAcquiredAt && (Date.now() - gpsAcquiredAt) > 600000 && !gpsStaleWarnDismissed;
   return React.createElement("div", {
     className: 'aw-app',
     'data-tab': activeTab,
@@ -20668,7 +20644,7 @@ function WetlandApp() {
     onClose: () => setShowPedAnalyze(null)
   }), showExportModal && React.createElement("div", {
     onClick: e => {
-      if (e.target === e.currentTarget) setShowExportModal(false);
+      if (e.target === e.currentTarget) { setShowExportModal(false); setGpsExportWarnTarget(null); }
     },
     style: {
       position: 'fixed',
@@ -20708,7 +20684,7 @@ function WetlandApp() {
       textTransform: 'uppercase'
     }
   }, "Export / Import"), React.createElement("button", {
-    onClick: () => setShowExportModal(false),
+    onClick: () => { setShowExportModal(false); setGpsExportWarnTarget(null); },
     style: {
       background: 'var(--c-fail-bg)',
       border: '1px solid var(--c-fail)',
@@ -20723,7 +20699,34 @@ function WetlandApp() {
       alignItems: 'center',
       justifyContent: 'center'
     }
-  }, "\u2715")), React.createElement("div", {
+  }, "\u2715")), gpsExportWarnTarget && React.createElement("div", {
+    style: { padding: '24px 20px' }
+  },
+    React.createElement("div", {
+      style: { fontSize: 13, fontWeight: 600, color: 'var(--c-ink)', marginBottom: 10 }
+    }, "No coordinates recorded"),
+    React.createElement("div", {
+      style: { fontSize: 11, color: 'var(--c-sub)', marginBottom: 16, lineHeight: 1.5 }
+    }, "No GPS coordinates have been entered for this sample point. Use your current position before exporting, export without coordinates, or go back to enter them manually."),
+    React.createElement("div", { style: { display: 'flex', flexDirection: 'column', gap: 8 } },
+      React.createElement("button", {
+        onClick: () => {
+          const target = gpsExportWarnTarget;
+          setGpsExportWarnTarget(null);
+          acquireLocation(() => { target === 'json' ? exportJson() : exportPdf(); setShowExportModal(false); });
+        },
+        style: { fontSize: 12, fontWeight: 600, color: 'var(--c-pass)', background: 'var(--c-pass-bg)', border: '1px solid var(--c-pass)', borderRadius: 6, padding: '9px 14px', cursor: 'pointer', fontFamily: 'Inter,system-ui,sans-serif', textAlign: 'left' }
+      }, "Acquire GPS & Export"),
+      React.createElement("button", {
+        onClick: () => { const target = gpsExportWarnTarget; setGpsExportWarnTarget(null); target === 'json' ? exportJson() : exportPdf(); setShowExportModal(false); },
+        style: { fontSize: 12, color: 'var(--c-sub)', background: 'none', border: '1px solid var(--c-rule-strong)', borderRadius: 6, padding: '9px 14px', cursor: 'pointer', fontFamily: 'Inter,system-ui,sans-serif', textAlign: 'left' }
+      }, "Export Without Coordinates"),
+      React.createElement("button", {
+        onClick: () => setGpsExportWarnTarget(null),
+        style: { fontSize: 11, color: 'var(--c-link)', background: 'none', border: 'none', padding: '4px 0', cursor: 'pointer', fontFamily: 'Inter,system-ui,sans-serif', textAlign: 'left' }
+      }, "\u2190 Back")
+    )
+  ), !gpsExportWarnTarget && React.createElement("div", {
     style: {
       padding: '18px 20px',
       borderBottom: '1px solid var(--c-rule)'
@@ -20753,6 +20756,7 @@ function WetlandApp() {
     }
   }, React.createElement("button", {
     onClick: () => {
+      if (!siteInfo.lat && !siteInfo.lng) { setGpsExportWarnTarget('json'); return; }
       exportJson();
     },
     style: {
@@ -20810,7 +20814,7 @@ function WetlandApp() {
       fontSize: 11,
       color: 'var(--c-disabled)'
     }
-  }, "Filename: WD-", (siteInfo.samplePointId || 'form').replace(/[^a-zA-Z0-9_\-]/g, '_'), "-", new Date().toISOString().slice(0, 10), ".json")), React.createElement("div", {
+  }, "Filename: WD-", (siteInfo.samplePointId || 'form').replace(/[^a-zA-Z0-9_\-]/g, '_'), "-", new Date().toISOString().slice(0, 10), ".json")), !gpsExportWarnTarget && React.createElement("div", {
     style: {
       padding: '18px 20px'
     }
@@ -20876,7 +20880,10 @@ function WetlandApp() {
       fontFamily: 'Inter,system-ui,sans-serif'
     }
   }, pdfTemplateName)), React.createElement("button", {
-    onClick: exportPdf,
+    onClick: () => {
+      if (!siteInfo.lat && !siteInfo.lng) { setGpsExportWarnTarget('pdf'); return; }
+      exportPdf();
+    },
     disabled: !pdfTemplate,
     style: {
       background: pdfTemplate ? 'var(--c-auto-combo-bg)' : 'var(--c-panel)',
@@ -21172,6 +21179,10 @@ function WetlandApp() {
       boxSizing: 'border-box'
     }
   })))), React.createElement(React.Fragment, null,
+      !gpsStatus && React.createElement("button", {
+        onClick: acquireLocation,
+        style: { display: 'block', marginTop: 5, fontSize: 10, color: 'var(--c-pass)', background: 'var(--c-pass-bg)', border: '1px solid var(--c-pass)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
+      }, "Acquire GPS"),
       gpsStatus && React.createElement("div", {
         style: { marginTop: 5, display: 'flex', alignItems: 'center', gap: 8 }
       },
@@ -21183,32 +21194,19 @@ function WetlandApp() {
             style: { fontSize: 10, color: gpsStatus === 'gps' ? 'var(--c-pass)' : 'var(--c-auto-partial)' }
           }, gpsStatus === 'gps' ? 'GPS' : gpsStatus === 'wifi' ? 'WiFi/Cell' : 'Approx',
             " \xB7 \xB1", gpsAccuracy, "m",
-            gpsFromJson ? ' (from JSON)' : _gpsAgeLabel),
+            gpsFromJson && ' (from JSON)'),
           !gpsFromJson && React.createElement("button", {
             onClick: acquireLocation,
-            style: { fontSize: 10, color: 'var(--c-sub)', background: 'none', border: '1px solid var(--c-rule-strong)', borderRadius: 3, padding: '1px 6px', cursor: 'pointer', lineHeight: '1.6' }
-          }, "Retry")),
+            style: { marginTop: 5, fontSize: 10, color: 'var(--c-warn)', background: 'none', border: '1px solid var(--c-warn)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
+          }, "Re-acquire")),
         gpsStatus === 'denied' && React.createElement(React.Fragment, null,
           React.createElement("span", { style: { fontSize: 10, color: 'var(--c-fail)' } }, "Location access denied"),
           React.createElement("button", {
             onClick: acquireLocation,
-            style: { fontSize: 10, color: 'var(--c-sub)', background: 'none', border: '1px solid var(--c-rule-strong)', borderRadius: 3, padding: '1px 6px', cursor: 'pointer', lineHeight: '1.6' }
+            style: { marginTop: 5, fontSize: 10, color: 'var(--c-warn)', background: 'none', border: '1px solid var(--c-warn)', borderRadius: 3, padding: '2px 8px', cursor: 'pointer', lineHeight: '1.6' }
           }, "Retry")),
         gpsStatus === 'error' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Location unavailable — enter coordinates manually"),
-        gpsStatus === 'unavailable' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Geolocation not available in this browser")),
-      _gpsShowStale && React.createElement("div", {
-        style: { marginTop: 6, padding: '6px 10px', background: 'rgba(245,158,11,0.12)', border: '1px solid var(--c-warn)', borderRadius: 5, display: 'flex', alignItems: 'center', gap: 8 }
-      },
-        React.createElement("span", { style: { fontSize: 10, color: 'var(--c-warn)', flex: 1 } },
-          "GPS acquired ", _gpsAgeMin, " min ago — re-acquire if you've moved to your sample point."),
-        React.createElement("button", {
-          onClick: acquireLocation,
-          style: { fontSize: 10, color: 'var(--c-warn)', background: 'none', border: '1px solid var(--c-warn)', borderRadius: 3, padding: '1px 6px', cursor: 'pointer', lineHeight: '1.6', flexShrink: 0 }
-        }, "Re-acquire"),
-        React.createElement("button", {
-          onClick: () => setGpsStaleWarnDismissed(true),
-          style: { fontSize: 12, color: 'var(--c-sub)', background: 'none', border: 'none', padding: '0 2px', cursor: 'pointer', lineHeight: 1, flexShrink: 0 }
-        }, "\xD7"))
+        gpsStatus === 'unavailable' && React.createElement("span", { style: { fontSize: 10, color: 'var(--c-sub)' } }, "Geolocation not available in this browser"))
     )), React.createElement("div", {
     style: {
       borderTop: '1px solid var(--c-rule)',
