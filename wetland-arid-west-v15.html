@@ -16308,20 +16308,29 @@ function MunsellPickerPopup({
       overflow: 'hidden',
       boxShadow: '0 20px 60px rgba(0,0,0,0.8)',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      position: 'relative'
     }
-  }, React.createElement("div", {
+  }, React.createElement("button", {
+    onClick: onClose,
     style: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 8,
+      position: 'absolute',
+      top: 10,
+      right: 12,
+      background: 'none',
+      border: 'none',
+      color: 'var(--c-fail)',
+      fontSize: 28,
+      lineHeight: 1,
+      cursor: 'pointer',
+      padding: 0,
+      zIndex: 1
+    }
+  }, "\u2715"), React.createElement("div", {
+    style: {
+      textAlign: 'center',
       marginBottom: 12,
       flexShrink: 0
-    }
-  }, React.createElement("div", {
-    style: {
-      flex: 1,
-      textAlign: 'center'
     }
   }, React.createElement("div", {
     style: {
@@ -16334,29 +16343,17 @@ function MunsellPickerPopup({
     style: {
       fontSize: 10,
       color: 'var(--c-sub)',
-      marginTop: 1
+      marginTop: 1,
+      whiteSpace: 'nowrap'
     }
-  }, pageIdx + 1, " of ", ACTIVE_MUNSELL_PAGES.length, " \u2014 Click to select", React.createElement("br", null), "Long-press for large view"), React.createElement("div", {
+  }, pageIdx + 1, " of ", ACTIVE_MUNSELL_PAGES.length, " \u2014 Click to select \u00b7 Long-press for large view"), React.createElement("div", {
     style: {
       fontSize: 9,
       color: 'var(--c-fail)',
       marginTop: 2,
       fontWeight: 500
     }
-  }, "Do not use for official soil color determinations \u2014 Reference Only!")), React.createElement("button", {
-    onClick: onClose,
-    style: {
-      background: 'var(--c-fail-bg)',
-      border: '1px solid var(--c-fail)',
-      color: 'var(--c-fail)',
-      borderRadius: 5,
-      width: 34,
-      height: 34,
-      fontSize: 14,
-      cursor: 'pointer',
-      flexShrink: 0
-    }
-  }, "\u2715")), React.createElement("div", {
+  }, "Do not use for official soil color determinations \u2014 Reference Only!")), React.createElement("div", {
     style: {
       display: 'flex',
       gap: 3,
