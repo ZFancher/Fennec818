@@ -16352,8 +16352,8 @@ function MunsellPickerPopup({
     onClick: () => setPageIdx(i),
     style: {
       background: i === pageIdx ? 'var(--c-pass)' : 'transparent',
-      border: `1px solid ${i === pageIdx ? 'var(--c-pass)' : 'var(--c-rule-strong)'}`,
-      color: i === pageIdx ? 'var(--c-action-fg)' : 'var(--c-pass)',
+      border: `1px solid ${i === pageIdx ? 'var(--c-pass)' : '#000000'}`,
+      color: i === pageIdx ? 'var(--c-action-fg)' : '#000000',
       borderRadius: 4,
       padding: '2px 7px',
       fontSize: 9,
