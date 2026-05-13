@@ -19254,8 +19254,6 @@ function WetlandApp() {
           bestPos = pos;
           setGpsAccuracy(Math.round(pos.coords.accuracy));
         }
-        // Stop early once we hit the High threshold
-        if (pos.coords.accuracy <= 15) finish(true);
       },
       err => {
         if (ignoreGpsRef.current) return;
