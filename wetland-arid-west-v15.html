@@ -18574,22 +18574,23 @@ function CustomCheckbox({
   }, checked && (combo ? React.createElement("span", {
     style: {
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row',
       alignItems: 'center',
       gap: 1,
       userSelect: 'none'
     }
   }, React.createElement("span", {
     style: {
-      fontSize: 7,
+      fontSize: 9,
       lineHeight: 1,
       color: darkStroke
     }
   }, "\u2726"), React.createElement("span", {
     style: {
-      fontSize: 7,
+      fontSize: 9,
       lineHeight: 1,
-      color: darkStroke
+      color: darkStroke,
+      transform: 'translateY(-3px)'
     }
   }, "\u2726")) : auto ? React.createElement("span", {
     style: {
@@ -18633,7 +18634,7 @@ function HydricRow({
   const codeColor = isCombo ? 'var(--c-auto-combo)' : problematic ? 'var(--c-auto-partial)' : 'var(--c-pass)';
   const pillStyle = (bg, fg, border) => ({fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,background:bg,color:fg,border:border?'1px solid '+border:'none',whiteSpace:'nowrap',flexShrink:0});
   const badge = isAuto
-    ? React.createElement("span", {style:pillStyle('var(--c-auto-full-bg)','var(--c-auto-full)','var(--c-auto-full)')}, "AUTO ✦")
+    ? React.createElement("span", {style:pillStyle('var(--c-auto-full-bg)','var(--c-auto-full)','var(--c-auto-full)')}, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "✦"))
     : (isPartial && !checked)
       ? React.createElement("span", {style:pillStyle('var(--c-auto-partial-bg)','var(--c-auto-partial)','var(--c-auto-partial)')}, "PARTIAL ◑")
       : isCombo
@@ -18708,7 +18709,7 @@ function IndRow({
   const rowBg = isAutoPartial ? 'var(--c-auto-partial-bg)' : effective ? autoChecked ? 'var(--c-auto-full-bg)' : tier === 'primary' ? 'var(--c-pass-bg)' : 'var(--c-auto-combo-bg)' : 'transparent';
   const pillStyle = (bg, fg, border) => ({fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,background:bg,color:fg,border:border?'1px solid '+border:'none',whiteSpace:'nowrap',flexShrink:0});
   const badge = autoChecked
-    ? React.createElement("span", {style:pillStyle('var(--c-auto-full-bg)','var(--c-auto-full)','var(--c-auto-full)')}, "AUTO ✦")
+    ? React.createElement("span", {style:pillStyle('var(--c-auto-full-bg)','var(--c-auto-full)','var(--c-auto-full)')}, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "✦"))
     : isAutoPartial
       ? React.createElement("span", {style:pillStyle('var(--c-auto-partial-bg)','var(--c-auto-partial)','var(--c-auto-partial)')}, "PARTIAL ◑")
       : null;
@@ -23260,9 +23261,7 @@ function WetlandApp() {
       fontWeight: 700,
       whiteSpace: 'nowrap'
     }
-  }, "AUTO ", React.createElement("span", {
-    style: {}
-  }, "\u2726")), "Auto-selected \u2014 non-editable"), React.createElement("div", {
+  }, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "\u2726")), "Auto-selected \u2014 non-editable"), React.createElement("div", {
     style: {
       fontSize: 10,
       color: 'var(--c-sub)',
@@ -23304,30 +23303,24 @@ function WetlandApp() {
     }
   }, "COMBO ", React.createElement("span", {
     style: {
-      display: 'inline-block',
-      position: 'relative',
-      width: 10,
-      height: 11,
-      verticalAlign: 'middle',
-      top: -1
+      display: 'inline-flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 1,
+      verticalAlign: 'middle'
     }
   }, React.createElement("span", {
     style: {
-      position: 'absolute',
-      top: 0,
-      right: 0,
-      fontSize: 10,
+      fontSize: 9,
       lineHeight: 1,
       color: 'var(--c-auto-combo)'
     }
   }, "\u2726"), React.createElement("span", {
     style: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      fontSize: 10,
+      fontSize: 9,
       lineHeight: 1,
-      color: 'var(--c-auto-combo)'
+      color: 'var(--c-auto-combo)',
+      transform: 'translateY(-3px)'
     }
   }, "\u2726"))), "Indicators met by soil horizon pair"), React.createElement("div", {
     style: {
@@ -23796,9 +23789,7 @@ function WetlandApp() {
       fontWeight: 700,
       whiteSpace: 'nowrap'
     }
-  }, "AUTO ", React.createElement("span", {
-    style: {}
-  }, "\u2726")), "Auto-selected \u2014 non-editable"))), React.createElement("div", {
+  }, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "\u2726")), "Auto-selected \u2014 non-editable"))), React.createElement("div", {
     style: {
       borderBottom: '1px solid var(--c-rule)'
     }
