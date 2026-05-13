@@ -19210,6 +19210,8 @@ function WetlandApp() {
   const ignoreGpsRef = useRef(false);
   const gpsWatchRef = useRef(null);
   const gpsTimeoutRef = useRef(null);
+  const gpsIntervalRef = useRef(null);
+  const [gpsCountdown, setGpsCountdown] = useState(null);
   const gpsJsonLockedRef = useRef(
     (() => { try { const s = JSON.parse(localStorage.getItem('wetland_arid_v11') || '{}'); return s.gpsFromJson === true && !!(s.siteInfo?.lat || s.siteInfo?.lng); } catch { return false; } })()
   );
@@ -19222,12 +19224,20 @@ function WetlandApp() {
     // Cancel any in-progress acquisition
     if (gpsWatchRef.current !== null) { navigator.geolocation.clearWatch(gpsWatchRef.current); gpsWatchRef.current = null; }
     if (gpsTimeoutRef.current !== null) { clearTimeout(gpsTimeoutRef.current); gpsTimeoutRef.current = null; }
+    if (gpsIntervalRef.current !== null) { clearInterval(gpsIntervalRef.current); gpsIntervalRef.current = null; }
     ignoreGpsRef.current = false;
     setGpsFromJson(false);
     if (!('geolocation' in navigator)) { setGpsStatus('unavailable'); return; }
     // Chrome blocks geolocation on file:// URLs immediately (POSITION_UNAVAILABLE).
     if (window.location.protocol === 'file:' && /Chrome\//.test(navigator.userAgent) && !/Edg\/|OPR\//.test(navigator.userAgent)) { setGpsStatus('error'); return; }
     setGpsStatus('acquiring');
+    setGpsCountdown(30);
+    gpsIntervalRef.current = setInterval(() => {
+      setGpsCountdown(n => {
+        if (n <= 1) { clearInterval(gpsIntervalRef.current); gpsIntervalRef.current = null; return 0; }
+        return n - 1;
+      });
+    }, 1000);
     let bestPos = null;
     const applyBest = (pos, done) => {
       const lat = pos.coords.latitude.toFixed(6);
@@ -19241,6 +19251,8 @@ function WetlandApp() {
     const finish = (done = true) => {
       if (gpsWatchRef.current !== null) { navigator.geolocation.clearWatch(gpsWatchRef.current); gpsWatchRef.current = null; }
       if (gpsTimeoutRef.current !== null) { clearTimeout(gpsTimeoutRef.current); gpsTimeoutRef.current = null; }
+      if (gpsIntervalRef.current !== null) { clearInterval(gpsIntervalRef.current); gpsIntervalRef.current = null; }
+      setGpsCountdown(null);
       if (bestPos) applyBest(bestPos, done);
       else if (done && !ignoreGpsRef.current) setGpsStatus('error');
     };
@@ -21140,7 +21152,7 @@ function WetlandApp() {
       gpsStatus && React.createElement(React.Fragment, null,
         gpsStatus === 'acquiring' && React.createElement("span", {
           style: { fontSize: 10, color: 'var(--c-sub)', fontStyle: 'italic' }
-        }, "Acquiring\u2026", gpsAccuracy != null && ` \xB1${gpsAccuracy}m`),
+        }, `Acquiring (${gpsCountdown ?? 30}s)\u2026`, gpsAccuracy != null && ` \xB1${gpsAccuracy}m`),
         _gpsIsLock && React.createElement(React.Fragment, null,
           !gpsFromJson && React.createElement("button", {
             onClick: () => acquireLocation(),
