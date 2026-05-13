@@ -16318,41 +16318,7 @@ function MunsellPickerPopup({
       marginBottom: 12,
       flexShrink: 0
     }
-  }, React.createElement("button", {
-    onClick: () => setPageIdx(i => Math.max(0, i - 1)),
-    disabled: pageIdx === 0,
-    style: {
-      background: 'var(--c-input)',
-      border: '1px solid var(--c-rule-strong)',
-      color: pageIdx === 0 ? 'var(--c-rule-strong)' : 'var(--c-ink)',
-      borderRadius: 5,
-      width: 34,
-      height: 34,
-      fontSize: 16,
-      cursor: pageIdx === 0 ? 'not-allowed' : 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0
-    }
-  }, "\u2039"), React.createElement("button", {
-    onClick: () => setPageIdx(i => Math.min(ACTIVE_MUNSELL_PAGES.length - 1, i + 1)),
-    disabled: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1,
-    style: {
-      background: 'var(--c-input)',
-      border: '1px solid var(--c-rule-strong)',
-      color: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1 ? 'var(--c-rule-strong)' : 'var(--c-ink)',
-      borderRadius: 5,
-      width: 34,
-      height: 34,
-      fontSize: 16,
-      cursor: pageIdx === ACTIVE_MUNSELL_PAGES.length - 1 ? 'not-allowed' : 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0
-    }
-  }, "\u203A"), React.createElement("div", {
+  }, React.createElement("div", {
     style: {
       flex: 1,
       textAlign: 'center'
