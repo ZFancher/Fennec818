@@ -16327,7 +16327,7 @@ function MunsellPickerPopup({
   }, page.label), React.createElement("div", {
     style: {
       fontSize: 10,
-      color: '#000000',
+      color: 'var(--c-sub)',
       marginTop: 1,
       whiteSpace: 'nowrap'
     }
@@ -16352,8 +16352,8 @@ function MunsellPickerPopup({
     onClick: () => setPageIdx(i),
     style: {
       background: i === pageIdx ? 'var(--c-pass)' : 'transparent',
-      border: `1px solid ${i === pageIdx ? 'var(--c-pass)' : '#000000'}`,
-      color: i === pageIdx ? 'var(--c-action-fg)' : '#000000',
+      border: `1px solid ${i === pageIdx ? 'var(--c-pass)' : 'var(--c-sub)'}`,
+      color: i === pageIdx ? 'var(--c-action-fg)' : 'var(--c-sub)',
       borderRadius: 4,
       padding: '2px 7px',
       fontSize: 9,
@@ -16364,7 +16364,7 @@ function MunsellPickerPopup({
     style: {
       marginBottom: 10,
       fontSize: 10,
-      color: '#000000',
+      color: 'var(--c-sub)',
       textAlign: 'center',
       flexShrink: 0,
       fontWeight: 700
