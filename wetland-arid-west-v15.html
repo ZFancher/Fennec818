@@ -21147,7 +21147,7 @@ function WetlandApp() {
           }, "Re-acquire"),
           React.createElement("span", {
             style: { fontSize: 10, color: gpsStatus === 'gps' ? 'var(--c-pass)' : gpsStatus === 'wifi' ? 'var(--c-auto-partial)' : 'var(--c-fail)' }
-          }, gpsStatus === 'gps' ? 'GPS' : gpsStatus === 'wifi' ? 'WiFi/Cell' : 'Approx',
+          }, gpsStatus === 'gps' ? 'High' : gpsStatus === 'wifi' ? 'Moderate' : 'Low',
             " \xB7 \xB1", gpsAccuracy, "m",
             gpsFromJson && ' (from JSON)')),
         gpsStatus === 'denied' && React.createElement(React.Fragment, null,
