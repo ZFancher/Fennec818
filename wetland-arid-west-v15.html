@@ -16327,7 +16327,7 @@ function MunsellPickerPopup({
   }, page.label), React.createElement("div", {
     style: {
       fontSize: 10,
-      color: 'var(--c-sub)',
+      color: '#000000',
       marginTop: 1,
       whiteSpace: 'nowrap'
     }
@@ -16353,7 +16353,7 @@ function MunsellPickerPopup({
     style: {
       background: i === pageIdx ? 'var(--c-pass)' : 'var(--c-input)',
       border: `1px solid ${i === pageIdx ? 'var(--c-pass)' : 'var(--c-rule-strong)'}`,
-      color: i === pageIdx ? 'var(--c-action-fg)' : 'var(--c-sub)',
+      color: i === pageIdx ? 'var(--c-action-fg)' : 'var(--c-pass)',
       borderRadius: 4,
       padding: '2px 7px',
       fontSize: 9,
@@ -16363,20 +16363,13 @@ function MunsellPickerPopup({
   }, p.label))), React.createElement("div", {
     style: {
       marginBottom: 10,
-      padding: '5px 10px',
-      background: 'var(--c-panel-2)',
-      borderRadius: 5,
       fontSize: 10,
-      color: 'var(--c-ink-2)',
+      color: 'var(--c-pass)',
       textAlign: 'center',
-      flexShrink: 0
+      flexShrink: 0,
+      fontWeight: 700
     }
-  }, "Selected: ", React.createElement("span", {
-    style: {
-      fontWeight: 700,
-      color: 'var(--c-ink)'
-    }
-  }, currentHue, " ", currentValue, "/", currentChroma)), page.type === 'standard' && React.createElement(StandardGrid, {
+  }, "Selected: ", currentHue, " ", currentValue, "/", currentChroma), page.type === 'standard' && React.createElement(StandardGrid, {
     hue: page.hues[0],
     chips: page.chips
   }), page.type === 'multi' && React.createElement(MultiGrid, {
