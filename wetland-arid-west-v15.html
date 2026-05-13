@@ -19264,7 +19264,7 @@ function WetlandApp() {
   });
   const ignoreGpsRef = useRef(false);
   const gpsJsonLockedRef = useRef(
-    (() => { try { return JSON.parse(localStorage.getItem('wetland_arid_v11') || '{}').gpsFromJson === true; } catch { return false; } })()
+    (() => { try { const s = JSON.parse(localStorage.getItem('wetland_arid_v11') || '{}'); return s.gpsFromJson === true && !!(s.siteInfo?.lat || s.siteInfo?.lng); } catch { return false; } })()
   );
   const si = (k, v) => setSiteInfo(p => ({
     ...p,
@@ -19635,6 +19635,7 @@ function WetlandApp() {
     setBareGround('');
     setGpsStatus(null);
     setGpsAccuracy(null);
+    setGpsFromJson(false);
     gpsJsonLockedRef.current = false;
     setRemarksResetKey(k => k + 1);
     setCollapsibleResetKey(k => k + 1);
