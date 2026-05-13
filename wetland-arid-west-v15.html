@@ -19208,6 +19208,8 @@ function WetlandApp() {
     catch { return false; }
   });
   const ignoreGpsRef = useRef(false);
+  const gpsWatchRef = useRef(null);
+  const gpsTimeoutRef = useRef(null);
   const gpsJsonLockedRef = useRef(
     (() => { try { const s = JSON.parse(localStorage.getItem('wetland_arid_v11') || '{}'); return s.gpsFromJson === true && !!(s.siteInfo?.lat || s.siteInfo?.lng); } catch { return false; } })()
   );
@@ -19217,53 +19219,54 @@ function WetlandApp() {
   }));
   const acquireLocation = useCallback((onDone) => {
     if (gpsJsonLockedRef.current) return;
+    // Cancel any in-progress acquisition
+    if (gpsWatchRef.current !== null) { navigator.geolocation.clearWatch(gpsWatchRef.current); gpsWatchRef.current = null; }
+    if (gpsTimeoutRef.current !== null) { clearTimeout(gpsTimeoutRef.current); gpsTimeoutRef.current = null; }
     ignoreGpsRef.current = false;
     setGpsFromJson(false);
-    if (!('geolocation' in navigator)) {
-      setGpsStatus('unavailable');
-      return;
-    }
+    if (!('geolocation' in navigator)) { setGpsStatus('unavailable'); return; }
     // Chrome blocks geolocation on file:// URLs immediately (POSITION_UNAVAILABLE).
-    // Skip the attempt entirely rather than making the user wait through two timeouts.
-    if (window.location.protocol === 'file:' && /Chrome\//.test(navigator.userAgent) && !/Edg\/|OPR\//.test(navigator.userAgent)) {
-      setGpsStatus('error');
-      return;
-    }
+    if (window.location.protocol === 'file:' && /Chrome\//.test(navigator.userAgent) && !/Edg\/|OPR\//.test(navigator.userAgent)) { setGpsStatus('error'); return; }
     setGpsStatus('acquiring');
-    const onSuccess = pos => {
-      if (ignoreGpsRef.current) return;
+    let bestPos = null;
+    const applyBest = (pos, done) => {
       const lat = pos.coords.latitude.toFixed(6);
       const lng = pos.coords.longitude.toFixed(6);
       const acc = Math.round(pos.coords.accuracy);
-      setSiteInfo(p => ({
-        ...p,
-        lat,
-        lng,
-        datum: 'WGS 84'
-      }));
+      setSiteInfo(p => ({ ...p, lat, lng, datum: 'WGS 84' }));
       setGpsAccuracy(acc);
-      setGpsStatus(acc <= 10 ? 'gps' : acc <= 100 ? 'wifi' : 'approx');
-      if (onDone) onDone();
+      setGpsStatus(acc <= 15 ? 'gps' : acc <= 30 ? 'wifi' : 'approx');
+      if (done && onDone) onDone();
     };
-    const onFail = err => {
-      if (ignoreGpsRef.current) return;
-      if (err.code === 1) {
-        setGpsStatus('denied');
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(onSuccess, () => {
-        if (!ignoreGpsRef.current) setGpsStatus('error');
-      }, {
-        enableHighAccuracy: false,
-        timeout: 4000,
-        maximumAge: 60000
-      });
+    const finish = (done = true) => {
+      if (gpsWatchRef.current !== null) { navigator.geolocation.clearWatch(gpsWatchRef.current); gpsWatchRef.current = null; }
+      if (gpsTimeoutRef.current !== null) { clearTimeout(gpsTimeoutRef.current); gpsTimeoutRef.current = null; }
+      if (bestPos) applyBest(bestPos, done);
+      else if (done && !ignoreGpsRef.current) setGpsStatus('error');
     };
-    navigator.geolocation.getCurrentPosition(onSuccess, onFail, {
-      enableHighAccuracy: true,
-      timeout: 8000,
-      maximumAge: 0
-    });
+    // After 30s take the best position seen, or error if none
+    gpsTimeoutRef.current = setTimeout(() => { if (!ignoreGpsRef.current) finish(true); }, 30000);
+    gpsWatchRef.current = navigator.geolocation.watchPosition(
+      pos => {
+        if (ignoreGpsRef.current) { finish(false); return; }
+        // Keep the most accurate fix seen so far; show live accuracy while acquiring
+        if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) {
+          bestPos = pos;
+          setGpsAccuracy(Math.round(pos.coords.accuracy));
+        }
+        // Stop early once we hit the High threshold
+        if (pos.coords.accuracy <= 15) finish(true);
+      },
+      err => {
+        if (ignoreGpsRef.current) return;
+        if (gpsTimeoutRef.current !== null) { clearTimeout(gpsTimeoutRef.current); gpsTimeoutRef.current = null; }
+        if (gpsWatchRef.current !== null) { navigator.geolocation.clearWatch(gpsWatchRef.current); gpsWatchRef.current = null; }
+        if (err.code === 1) { setGpsStatus('denied'); return; }
+        if (bestPos) applyBest(bestPos, true);
+        else setGpsStatus('error');
+      },
+      { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
+    );
   }, []);
   const _sa = useRef({
     el: null,
@@ -21139,7 +21142,7 @@ function WetlandApp() {
       gpsStatus && React.createElement(React.Fragment, null,
         gpsStatus === 'acquiring' && React.createElement("span", {
           style: { fontSize: 10, color: 'var(--c-sub)', fontStyle: 'italic' }
-        }, "Acquiring location\u2026"),
+        }, "Acquiring\u2026", gpsAccuracy != null && ` \xB1${gpsAccuracy}m`),
         _gpsIsLock && React.createElement(React.Fragment, null,
           !gpsFromJson && React.createElement("button", {
             onClick: () => acquireLocation(),
