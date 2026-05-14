@@ -16372,9 +16372,9 @@ function MunsellPickerPopup({
     key: p.id,
     onClick: () => setPageIdx(i),
     style: {
-      background: i === pageIdx ? 'var(--c-pass)' : 'transparent',
-      border: `1px solid ${i === pageIdx ? 'var(--c-pass)' : 'var(--c-sub)'}`,
-      color: i === pageIdx ? 'var(--c-action-fg)' : 'var(--c-sub)',
+      background: i === pageIdx ? 'var(--c-sub)' : 'transparent',
+      border: `1px solid var(--c-sub)`,
+      color: i === pageIdx ? '#D8D8D8' : 'var(--c-sub)',
       borderRadius: 4,
       padding: '2px 7px',
       fontSize: 9,
@@ -16385,7 +16385,7 @@ function MunsellPickerPopup({
     style: {
       marginBottom: 10,
       fontSize: 10,
-      color: 'var(--c-pass)',
+      color: 'var(--c-ink)',
       textAlign: 'center',
       flexShrink: 0,
       fontWeight: 700
