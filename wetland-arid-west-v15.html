@@ -23829,7 +23829,27 @@ function WetlandApp() {
       fontWeight: 700,
       whiteSpace: 'nowrap'
     }
-  }, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "\u2726")), "Auto-selected \u2014 non-editable"))), React.createElement("div", {
+  }, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "\u2726")), "Auto-selected \u2014 non-editable"), React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: 'var(--c-sub)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 5,
+      whiteSpace: 'nowrap'
+    }
+  }, React.createElement("span", {
+    style: {
+      fontSize: 11,
+      padding: '1px 6px',
+      borderRadius: 3,
+      background: 'var(--c-auto-partial-bg)',
+      color: 'var(--c-auto-partial)',
+      border: '1px solid var(--c-auto-partial)',
+      fontWeight: 700,
+      whiteSpace: 'nowrap'
+    }
+  }, "PARTIAL \u25d1"), "Partially met by hydro data \u2014 addl. field observations req."))), React.createElement("div", {
     style: {
       borderBottom: '1px solid var(--c-rule)'
     }
