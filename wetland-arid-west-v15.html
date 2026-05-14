@@ -23405,6 +23405,7 @@ function WetlandApp() {
       fontWeight: 700
     }
   }, "LRR \u2717"), "Not applicable to selected LRR \u2014 row dimmed"))), React.createElement("div", {
+    onClick: () => setShowAllSoilsRule(v => !v),
     style: {
       padding: '5px 16px',
       fontSize: 10,
@@ -23414,7 +23415,8 @@ function WetlandApp() {
       borderBottom: showAllSoilsRule ? 'none' : '1px solid var(--c-rule)',
       display: 'flex',
       alignItems: 'center',
-      gap: 6
+      gap: 6,
+      cursor: 'pointer'
     }
   }, React.createElement("span", {
     style: {
