@@ -20000,9 +20000,9 @@ function WetlandApp() {
   const isWetland = vegMet && soilsMet && hydroMet;
   const consistencyWarnings = useMemo(() => {
     const w = [];
-    if (soilProfileWarning) w.push({ code: 'W6', msg: 'Data Sheet Incomplete - Additional Soil Profile Data Required. Depth (both bounds), texture, and percentages of matrix color and redox features must all be filled in. A complete profile description is required to support any hydric soil determination under the USACE three-factor methodology. This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer.' });
+    if (soilProfileWarning) w.push({ code: 'W2', msg: 'Data Sheet Incomplete - Additional Soil Profile Data Required. Depth (both bounds), texture, and percentages of matrix color and redox features must all be filled in. A complete profile description is required to support any hydric soil determination under the USACE three-factor methodology. This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer.' });
     if (horizons.length >= 3 && horizons.every(h => h.depthFrom !== '' && Number(h.matrixChroma) > 2 && !['Muck', 'Mucky peat', 'Peat', 'Mucky mineral'].includes(h.texture))) w.push({
-      code: 'W5',
+      code: 'W1',
       msg: 'All entered soil horizons have chroma >2 with no organic textures. Hydric soil indicators are unlikely to be met based on this profile. Verify colors are moist Munsell readings.'
     });
     if (siteInfo.lrr) {
@@ -20024,7 +20024,7 @@ function WetlandApp() {
       });
     }
     if (isWetland && normalCirc === false) w.push({
-      code: 'W8',
+      code: 'W4',
       msg: 'Final determination is YES but Normal Circumstances are marked as absent. Per ERDC/EL TR-08-28 Ch. 5, atypical-situation methods must be applied before a final determination can be made.'
     });
     horizons.forEach(h => {
@@ -20039,7 +20039,7 @@ function WetlandApp() {
       if (total !== 100) {
         const depthLabel = h.depthFrom !== '' && h.depthTo !== '' ? `${h.depthFrom}–${h.depthTo} in.` : h.depthFrom !== '' ? `from ${h.depthFrom} in.` : 'horizon';
         w.push({
-          code: 'W7',
+          code: 'W3',
           msg: `Horizon ${depthLabel}: color percentages sum to ${total}% — all entered percentages (matrix colors and redox features combined) must total 100%.`
         });
       }
