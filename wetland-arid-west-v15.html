@@ -11592,6 +11592,19 @@ function texIsLoamy(tex) {
   if (texIsMucky(tex)) return false;
   return true;
 }
+function dominantChromaOfLayer(h) {
+  const redoxes = h.redoxRows || [];
+  if (!redoxes.length) return Number(h.matrixChroma) || 0;
+  const cands = (h.matrixColors || []).map(mc => ({ chroma: Number(mc.chroma) || 0, pct: Number(mc.pct) || 0, isMatrix: true }));
+  for (const rx of redoxes) cands.push({ chroma: Number(rx.chroma) || 0, pct: Number(rx.pct) || 0, isMatrix: false });
+  if (!cands.some(c => c.pct > 0)) return Number(h.matrixChroma) || 0;
+  const totalExpl = cands.reduce((s, c) => s + c.pct, 0);
+  const zeroCount = cands.filter(c => c.pct === 0).length;
+  const implied = zeroCount > 0 && totalExpl < 100 ? (100 - totalExpl) / zeroCount : 0;
+  const resolved = cands.map(c => ({ ...c, pct: c.pct > 0 ? c.pct : implied }));
+  resolved.sort((a, b) => b.pct !== a.pct ? b.pct - a.pct : (a.isMatrix ? -1 : 1));
+  return resolved[0].chroma;
+}
 function inferHydricIndicators(horizons) {
   horizons = horizons.map(h => h.matrixAmbiguous ? {
     ...h,
@@ -11675,18 +11688,24 @@ function inferHydricIndicators(horizons) {
     const above = horizons.filter(h => hzBot(h) <= qualLayerTop + 0.1 && hzTop(h) < qualLayerTop);
     return above.filter(h => N(h.matrixChroma) > 2 && !isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma)).reduce((s, h) => s + hzThick(h), 0) < 6;
   }
+  function aboveMinLayersChromaOK_A(qualLayerTop) {
+    const TRUE_ORG_A = ['muck', 'mucky peat', 'peat'];
+    const above = horizons.filter(h => hzBot(h) <= qualLayerTop + 0.1 && hzTop(h) < qualLayerTop && !(h.texture && TRUE_ORG_A.includes(h.texture.toLowerCase())));
+    return above.filter(h => dominantChromaOfLayer(h) > 2).reduce((s, h) => s + hzThick(h), 0) < 5.5;
+  }
   const sorted = [...horizons].sort((a, b) => N(a.depthFrom) - N(b.depthFrom));
   const TRUE_ORGANIC = ['muck', 'mucky peat', 'peat'];
   function isHistosolOrganic(tex) { return tex && TRUE_ORGANIC.includes(tex.toLowerCase()); }
   {
     // A1 — depth rule: ≥16 in. of true organic material in upper 32 in.
     let organicIn32 = 0;
+    const firstOrg1 = sorted.find(h => isHistosolOrganic(h.texture));
     for (const h of sorted) {
       if (hzTop(h) >= 32) break;
       if (!isHistosolOrganic(h.texture)) continue;
       organicIn32 += Math.min(hzBot(h), 32) - hzTop(h);
     }
-    if (organicIn32 >= 16) inferred['A1'] = {
+    if (organicIn32 >= 16 && aboveMinLayersChromaOK_A(firstOrg1 ? hzTop(firstOrg1) : 0)) inferred['A1'] = {
       reason: `${organicIn32.toFixed(1)} in. of organic material (muck/mucky peat/peat) in the upper 32 in. (≥16 in. req.). Formal Soil Taxonomy classification and OC% analysis required to confirm Histosol.`,
       partial: true
     };
@@ -11702,7 +11721,7 @@ function inferHydricIndicators(horizons) {
     }
     if (organicThick >= 8 && firstOrganic) {
       const below = sorted.find(h => hzTop(h) >= organicEnd && h.depthTo !== '' && h.texture && !isHistosolOrganic(h.texture) && (h.matrixHue === 'N' || h.matrixChroma !== '') && N(h.matrixChroma) <= 2);
-      if (below) inferred['A2'] = {
+      if (below && aboveMinLayersChromaOK_A(hzTop(firstOrganic))) inferred['A2'] = {
         reason: `${organicThick.toFixed(1)} in. of organic surface material (${firstOrganic.texture}, ≥8 in. req.) underlain by mineral soil (${below.texture}, chroma ${below.matrixChroma} ≤2 req.). Aquic conditions must be confirmed — assumed present if both vegetation and wetland hydrology criteria are met.`,
         partial: true
       };
@@ -11728,7 +11747,7 @@ function inferHydricIndicators(horizons) {
       }
       if (thickness >= 8 && first) {
         const below = sorted.find(h => hzTop(h) >= endDepth && h.depthTo !== '' && h.texture && !isHistosolOrganic(h.texture) && (h.matrixHue === 'N' || h.matrixChroma !== ''));
-        if (below && N(below.matrixChroma) <= 2) inferred['A3'] = {
+        if (below && N(below.matrixChroma) <= 2 && aboveMinLayersChromaOK_A(hzTop(first))) inferred['A3'] = {
           reason: `Organic layer (${first.texture}) ${thickness.toFixed(1)} in. thick, starting ≤6 in., hue ${first.matrixHue} value ${first.matrixValue}/chroma ${first.matrixChroma} (≤3/≤1 req.); underlain by mineral horizon (chroma ${below.matrixChroma} ≤2 req.).`
         };
       }
@@ -11760,13 +11779,13 @@ function inferHydricIndicators(horizons) {
   }
   {
     const q = sorted.find(h => hzTop(h) <= 6 && isMuck(h.texture) && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hzThick(h) >= 0.5);
-    if (q) inferred['A9'] = {
+    if (q && aboveMinLayersChromaOK_A(hzTop(q))) inferred['A9'] = {
       reason: `Muck at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in. thick; ≥0.5 in. req.), value ${q.matrixValue}/chroma ${q.matrixChroma}. Confirm LRR D (approved) or C (testing).`
     };
   }
   {
     const q = sorted.find(h => hzTop(h) <= 6 && isMuck(h.texture) && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hzThick(h) >= 0.75);
-    if (q) inferred['A10'] = {
+    if (q && aboveMinLayersChromaOK_A(hzTop(q))) inferred['A10'] = {
       reason: `Muck at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in. thick; ≥0.75 in. req.), value ${q.matrixValue}/chroma ${q.matrixChroma}. TEST indicator in LRR B only.`
     };
   }
@@ -19738,10 +19757,17 @@ function WetlandApp() {
         const srt = [...horizons].filter(h => h.depthFrom !== '' || h.depthTo !== '').sort((a, b) => (Number(a.depthFrom) || 0) - (Number(b.depthFrom) || 0));
         const TRUE_ORGANIC_A1 = ['muck', 'mucky peat', 'peat'];
         const organicOverBedrock = srt.find(h => TRUE_ORGANIC_A1.includes((h.texture || '').toLowerCase()) && (Number(h.depthFrom) || 0) < bdRaw);
-        if (organicOverBedrock) base['A1'] = {
-          reason: `${organicOverBedrock.texture} (${Number(organicOverBedrock.depthFrom) || 0}–${Number(organicOverBedrock.depthTo) || 0} in.) above bedrock at ${bdRaw} in. — organic material of any thickness over bedrock qualifies as Histosol. Formal Soil Taxonomy classification and OC% analysis required to confirm.`,
-          partial: true
-        };
+        if (organicOverBedrock) {
+          const _orgTop = Number(organicOverBedrock.depthFrom) || 0;
+          const _highChromaThick = srt.filter(h => {
+            const top = Number(h.depthFrom) || 0; const bot = Number(h.depthTo) || 0;
+            return bot <= _orgTop + 0.1 && top < _orgTop && !TRUE_ORGANIC_A1.includes((h.texture || '').toLowerCase());
+          }).filter(h => dominantChromaOfLayer(h) > 2).reduce((s, h) => s + ((Number(h.depthTo) || 0) - (Number(h.depthFrom) || 0)), 0);
+          if (_highChromaThick < 5.5) base['A1'] = {
+            reason: `${organicOverBedrock.texture} (${Number(organicOverBedrock.depthFrom) || 0}–${Number(organicOverBedrock.depthTo) || 0} in.) above bedrock at ${bdRaw} in. — organic material of any thickness over bedrock qualifies as Histosol. Formal Soil Taxonomy classification and OC% analysis required to confirm.`,
+            partial: true
+          };
+        }
       }
     }
     if (!base['F22'] && restrictiveType === 'Bedrock') {
@@ -20018,7 +20044,7 @@ function WetlandApp() {
     });
     if ((chkHydric['A1'] || chkHydricProb['A1']) && !effectiveSoilAuto['A1']) w.push({
       code: 'A1',
-      msg: 'A1 (Histosol) is manually selected but the entered soil data does not support it. This indicator requires either ≥16 in. of organic soil material (muck, mucky peat, or peat) in the upper 32 in., or organic material of any thickness directly overlying a bedrock restrictive layer.',
+      msg: 'A1 (Histosol) is manually selected but the entered soil data does not support it. This indicator requires either ≥16 in. of organic soil material (muck, mucky peat, or peat) in the upper 32 in., or organic material of any thickness directly overlying a bedrock restrictive layer. Additionally, mineral layers above the first organic layer must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <5.5 in.',
       _mismatch: true
     });
     const _enteredHz = horizons.filter(h => h.depthFrom !== '' || h.depthTo !== '' || h.texture);
@@ -20026,10 +20052,10 @@ function WetlandApp() {
     {
       const _HINTS = {
         A2: 'requires an organic surface horizon (muck, mucky peat, or peat) ≥8 in. thick, directly underlain by mineral soil with chroma ≤2',
-        A3: 'requires peat, mucky peat, or muck ≥8 in. thick (hue 10YR or yellower, value ≤3/chroma ≤1) starting ≤6 in., underlain by mineral soil with chroma ≤2',
+        A3: 'requires peat, mucky peat, or muck ≥8 in. thick (hue 10YR or yellower, value ≤3/chroma ≤1) starting ≤6 in., underlain by mineral soil with chroma ≤2; any mineral layers above the organic must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <5.5 in.',
         A5: 'requires ≥2 stratified layers starting within 6 in. of the surface, with at least one having value ≤3/chroma ≤1 or an organic texture (muck/mucky peat/peat/mucky mineral), and all layers having chroma ≤2',
-        A9: 'requires a muck (sapric) layer ≥0.5 in. thick, value ≤3/chroma ≤1, starting ≤6 in. from surface',
-        A10: 'requires a muck (sapric) layer ≥0.75 in. thick, value ≤3/chroma ≤1, starting ≤6 in. from surface',
+        A9: 'requires a muck (sapric) layer ≥0.5 in. thick, value ≤3/chroma ≤1, starting ≤6 in. from surface; any mineral layers above the muck must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <5.5 in.',
+        A10: 'requires a muck (sapric) layer ≥0.75 in. thick, value ≤3/chroma ≤1, starting ≤6 in. from surface; any mineral layers above the muck must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <5.5 in.',
         A11: 'requires organic/loamy/clayey layers (value ≤3/chroma ≤2) or sandy layers (value ≤3/chroma ≤1) starting ≤6 in. and directly abutting a depleted or gleyed matrix (≥60% value ≥4, chroma ≤2) ≥6 in. thick starting ≤12 in.; ≥2% distinct/prominent redox concentrations required when the depleted matrix is 4/1, 4/2, or 5/2',
         A12: 'requires surface layers value ≤2.5/chroma ≤1 from <6 in. to ≥12 in., then value ≤3/chroma ≤1, above a depleted or gleyed matrix ≥6 in. thick; ≥2% distinct/prominent redox concentrations required when the depleted matrix is 4/1, 4/2, or 5/2',
         S1: 'requires a mucky-modified sandy layer ≥2 in. thick starting ≤6 in.',
