@@ -19945,13 +19945,19 @@ function WetlandApp() {
     }
     return result;
   }, [_effectiveSoilAutoBase, vegCalc, hydroMet]);
-  const autoCount = Object.values(effectiveSoilAuto).filter(v => v && !v.combo && !v.partial).length;
   const allHydricInds = [...HYDRIC_ALL, ...HYDRIC_SANDY, ...HYDRIC_LOAMY];
   const a9IsProb = siteInfo.lrr === 'C';
+  const _lrrOkSoil = ind => !siteInfo.lrr || !ind.lrr || ind.lrr.includes('All LRRs') || ind.lrr.includes('LRR ' + siteInfo.lrr) || ind.lrr.includes('LRRs B, C, D');
   const numHydricActive = allHydricInds.filter(ind => {
+    if (!_lrrOkSoil(ind)) return false;
     const a = effectiveSoilAuto[ind.code];
     const isAuto = a && !a.partial && !a.combo;
     return chkHydric[ind.id] || isAuto;
+  }).length;
+  const autoCount = allHydricInds.filter(ind => {
+    if (!_lrrOkSoil(ind)) return false;
+    const a = effectiveSoilAuto[ind.code];
+    return a && !a.combo && !a.partial;
   }).length;
   const numHydricProb = Object.entries(chkHydricProb).filter(([id, v]) => {
     if (id === 'A9prob') return !!v && a9IsProb;
@@ -19963,6 +19969,7 @@ function WetlandApp() {
   const allHydricIndsWithProb = [...allHydricInds, ...HYDRIC_PROBLEMATIC];
   const hasActiveHorizonRequiredInd = allHydricIndsWithProb.some(ind => {
     if (ind.noHorizonReq) return false;
+    if (!_lrrOkSoil(ind)) return false;
     const a = effectiveSoilAuto[ind.code];
     const isAuto = a && !a.partial && !a.combo;
     return chkHydric[ind.id] || chkHydricProb[ind.id] || isAuto;
