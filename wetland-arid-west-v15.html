@@ -20129,9 +20129,17 @@ function WetlandApp() {
     return [...h, hz];
   });
   useEffect(() => {
-    if (!newHorizonIdRef.current) return;
-    const el = document.getElementById('hz-' + newHorizonIdRef.current);
-    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); newHorizonIdRef.current = null; }
+    const id = newHorizonIdRef.current;
+    if (!id) return;
+    newHorizonIdRef.current = null;
+    requestAnimationFrame(() => {
+      const el = document.getElementById('hz-' + id);
+      if (!el) return;
+      const topbar = document.querySelector('.aw-topbar');
+      const tabs = document.querySelector('.aw-tabs');
+      const headerH = (topbar ? topbar.offsetHeight : 68) + (tabs ? tabs.offsetHeight : 44) + 12;
+      window.scrollTo({ top: window.pageYOffset + el.getBoundingClientRect().top - headerH, behavior: 'smooth' });
+    });
   }, [horizons]);
   const removeHorizon = id => setHorizons(h => h.filter(r => r.id !== id));
   const updateHorizon = (id, field, val) => setHorizons(h => h.map(r => r.id === id ? {
