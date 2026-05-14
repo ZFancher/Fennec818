@@ -19712,6 +19712,7 @@ function WetlandApp() {
     try { localStorage.setItem('aw.theme', theme); } catch {}
   }, [theme]);
   const tabScrollPos = useRef({});
+  const newHorizonIdRef = useRef(null);
   const switchTab = (tab) => {
     tabScrollPos.current[activeTab] = window.scrollY;
     setActiveTab(tab);
@@ -20123,8 +20124,15 @@ function WetlandApp() {
   const addHorizon = () => setHorizons(h => {
     const prev = h.length > 0 ? h[h.length - 1] : null;
     const startDepth = prev && prev.depthTo ? prev.depthTo : h.length === 0 ? '0' : '';
-    return [...h, newSoilHorizon(startDepth)];
+    const hz = newSoilHorizon(startDepth);
+    newHorizonIdRef.current = hz.id;
+    return [...h, hz];
   });
+  useEffect(() => {
+    if (!newHorizonIdRef.current) return;
+    const el = document.getElementById('hz-' + newHorizonIdRef.current);
+    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); newHorizonIdRef.current = null; }
+  }, [horizons]);
   const removeHorizon = id => setHorizons(h => h.filter(r => r.id !== id));
   const updateHorizon = (id, field, val) => setHorizons(h => h.map(r => r.id === id ? {
     ...r,
@@ -22682,6 +22690,7 @@ function WetlandApp() {
   }, horizons.map((h, hIdx) => {
     return React.createElement("div", {
       key: h.id,
+      id: 'hz-' + h.id,
       className: "fade-in",
       style: {
         borderBottom: '2px solid var(--c-rule)',
