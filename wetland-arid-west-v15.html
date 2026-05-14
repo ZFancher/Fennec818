@@ -22630,19 +22630,6 @@ function WetlandApp() {
     collapsible: true,
     defaultOpen: true,
     caretSize: 18,
-    headerExtra: soilProfileWarning ? React.createElement("span", {
-      style: {
-        fontSize: 10,
-        padding: '2px 8px',
-        borderRadius: 3,
-        fontWeight: 700,
-        background: 'rgba(234,179,8,0.12)',
-        color: 'var(--c-warn)',
-        border: '1px solid var(--c-warn)',
-        letterSpacing: '0.04em',
-        whiteSpace: 'nowrap'
-      }
-    }, "SOIL DATA INCOMPLETE") : null,
     badge: soilsMet ? 'YES' : 'NO',
     badgeStyle: soilsMet ? passBadge : failBadge,
     stickyFooter: React.createElement(React.Fragment, null, "          ", React.createElement("div", {
