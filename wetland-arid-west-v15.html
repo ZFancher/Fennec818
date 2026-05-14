@@ -11706,7 +11706,7 @@ function inferHydricIndicators(horizons) {
       organicIn32 += Math.min(hzBot(h), 32) - hzTop(h);
     }
     if (organicIn32 >= 16 && aboveMinLayersChromaOK_A(firstOrg1 ? hzTop(firstOrg1) : 0)) inferred['A1'] = {
-      reason: `SOIL DATA MET — ${organicIn32.toFixed(1)} in. of organic material (muck/mucky peat/peat) in the upper 32 in. (≥16 in. req.). Formal Soil Taxonomy classification and OC% analysis required to confirm Histosol.`,
+      reason: `${organicIn32.toFixed(1)} in. of organic material (muck/mucky peat/peat) in the upper 32 in. (≥16 in. req.). SOILS DATA MET, however formal Soil Taxonomy classification and OC% analysis are required to confirm Histosol.`,
       partial: true
     };
   }
@@ -11722,7 +11722,7 @@ function inferHydricIndicators(horizons) {
     if (organicThick >= 8 && firstOrganic) {
       const below = sorted.find(h => hzTop(h) >= organicEnd && h.depthTo !== '' && h.texture && !isHistosolOrganic(h.texture) && (h.matrixHue === 'N' || h.matrixChroma !== '') && N(h.matrixChroma) <= 2);
       if (below) inferred['A2'] = {
-        reason: `SOIL DATA MET — ${organicThick.toFixed(1)} in. of organic surface material (${firstOrganic.texture}, ≥8 in. req.) underlain by mineral soil (${below.texture}, chroma ${below.matrixChroma} ≤2 req.). Aquic conditions must be confirmed — assumed present if both vegetation and wetland hydrology criteria are met.`,
+        reason: `${organicThick.toFixed(1)} in. of organic surface material (${firstOrganic.texture}, ≥8 in. req.) underlain by mineral soil (${below.texture}, chroma ${below.matrixChroma} ≤2 req.). SOILS DATA MET, however aquic conditions must be confirmed — assumed present if both vegetation and wetland hydrology criteria are met.`,
         partial: true
       };
     }
@@ -11771,7 +11771,7 @@ function inferHydricIndicators(horizons) {
         const qualIsSandyColor = !isOrgTex(qualH) && isTrueSandy(qualH.texture);
         const qualExtra = isOrgTex(qualH) ? '' : `, value ${qualH.matrixValue}/chroma ${qualH.matrixChroma}`;
         inferred['A5'] = {
-          reason: `SOIL DATA MET — ${surfHz.length} stratified layers starting ≤6 in.: qualifying layer at ${hzTop(qualH)}–${hzBot(qualH)} in. (${qualH.texture || '?'}${qualExtra}); remaining layers chroma ≤2. Must confirm in the field: (1) layers are DEPOSITIONAL strata (not pedogenic horizons); (2) individual strata dominantly <1 in. thick (hand lens required); (3) undisturbed sample observed.${qualIsSandyColor ? ' Qualifying layer is sandy — ≥70% organic masking of sand grains required (field verify).' : ''} LRR C ONLY — not applicable in LRR B or D.`,
+          reason: `${surfHz.length} stratified layers starting ≤6 in.: qualifying layer at ${hzTop(qualH)}–${hzBot(qualH)} in. (${qualH.texture || '?'}${qualExtra}); remaining layers chroma ≤2. SOILS DATA MET, however confirm in the field: (1) layers are DEPOSITIONAL strata (not pedogenic horizons); (2) individual strata dominantly <1 in. thick (hand lens required); (3) undisturbed sample observed.${qualIsSandyColor ? ' Qualifying layer is sandy — ≥70% organic masking of sand grains required (field verify).' : ''} LRR C ONLY — not applicable in LRR B or D.`,
           partial: true
         };
       }
@@ -11807,9 +11807,9 @@ function inferHydricIndicators(horizons) {
       const needsRedox = !isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma) && (N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2);
       if (needsRedox && !hasDistOrPromConcMassOrPL(h, 2)) continue;
       const hasSandyAbove = above.some(a => isTrueSandy(a.texture) || isMuckyMineral(a.texture));
-      const _a11base = `Depleted/gleyed layer at ${hzTop(h)}–${hzBot(h)} in. (value ${h.matrixValue}/chroma ${h.matrixChroma}, ${hzThick(h).toFixed(1)} in.) starts ≤12 in. Above-layer(s) directly abut the depleted/gleyed layer: organic/loamy/clayey value ≤3/chroma ≤2, or sandy value ≤3/chroma ≤1, starting ≤6 in.${needsRedox ? ' Redox at 4/1–5/2 verified distinct/prominent (Table A1).' : ''}${hasSandyAbove ? ' Sandy layer(s) above require ≥70% organic masking of sand grains (field verify).' : ''}`;
+      const _a11base = `Depleted/gleyed layer at ${hzTop(h)}–${hzBot(h)} in. (value ${h.matrixValue}/chroma ${h.matrixChroma}, ${hzThick(h).toFixed(1)} in.) starts ≤12 in. Above-layer(s) directly abut the depleted/gleyed layer: organic/loamy/clayey value ≤3/chroma ≤2, or sandy value ≤3/chroma ≤1, starting ≤6 in.${needsRedox ? ' Redox at 4/1–5/2 verified distinct/prominent (Table A1).' : ''}`;
       inferred['A11'] = {
-        reason: hasSandyAbove ? `SOIL DATA MET — ${_a11base}` : _a11base,
+        reason: hasSandyAbove ? `${_a11base} SOILS DATA MET, however sandy layer(s) above require ≥70% organic masking of sand grains (field verify).` : _a11base,
         ...(hasSandyAbove ? { partial: true } : {})
       };
       break;
@@ -11830,9 +11830,9 @@ function inferHydricIndicators(horizons) {
       const needsRedox = !isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma) && (N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2);
       if (needsRedox && !hasDistOrPromConcMassOrPL(h, 2)) continue;
       const hasSandyAbove = above.some(a => isTrueSandy(a.texture));
-      const _a12base = `Surface layers: value ≤2.5/chroma ≤1 from <6 in. to ≥12 in., then value ≤3/chroma ≤1 to depleted/gleyed layer at ${hzTop(h)}–${hzBot(h)} in. (${hzThick(h).toFixed(1)} in. thick).${needsRedox ? ' Redox at 4/1–5/2 verified distinct/prominent (Table A1).' : ''}${hasSandyAbove ? ' Loamy fine sand or coarser layer(s) above require ≥70% organic masking (field verify).' : ''}`;
+      const _a12base = `Surface layers: value ≤2.5/chroma ≤1 from <6 in. to ≥12 in., then value ≤3/chroma ≤1 to depleted/gleyed layer at ${hzTop(h)}–${hzBot(h)} in. (${hzThick(h).toFixed(1)} in. thick).${needsRedox ? ' Redox at 4/1–5/2 verified distinct/prominent (Table A1).' : ''}`;
       inferred['A12'] = {
-        reason: hasSandyAbove ? `SOIL DATA MET — ${_a12base}` : _a12base,
+        reason: hasSandyAbove ? `${_a12base} SOILS DATA MET, however loamy fine sand or coarser layer(s) above require ≥70% organic masking (field verify).` : _a12base,
         ...(hasSandyAbove ? { partial: true } : {})
       };
       break;
@@ -11920,7 +11920,7 @@ function inferHydricIndicators(horizons) {
   {
     const q = sorted.find(h => isLoamy(h.texture) && hzTop(h) <= 4 && hzThick(h) >= 2 && hasDistOrPromConcMassOrPL(h, 5));
     if (q) inferred['F8'] = {
-      reason: `SOIL DATA MET — Loamy layer at ${hzTop(q)}–${hzBot(q)} in.: ≥5% distinct/prominent redox concentrations as soft masses/pore linings within ≤4 in. of surface (Table A1). Must confirm closed depression topography in the field.`,
+      reason: `Loamy layer at ${hzTop(q)}–${hzBot(q)} in.: ≥5% distinct/prominent redox concentrations as soft masses/pore linings within ≤4 in. of surface (Table A1). SOILS DATA MET, however closed depression topography must be confirmed in the field.`,
       partial: true
     };
   }
@@ -11938,7 +11938,7 @@ function inferHydricIndicators(horizons) {
     if (q) {
       const qualPct = redoxRows(q).filter(rx => (rx.type.startsWith('C') || rx.type.startsWith('D')) && isDP(q, rx)).reduce((s, rx) => s + N(rx.pct), 0);
       inferred['F21'] = {
-        reason: `SOIL DATA MET — Layer at ${hzTop(q)}–${hzBot(q)} in.: hue ${q.matrixHue}, value ${q.matrixValue}/chroma ${q.matrixChroma} — red-colored range, ${hzThick(q).toFixed(1)} in. thick, ${qualPct}% distinct/prominent C/D redox (≥10% req., Table A1). Must confirm red parent material origin (CCPI <30) and redoximorphic context in the field.`,
+        reason: `Layer at ${hzTop(q)}–${hzBot(q)} in.: hue ${q.matrixHue}, value ${q.matrixValue}/chroma ${q.matrixChroma} — red-colored range, ${hzThick(q).toFixed(1)} in. thick, ${qualPct}% distinct/prominent C/D redox (≥10% req., Table A1). SOILS DATA MET, however confirm red parent material origin (CCPI <30) and redoximorphic context in the field.`,
         partial: true
       };
     }
@@ -11950,7 +11950,7 @@ function inferHydricIndicators(horizons) {
     ));
     if (q) {
       inferred['F18'] = {
-        reason: `SOIL DATA MET — ${q.texture} layer at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in. thick, starting ${hzTop(q)} in.) qualifies for Vertic soil depth/thickness requirement. Must confirm: (1) slickensides present (Vertisol or Vertic intergrade), (2) positive α,α-dipyridyl reaction ≥60% of layer for ≥7 continuous and ≥28 cumulative days during a normal or drier season (multi-day field monitoring required).`,
+        reason: `${q.texture} layer at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in. thick, starting ${hzTop(q)} in.) qualifies for Vertic soil depth/thickness requirement. SOILS DATA MET, however confirm: (1) slickensides present (Vertisol or Vertic intergrade), (2) positive α,α-dipyridyl reaction ≥60% of layer for ≥7 continuous and ≥28 cumulative days during a normal or drier season (multi-day field monitoring required).`,
         partial: true
       };
     }
@@ -19767,7 +19767,7 @@ function WetlandApp() {
             return bot <= _orgTop + 0.1 && top < _orgTop && !TRUE_ORGANIC_A1.includes((h.texture || '').toLowerCase());
           }).filter(h => dominantChromaOfLayer(h) > 2).reduce((s, h) => s + ((Number(h.depthTo) || 0) - (Number(h.depthFrom) || 0)), 0);
           if (_highChromaThick <= 6) base['A1'] = {
-            reason: `SOIL DATA MET — ${organicOverBedrock.texture} (${Number(organicOverBedrock.depthFrom) || 0}–${Number(organicOverBedrock.depthTo) || 0} in.) above bedrock at ${bdRaw} in. — organic material of any thickness over bedrock qualifies as Histosol. Formal Soil Taxonomy classification and OC% analysis required to confirm.`,
+            reason: `${organicOverBedrock.texture} (${Number(organicOverBedrock.depthFrom) || 0}–${Number(organicOverBedrock.depthTo) || 0} in.) above bedrock at ${bdRaw} in. — organic material of any thickness over bedrock qualifies as Histosol. SOILS DATA MET, however formal Soil Taxonomy classification and OC% analysis are required to confirm.`,
             partial: true
           };
         }
@@ -19799,7 +19799,7 @@ function WetlandApp() {
               const thick = (Number(dl.depthTo) || 0) - (Number(dl.depthFrom) || 0);
               const singleHz = remaining.length === 0;
               base['F22'] = {
-                reason: `SOIL DATA MET — Condition 1: Layer at ${Number(dl.depthFrom) || 0}–${Number(dl.depthTo) || 0} in. (${thick.toFixed(1)} in. thick, ≥6 in. req.), value ${dl.matrixValue}/chroma ${dl.matrixChroma} (≤2.5/≤1 req.); bedrock at ${bdRaw} in. (6–10 in. req.)${singleHz ? '' : ', remaining soil to bedrock chroma ≤2'}. Must confirm depression or flood plain subject to frequent ponding${singleHz ? ' (single-horizon profile — landscape position confirmation especially important)' : ''}.`,
+                reason: `Condition 1: Layer at ${Number(dl.depthFrom) || 0}–${Number(dl.depthTo) || 0} in. (${thick.toFixed(1)} in. thick, ≥6 in. req.), value ${dl.matrixValue}/chroma ${dl.matrixChroma} (≤2.5/≤1 req.); bedrock at ${bdRaw} in. (6–10 in. req.)${singleHz ? '' : ', remaining soil to bedrock chroma ≤2'}. SOILS DATA MET, however confirm depression or flood plain subject to frequent ponding${singleHz ? ' (single-horizon profile — landscape position confirmation especially important)' : ''}.`,
                 partial: true
               };
             }
@@ -19818,7 +19818,7 @@ function WetlandApp() {
           }
           if (darkThick > bdRaw / 2 && remainOk) {
             base['F22'] = {
-              reason: `SOIL DATA MET — Condition 2: ${darkThick.toFixed(1)} in. dark (value ≤2.5, chroma ≤1) of ${bdRaw} in. total to bedrock (>half req.); remainder chroma ≤2. Must confirm depression or flood plain subject to frequent ponding.`,
+              reason: `Condition 2: ${darkThick.toFixed(1)} in. dark (value ≤2.5, chroma ≤1) of ${bdRaw} in. total to bedrock (>half req.); remainder chroma ≤2. SOILS DATA MET, however confirm depression or flood plain subject to frequent ponding.`,
               partial: true
             };
           }
