@@ -20001,24 +20001,6 @@ function WetlandApp() {
   const consistencyWarnings = useMemo(() => {
     const w = [];
     if (soilProfileWarning) w.push({ code: 'W6', msg: 'Data Sheet Incomplete - Additional Soil Profile Data Required. Depth (both bounds), texture, and percentages of matrix color and redox features must all be filled in. A complete profile description is required to support any hydric soil determination under the USACE three-factor methodology. This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer.' });
-    if (vegCalc.domPct >= 70 && numHydricActive === 0 && autoCount === 0) w.push({
-      code: 'W1',
-      msg: 'Dominant vegetation is strongly hydrophytic (≥70% OBL/FACW) but no hydric soil indicators are active. Verify soil profile data or consider problematic soils (Ch. 5).'
-    });
-    if (numHydricActive >= 2 && numP === 0 && numS === 0) w.push({
-      code: 'W2',
-      msg: 'Two or more hydric soil indicators active but no wetland hydrology indicators are checked. Confirm hydrology data is complete, or document as periodically lacking (Ch. 5).'
-    });
-    const a1Active = effectiveHydroAuto['A1h'] || chkP['A1h'];
-    if (a1Active && vegCalc.domPct < 20 && numHydricActive === 0) w.push({
-      code: 'W3',
-      msg: 'Surface water (A1) observed but vegetation is strongly upland (<20% hydro dominants) and no hydric soil indicators are active. Confirm the sample point is within the wetland boundary.'
-    });
-    const rDepth = parseFloat(restrictiveDepth);
-    if (restrictiveType && restrictiveType !== 'None observed' && !isNaN(rDepth) && rDepth <= 2 && !chkP['A3h']) w.push({
-      code: 'W4',
-      msg: `Restrictive layer is at ${rDepth} in. — very shallow. A3 Saturation (episaturation waiver) should be auto-selected. If it is not, verify restrictive layer type and depth.`
-    });
     if (horizons.length >= 3 && horizons.every(h => h.depthFrom !== '' && Number(h.matrixChroma) > 2 && !['Muck', 'Mucky peat', 'Peat', 'Mucky mineral'].includes(h.texture))) w.push({
       code: 'W5',
       msg: 'All entered soil horizons have chroma >2 with no organic textures. Hydric soil indicators are unlikely to be met based on this profile. Verify colors are moist Munsell readings.'
