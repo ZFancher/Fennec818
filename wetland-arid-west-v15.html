@@ -20138,7 +20138,8 @@ function WetlandApp() {
       const topbar = document.querySelector('.aw-topbar');
       const tabs = document.querySelector('.aw-tabs');
       const headerH = (topbar ? topbar.offsetHeight : 68) + (tabs ? tabs.offsetHeight : 44) + 12;
-      window.scrollTo({ top: window.pageYOffset + el.getBoundingClientRect().top - headerH, behavior: 'smooth' });
+      el.style.scrollMarginTop = headerH + 'px';
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }, [horizons]);
   const removeHorizon = id => setHorizons(h => h.filter(r => r.id !== id));
