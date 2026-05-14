@@ -18487,7 +18487,6 @@ function StratumTable({
         const cfg = st ? SC[st] || null : null;
         return React.createElement("div", {
           key: row.id,
-          id: 'veg-' + row.id,
           className: "fade-in",
           style: {
             display: 'grid',
@@ -19554,20 +19553,6 @@ function WetlandApp() {
       vegMet: rawVegMet || morphVegMet
     };
   }, [strata, morphAdaptEntries]);
-  useEffect(() => {
-    const id = newVegRowIdRef.current;
-    if (!id) return;
-    newVegRowIdRef.current = null;
-    requestAnimationFrame(() => {
-      const el = document.getElementById('veg-' + id);
-      if (!el) return;
-      const topbar = document.querySelector('.aw-topbar');
-      const tabs = document.querySelector('.aw-tabs');
-      const headerH = (topbar ? topbar.offsetHeight : 68) + (tabs ? tabs.offsetHeight : 44) + 12;
-      el.style.scrollMarginTop = headerH + 'px';
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }, [strata]);
   function resetForm() {
     localStorage.removeItem('wetland_arid_v11');
     setSiteInfo(prev => ({
@@ -19728,8 +19713,6 @@ function WetlandApp() {
   }, [theme]);
   const tabScrollPos = useRef({});
   const newHorizonIdRef = useRef(null);
-  const newRedoxIdRef = useRef(null);
-  const newVegRowIdRef = useRef(null);
   const switchTab = (tab) => {
     tabScrollPos.current[activeTab] = window.scrollY;
     setActiveTab(tab);
@@ -20159,20 +20142,6 @@ function WetlandApp() {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }, [horizons]);
-  useEffect(() => {
-    const id = newRedoxIdRef.current;
-    if (!id) return;
-    newRedoxIdRef.current = null;
-    requestAnimationFrame(() => {
-      const el = document.getElementById('rdx-' + id);
-      if (!el) return;
-      const topbar = document.querySelector('.aw-topbar');
-      const tabs = document.querySelector('.aw-tabs');
-      const headerH = (topbar ? topbar.offsetHeight : 68) + (tabs ? tabs.offsetHeight : 44) + 12;
-      el.style.scrollMarginTop = headerH + 'px';
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }, [horizons]);
   const removeHorizon = id => setHorizons(h => h.filter(r => r.id !== id));
   const updateHorizon = (id, field, val) => setHorizons(h => h.map(r => r.id === id ? {
     ...r,
@@ -20189,11 +20158,8 @@ function WetlandApp() {
       matrixColors: colors
     });
   }));
-  const addRedox = hid => setHorizons(h => h.map(r => {
-    if (r.id !== hid) return r;
-    const rx = newRedoxRow();
-    newRedoxIdRef.current = rx.id;
-    return { ...r, redoxRows: [...r.redoxRows, rx] };
+  const addRedox = hid => setHorizons(h => h.map(r => r.id !== hid ? r : {
+    ...r, redoxRows: [...r.redoxRows, newRedoxRow()]
   }));
   const removeRedox = (hid, rid) => setHorizons(h => h.map(r => r.id === hid ? {
     ...r,
@@ -21807,11 +21773,7 @@ function WetlandApp() {
         [f]: v
       } : r)
     })),
-    onAdd: () => setStrata(s => {
-      const row = newRow();
-      newVegRowIdRef.current = row.id;
-      return { ...s, [st.key]: [...s[st.key], row] };
-    }),
+    onAdd: () => setStrata(s => ({ ...s, [st.key]: [...s[st.key], newRow()] })),
     onRemove: id => setStrata(s => ({
       ...s,
       [st.key]: s[st.key].filter(r => r.id !== id)
@@ -22941,7 +22903,6 @@ function WetlandApp() {
       }
     }, h.redoxRows.map((rx, rxIdx) => React.createElement("div", {
         key: rx.id,
-        id: 'rdx-' + rx.id,
         className: "fade-in",
         style: {
           borderTop: rxIdx > 0 ? '1px solid var(--c-rule)' : undefined,
