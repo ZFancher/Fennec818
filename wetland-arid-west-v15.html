@@ -19396,6 +19396,7 @@ function WetlandApp() {
   const [soilRemarks, setSoilRemarks] = useState('');
   const [remarksResetKey, setRemarksResetKey] = useState(0);
   const [collapsibleResetKey, setCollapsibleResetKey] = useState(0);
+  const [showAllSoilsRule, setShowAllSoilsRule] = useState(false);
   const [chkP, setChkP] = useState({});
   const [chkS, setChkS] = useState({});
   const vegCalc = useMemo(() => {
@@ -23393,14 +23394,15 @@ function WetlandApp() {
       fontWeight: 700,
       color: 'var(--c-warn)',
       background: 'rgba(253,186,116,0.04)',
-      borderBottom: '1px solid var(--c-rule)',
+      borderBottom: showAllSoilsRule ? 'none' : '1px solid var(--c-rule)',
       display: 'flex',
-      justifyContent: 'space-between'
+      alignItems: 'center',
+      gap: 6
     }
   }, React.createElement("span", {
     style: {
       fontFamily: 'var(--font-mono)', fontWeight: 700, textTransform: 'uppercase',
-      letterSpacing: 'var(--ls-cap)'
+      letterSpacing: 'var(--ls-cap)', flex: 1
     }
   }, "All Soils"), React.createElement("span", {
     style: {
@@ -23411,7 +23413,31 @@ function WetlandApp() {
     const a = autoFor(i.code);
     const isAuto = a && !a.partial && !a.combo;
     return chkHydric[i.id] || isAuto;
-  }).length, " active")), HYDRIC_ALL.map(ind => {
+  }).length, " active"), React.createElement("button", {
+    onClick: () => setShowAllSoilsRule(v => !v),
+    title: showAllSoilsRule ? 'Hide above-layer chroma rule' : 'Show above-layer chroma rule',
+    style: {
+      background: 'none', border: 'none', cursor: 'pointer', padding: '0 2px',
+      color: 'var(--c-sub)', fontSize: 9, lineHeight: 1, flexShrink: 0
+    }
+  }, showAllSoilsRule ? '\u25b2' : '\u25bc')),
+  showAllSoilsRule && React.createElement("div", {
+    style: {
+      padding: '8px 16px 10px',
+      fontSize: 11,
+      lineHeight: 1.6,
+      color: 'var(--c-sub)',
+      background: 'rgba(253,186,116,0.04)',
+      borderBottom: '1px solid var(--c-rule)'
+    }
+  }, React.createElement("div", {
+    style: { fontWeight: 600, color: 'var(--c-warn)', marginBottom: 4, fontFamily: 'var(--font-sans)', textTransform: 'none', letterSpacing: 'normal', fontSize: 11 }
+  }, "Above-layer mineral chroma requirement"), React.createElement("div", {style:{fontFamily:'var(--font-sans)'}},
+    "For indicators A1, A2, A3, A9, and A10: all mineral layers above the qualifying indicator layer must have a dominant chroma \u22642. If any mineral layers above have a dominant chroma >2, those layers must total \u22646 in. (15\u202fcm) combined \u2014 otherwise the indicator will not auto-infer, and selecting it manually will generate a data consistency warning. ",
+    React.createElement("em", null, "Dominant chroma"),
+    " = the color (matrix or redox) with the highest percentage in the horizon; exact 50/50 ties favor the matrix color. A11 and A12 are exempt \u2014 their descriptions already carry explicit above-layer requirements."
+  )),
+  HYDRIC_ALL.map(ind => {
     const a = autoFor(ind.code);
     const isPartial = a && !!a.partial;
     return React.createElement(HydricRow, {
