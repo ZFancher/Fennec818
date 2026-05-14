@@ -18415,6 +18415,28 @@ function StratumTable({
     ),
 
     open && React.createElement(React.Fragment, null,
+      // Bare ground (herb stratum only) — before plot size
+      key === 'herb' && React.createElement("div", {
+        style: {
+          display: 'flex', alignItems: 'center', gap: 8,
+          padding: '8px 16px', background: 'var(--c-panel-2)',
+          borderTop: '1px solid var(--c-rule)'
+        }
+      },
+        React.createElement("label", { style: { display: 'flex', alignItems: 'center', gap: 8 } },
+          React.createElement("span", {
+            style: { fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--c-sub)', textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)', whiteSpace: 'nowrap' }
+          }, "% Bare Ground in Herb Stratum"),
+          React.createElement("input", {
+            type: "number", min: "0", max: "100", placeholder: "0",
+            value: bareGround,
+            onChange: e => onBareGroundChange(e.target.value),
+            style: { background: 'var(--c-input)', border: '1px solid var(--c-rule-strong)', borderRadius: 4, padding: '6px 8px', fontSize: 14, color: 'var(--c-ink)', outline: 'none', width: 64, textAlign: 'center' }
+          }),
+          React.createElement("span", { style: { fontFamily: 'var(--font-sans)', fontSize: 11, color: 'var(--c-sub)' } }, "%")
+        )
+      ),
+
       // Plot size row
       React.createElement("div", {
         style: {
@@ -18436,28 +18458,6 @@ function StratumTable({
             onChange: e => onPlotSizeChange(e.target.value),
             style: { ...inputStyle, fontSize: 13, width: 150 }
           })
-        )
-      ),
-
-      // Bare ground (herb stratum only) — immediately after plot size
-      key === 'herb' && React.createElement("div", {
-        style: {
-          display: 'flex', alignItems: 'center', gap: 8,
-          padding: '8px 16px', background: 'var(--c-panel-2)',
-          borderTop: '1px solid var(--c-rule)'
-        }
-      },
-        React.createElement("label", { style: { display: 'flex', alignItems: 'center', gap: 8 } },
-          React.createElement("span", {
-            style: { fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--c-sub)', textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)', whiteSpace: 'nowrap' }
-          }, "% Bare Ground in Herb Stratum"),
-          React.createElement("input", {
-            type: "number", min: "0", max: "100", placeholder: "0",
-            value: bareGround,
-            onChange: e => onBareGroundChange(e.target.value),
-            style: { background: 'var(--c-input)', border: '1px solid var(--c-rule-strong)', borderRadius: 4, padding: '6px 8px', fontSize: 14, color: 'var(--c-ink)', outline: 'none', width: 64, textAlign: 'center' }
-          }),
-          React.createElement("span", { style: { fontFamily: 'var(--font-sans)', fontSize: 11, color: 'var(--c-sub)' } }, "%")
         )
       ),
 
