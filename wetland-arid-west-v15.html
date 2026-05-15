@@ -22203,17 +22203,9 @@ function WetlandApp() {
       style: {fontSize: 10, color: 'var(--c-sub)', marginLeft: 6}
     }, morphAdaptEntries.filter(e => e.speciesId).length, " entr", morphAdaptEntries.filter(e => e.speciesId).length === 1 ? 'y' : 'ies')
   }, React.createElement("div", null,
-    React.createElement("div", {
-      style: {
-        padding: '8px 16px 6px',
-        fontSize: 11,
-        color: 'var(--c-sub)',
-        lineHeight: 1.5
-      }
-    }, "Indicator 3: reassigns qualifying FACU species to FAC status, then recalculates the dominance test and prevalence index. A species qualifies when >50% of individuals show morphological adaptations (e.g., adventitious roots, shallow root systems) in the plot but ", React.createElement("em", null, "not"), " in adjacent non-wetland areas."),
     !(soilsSideOk && hydroSideOk) && React.createElement("div", {
       style: {
-        margin: '0 16px 6px',
+        margin: '2px 16px 8px',
         padding: '4px 8px',
         borderRadius: 3,
         background: 'rgba(251,191,36,0.08)',
@@ -22223,6 +22215,14 @@ function WetlandApp() {
         lineHeight: 1.5
       }
     }, "⚠ Hydric soil AND wetland hydrology must each pass or be significantly disturbed or naturally problematic to apply the morphological adaptations indicator."),
+    React.createElement("div", {
+      style: {
+        padding: '2px 16px 6px',
+        fontSize: 11,
+        color: 'var(--c-sub)',
+        lineHeight: 1.5
+      }
+    }, "Indicator 3: reassigns qualifying FACU species to FAC status, then recalculates the dominance test and prevalence index. A species qualifies when >50% of individuals show morphological adaptations (e.g., adventitious roots, shallow root systems) in the plot but ", React.createElement("em", null, "not"), " in adjacent non-wetland areas."),
     morphAdaptEntries.length > 0 && React.createElement("div", {
       style: {
         display: 'grid',
@@ -22386,7 +22386,7 @@ function WetlandApp() {
         React.createElement("div", null,
           [...vegCalc.reassignedFACU].map(id => {
             const p = plantById(id);
-            return p ? React.createElement("div", {key: id, style: {fontSize: 11, color: 'var(--c-pass)', fontWeight: 600}}, p[0]) : null;
+            return p ? React.createElement("div", {key: id, style: {fontSize: 10, color: 'var(--c-pass)', fontStyle: 'italic'}}, p[0]) : null;
           })
         ),
         React.createElement("div", {style: {display: 'flex', flexDirection: 'column', gap: 3}},
@@ -22445,12 +22445,11 @@ function WetlandApp() {
     }
   }, React.createElement("div", {
     style: {
-      padding: '8px 16px 10px',
-      background: 'var(--c-panel-2)'
+      padding: '2px 16px 10px'
     }
   },  !(soilsSideOk && hydroSideOk) && React.createElement("div", {
     style: {
-      marginBottom: 6,
+      margin: '0 0 8px',
       padding: '4px 8px',
       background: 'rgba(251,191,36,0.08)',
       border: '1px solid rgba(251,191,36,0.25)',
