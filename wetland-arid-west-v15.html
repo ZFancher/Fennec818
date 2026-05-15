@@ -434,33 +434,33 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   --c-focus-ring: #fafafa;
 
   --c-pass: #14b8a6;
-  --c-pass-bg: rgba(20,184,166,0.14);
+  --c-pass-bg: #172e2e;
   --c-pass-glow: rgba(20,184,166,0.22);
   --c-fail: #f87171;
-  --c-fail-bg: rgba(248,113,113,0.12);
+  --c-fail-bg: #332325;
   --c-fail-glow: rgba(248,113,113,0.16);
 
   --c-auto-full: #60a5fa;
-  --c-auto-full-bg: rgba(96,165,250,0.14);
+  --c-auto-full-bg: #222c3a;
   --c-auto-partial: #f59e0b;
-  --c-auto-partial-bg: rgba(245,158,11,0.16);
+  --c-auto-partial-bg: #3b2d18;
   --c-auto-combo: #a78bfa;
-  --c-auto-combo-bg: rgba(167,139,250,0.16);
+  --c-auto-combo-bg: #2f2a3f;
   --c-auto-manual: var(--c-sub);
 
   --c-lrr-yes: #14b8a6;
-  --c-lrr-yes-bg: rgba(20,184,166,0.10);
+  --c-lrr-yes-bg: #182829;
   --c-lrr-no: #52525b;
-  --c-lrr-no-bg: rgba(82,82,91,0.20);
+  --c-lrr-no-bg: #242428;
   --c-lrr-test: #a78bfa;
   --c-lrr-prob: #f59e0b;
 
   --c-warn: #f59e0b;
-  --c-warn-bg: rgba(245,158,11,0.14);
+  --c-warn-bg: #372b19;
   --c-gate: #f59e0b;
-  --c-gate-bg: rgba(245,158,11,0.08);
+  --c-gate-bg: #2a231a;
   --c-info: #60a5fa;
-  --c-info-bg: rgba(96,165,250,0.10);
+  --c-info-bg: #1f2631;
 
   --c-ind-obl: #0fb39a;
   --c-ind-facw: #5aa9e6;
@@ -481,7 +481,7 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   --c-action-fg: #09090b;
   --c-action-2: #27272a;
   --c-add-emphasis: #14b8a6;
-  --c-add-bg: rgba(20,184,166,0.10);
+  --c-add-bg: #182829;
   --c-link: #60a5fa;
   --c-selected-row: rgba(96,165,250,0.10);
 
@@ -18653,7 +18653,7 @@ function HydricRow({
   const lrrMismatch = selectedLrr && ind.lrr && !ind.lrr.includes('All LRRs') && !ind.lrr.includes('LRR ' + selectedLrr) && !ind.lrr.includes('LRRs B, C, D');
   const rowBg = isPartial && !checked ? 'rgba(251,191,36,0.06)' : isCombo ? 'rgba(167,139,250,0.06)' : isAuto ? 'rgba(96,165,250,0.07)' : checked ? 'var(--c-pass-bg)' : 'transparent';
   const codeColor = isCombo ? 'var(--c-auto-combo)' : problematic ? 'var(--c-auto-partial)' : 'var(--c-pass)';
-  const pillStyle = (bg, fg, border) => ({fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,background:bg,color:fg,border:border?'1px solid '+border:'none',whiteSpace:'nowrap',flexShrink:0});
+  const pillStyle = (bg, fg, border) => ({fontSize:11,fontWeight:700,lineHeight:1,padding:'2px 6px 1px',borderRadius:3,background:bg,color:fg,border:border?'1px solid '+border:'none',whiteSpace:'nowrap',flexShrink:0});
   const badge = isAuto
     ? React.createElement("span", {style:pillStyle('var(--c-auto-full-bg)','var(--c-auto-full)','var(--c-auto-full)')}, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "✦"))
     : (isPartial && !checked)
@@ -18662,9 +18662,9 @@ function HydricRow({
         ? React.createElement("span", {style:pillStyle('var(--c-auto-combo-bg)','var(--c-auto-combo)','var(--c-auto-combo)')}, "COMBO ◆")
         : null;
   const lrrTag = ind.lrr && !ind.testLRR && (lrrMismatch || !ind.lrr.includes('All LRRs'))
-    ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, (ind.lrr.match(/LRR [A-Z]/)||[ind.lrr.split(';')[0].trim()])[0])
+    ? React.createElement("span", {style:{fontSize:11,fontWeight:700,lineHeight:1,padding:'2px 6px 1px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)',whiteSpace:'nowrap',flexShrink:0}}, (ind.lrr.match(/LRR [A-Z]/)||[ind.lrr.split(';')[0].trim()])[0])
     : ind.testLRR
-      ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, (ind.testLRR.match(/LRR [A-Z]/)||[ind.testLRR])[0])
+      ? React.createElement("span", {style:{fontSize:11,fontWeight:700,lineHeight:1,padding:'2px 6px 1px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)',whiteSpace:'nowrap',flexShrink:0}}, (ind.testLRR.match(/LRR [A-Z]/)||[ind.testLRR])[0])
       : null;
   const hasSubContent = (isAuto && autoReason) || (isPartial && !checked && autoReason) || (isPartial && checked) || exp;
   return React.createElement("div", {
@@ -18728,16 +18728,16 @@ function IndRow({
   const reasonText = autoReason || (autoChecked && typeof autoChecked === 'object' ? autoChecked.reason : null);
   const lrrMismatch = selectedLrr && ind.lrr && !ind.lrr.includes('All LRRs') && !ind.lrr.includes('LRR ' + selectedLrr) && !ind.lrr.includes('LRRs B, C, D');
   const rowBg = isAutoPartial ? 'var(--c-auto-partial-bg)' : effective ? autoChecked ? 'var(--c-auto-full-bg)' : tier === 'primary' ? 'var(--c-pass-bg)' : 'var(--c-auto-combo-bg)' : 'transparent';
-  const pillStyle = (bg, fg, border) => ({fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,background:bg,color:fg,border:border?'1px solid '+border:'none',whiteSpace:'nowrap',flexShrink:0});
+  const pillStyle = (bg, fg, border) => ({fontSize:11,fontWeight:700,lineHeight:1,padding:'2px 6px 1px',borderRadius:3,background:bg,color:fg,border:border?'1px solid '+border:'none',whiteSpace:'nowrap',flexShrink:0});
   const badge = autoChecked
     ? React.createElement("span", {style:pillStyle('var(--c-auto-full-bg)','var(--c-auto-full)','var(--c-auto-full)')}, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "✦"))
     : isAutoPartial
       ? React.createElement("span", {style:pillStyle('var(--c-auto-partial-bg)','var(--c-auto-partial)','var(--c-auto-partial)')}, "PARTIAL ◑")
       : null;
   const lrrTag = ind.lrr && !ind.testLRR && (lrrMismatch || !ind.lrr.includes('All LRRs'))
-    ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, (ind.lrr.match(/LRR [A-Z]/)||[ind.lrr.split(';')[0].trim()])[0])
+    ? React.createElement("span", {style:{fontSize:11,fontWeight:700,lineHeight:1,padding:'2px 6px 1px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)',whiteSpace:'nowrap',flexShrink:0}}, (ind.lrr.match(/LRR [A-Z]/)||[ind.lrr.split(';')[0].trim()])[0])
     : ind.testLRR
-      ? React.createElement("span", {style:{fontSize:11,fontWeight:700,padding:'1px 6px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)'}}, (ind.testLRR.match(/LRR [A-Z]/)||[ind.testLRR])[0])
+      ? React.createElement("span", {style:{fontSize:11,fontWeight:700,lineHeight:1,padding:'2px 6px 1px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)',whiteSpace:'nowrap',flexShrink:0}}, (ind.testLRR.match(/LRR [A-Z]/)||[ind.testLRR])[0])
       : null;
   const hasSubContent = ind.measureHint || (autoChecked && reasonText) || isAutoPartial || (autoPartial && checked) || exp || !!warningBox;
   return React.createElement("div", {
@@ -19963,8 +19963,6 @@ function WetlandApp() {
     if (id === 'A9prob') return !!v && a9IsProb;
     return !!v;
   }).length;
-  const distOrProbCount = [vegDistOrProb, soilDistOrProb, hydroDistOrProb].filter(Boolean).length;
-  const multipleDistOrProb = distOrProbCount >= 2;
   const soilsMetStandard = numHydricActive >= 1;
   const allHydricIndsWithProb = [...allHydricInds, ...HYDRIC_PROBLEMATIC];
   const hasActiveHorizonRequiredInd = allHydricIndsWithProb.some(ind => {
@@ -19992,18 +19990,18 @@ function WetlandApp() {
   const soilRedoxWarning = hasManualRedoxInd && !hasAnyRedoxData;
   const soilProfileWarning = soilNoHorizonWarning || soilRedoxWarning;
   const soilWarnDetail = soilNoHorizonWarning ? (hasAtLeastOneSufficientHorizon ? 'One or more soil horizon rows have incomplete data. Each entered row requires depth (both bounds), texture, and percentages for all redox features.' : 'No complete soil horizon data has been entered. Depth (both bounds), texture, and percentages of redox features must all be filled in.') : 'One or more active indicator(s) require redox feature data (S5 / F6 / F7 / F8 / F21), but no redox row with a percentage has been entered in the soil profile.';
-  const soilsMetPrelim = soilsMetStandard || numHydricProb >= 1 && (hydroMet || multipleDistOrProb);
+  const soilsMetPrelim = soilsMetStandard || numHydricProb >= 1 && (hydroMet || hydroDistOrProb);
   const vegProbFlag = morphAdapt || probHydroVeg;
   const soilsSideOk = soilsMetPrelim || soilDistOrProb;
   const hydroSideOk = hydroMet || hydroDistOrProb;
   const piGateOk = soilsSideOk && hydroSideOk;
   const piGatedMet = piGateOk && vegCalc.piMet;
-  const morphQualOk = !morphAdapt || soilsMetPrelim && hydroMet;
+  const morphQualOk = !morphAdapt || soilsSideOk && hydroSideOk;
   const morphVegGated = vegCalc.morphVegMet && morphQualOk;
   const rawVegMet = vegCalc.domMet || piGatedMet || morphVegGated;
-  const probVegMet = probHydroVeg && vegDistOrProb && (soilsMetPrelim && hydroMet || soilsMetPrelim && hydroDistOrProb || hydroMet && soilDistOrProb || soilDistOrProb && hydroDistOrProb);
+  const probVegMet = probHydroVeg && soilsSideOk && hydroSideOk;
   const vegMet = rawVegMet || probVegMet;
-  const probValid = rawVegMet && hydroMet || multipleDistOrProb;
+  const probValid = (rawVegMet || vegDistOrProb) && (hydroMet || hydroDistOrProb);
   const soilsMet = soilsMetStandard || numHydricProb >= 1 && probValid;
   const isWetland = vegMet && soilsMet && hydroMet;
   const consistencyWarnings = useMemo(() => {
@@ -20117,7 +20115,7 @@ function WetlandApp() {
   }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, hydroMet, soilProfileWarning, soilWarnDetail]);
   const criteriaCount = [vegMet, soilsMet, hydroMet].filter(Boolean).length;
   const passBadge = {
-    background: 'rgba(20,184,166,0.15)',
+    background: 'var(--c-pass-bg)',
     color: 'var(--c-pass)',
     border: '1px solid var(--c-pass)'
   };
@@ -21716,9 +21714,9 @@ function WetlandApp() {
     caretSize: 18,
     badge: vegMet ? 'YES' : morphVegGated ? 'YES (Ind.3)' : vegCalc.hasReassignment && (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'PEND' : 'NO',
     badgeStyle: vegMet ? passBadge : vegCalc.hasReassignment && (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? {
-      background: 'rgba(245,158,11,0.15)',
-      color: 'var(--c-warn)',
-      border: '1px solid var(--c-warn)'
+      background: 'var(--c-auto-partial-bg)',
+      color: 'var(--c-auto-partial)',
+      border: '1px solid #92400e'
     } : failBadge,
     stickyFooter: React.createElement(React.Fragment, null, React.createElement("div", {
       style: {
@@ -21729,17 +21727,17 @@ function WetlandApp() {
     }, [{
       l: 'Dominance\nTest',
       v: vegCalc.allValid.length === 0 ? '—' : vegCalc.domMet ? 'PASS' : vegCalc.hasReassignment && vegCalc.domMorph?.met ? morphQualOk ? 'PASS' : 'GATED' : 'FAIL',
-      s: vegCalc.allValid.length === 0 ? 'No species entered' : vegCalc.domMet ? `Dominance: ${vegCalc.domPct}% hydro doms` : vegCalc.hasReassignment && vegCalc.domMorph?.met ? morphQualOk ? `Reassigned: ${vegCalc.domMorph.pct}% hydro doms (pre-Ind. 3: ${vegCalc.domPct}%)` : `Ind.3 reassigned: ${vegCalc.domMorph.pct}% hydro doms — pending soil + hydro confirmation` : `${vegCalc.hasReassignment && vegCalc.domMorph ? vegCalc.domMorph.pct : vegCalc.domPct || 0}% hydrophytic dominants (need >50%)${vegCalc.hasReassignment && vegCalc.domMorph && !vegCalc.domMorph.met ? ` — pre-Ind. 3: ${vegCalc.domPct}%` : ''}`,
+      s: vegCalc.allValid.length === 0 ? 'No species entered' : vegCalc.domMet ? `Dominance: ${vegCalc.domPct}% hydro doms` : vegCalc.hasReassignment && vegCalc.domMorph?.met ? morphQualOk ? `Reassigned: ${vegCalc.domMorph.pct}% hydro doms (pre-Ind. 3: ${vegCalc.domPct}%)` : `Ind.3 reassigned: ${vegCalc.domMorph.pct}% hydro doms — soil + hydro not yet met` : `${vegCalc.hasReassignment && vegCalc.domMorph ? vegCalc.domMorph.pct : vegCalc.domPct || 0}% hydrophytic dominants (need >50%)${vegCalc.hasReassignment && vegCalc.domMorph && !vegCalc.domMorph.met ? ` — pre-Ind. 3: ${vegCalc.domPct}%` : ''}`,
       hc: vegCalc.allValid.length === 0 ? 'var(--c-sub)' : vegCalc.domMet ? 'var(--c-pass)' : vegCalc.hasReassignment && vegCalc.domMorph?.met ? morphQualOk ? 'var(--c-pass)' : 'var(--c-auto-partial)' : 'var(--c-fail)'
     }, {
       l: 'Prevalence\nIndex',
       v: vegCalc.pi !== null ? piGatedMet ? 'PASS' : vegCalc.piMet ? 'GATED' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? morphQualOk ? 'PASS' : 'GATED' : 'FAIL' : '—',
-      s: vegCalc.pi !== null ? piGatedMet ? `PI = ${vegCalc.pi.toFixed(2)} — passes` : vegCalc.piMet ? `PI = ${vegCalc.pi.toFixed(2)} — gated` : vegCalc.hasReassignment && vegCalc.piMorph?.met ? morphQualOk ? `Reassigned PI = ${vegCalc.piMorph.pi?.toFixed(2)} (pre-Ind. 3: ${vegCalc.pi?.toFixed(2)})` : `PI reassigned but gated — awaiting soil + hydro confirmation` : `PI = ${vegCalc.pi.toFixed(2)} (need ≤ 3.0)` : 'Insufficient data',
+      s: vegCalc.pi !== null ? piGatedMet ? `PI = ${vegCalc.pi.toFixed(2)} — passes` : vegCalc.piMet ? `PI = ${vegCalc.pi.toFixed(2)} — gated` : vegCalc.hasReassignment && vegCalc.piMorph?.met ? morphQualOk ? `Reassigned PI = ${vegCalc.piMorph.pi?.toFixed(2)} (pre-Ind. 3: ${vegCalc.pi?.toFixed(2)})` : `PI reassigned but gated — soil + hydro not yet met` : `PI = ${vegCalc.pi.toFixed(2)} (need ≤ 3.0)` : 'Insufficient data',
       hc: vegCalc.pi === null ? 'var(--c-sub)' : piGatedMet ? 'var(--c-pass)' : vegCalc.piMet ? 'var(--c-auto-partial)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? morphQualOk ? 'var(--c-pass)' : 'var(--c-auto-partial)' : 'var(--c-fail)'
     }, {
       l: 'Hydrophytic\nVegetation?',
       v: vegMet ? 'YES' : vegCalc.hasReassignment && (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'PEND' : 'NO',
-      s: vegMet ? morphVegGated ? 'Indicator 3 — morphological reassignment' : probVegMet ? 'Problematic veg (Ch. 5) — soil + hydro present' : 'Indicator 1 or 2 satisfied' : vegCalc.hasReassignment && (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'Ind.3 math passes — awaiting soil + hydro confirmation (Ch. 2 p. 26)' : 'No indicator satisfied',
+      s: vegMet ? morphVegGated ? 'Indicator 3 — morphological reassignment' : probVegMet ? 'Problematic veg (Ch. 5) — soil + hydro met or SD/NP' : 'Indicator 1 or 2 satisfied' : vegCalc.hasReassignment && (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'Ind.3 math passes — soil + hydro not yet met (Ch. 2 p. 26)' : 'No indicator satisfied',
       hc: vegMet ? 'var(--c-pass)' : vegCalc.hasReassignment && (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'var(--c-auto-partial)' : 'var(--c-fail)'
     }].map((it, i) => React.createElement("div", {
       key: i,
@@ -21924,7 +21922,7 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       lineHeight: 1.5
     }
-  }, "\u26A0 Dominance Test passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, when utilizing Morphological Adaptations the recalculated Dominance Test only counts when BOTH hydric soil AND wetland hydrology are confirmed (or disturbed/problematic)."))), React.createElement(Collapsible, {
+  }, "\u26A0 Dominance Test passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, when utilizing Morphological Adaptations the recalculated Dominance Test only counts when hydric soil AND wetland hydrology each pass or are significantly disturbed or naturally problematic."))), React.createElement(Collapsible, {
     defaultOpen: false,
     resetKey: collapsibleResetKey,
     label: React.createElement("span", {
@@ -21948,9 +21946,9 @@ function WetlandApp() {
         borderRadius: 4,
         fontWeight: 700,
         fontSize: 11,
-        background: vegCalc.pi === null ? 'var(--c-panel-2)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? 'var(--c-pass-bg)' : vegCalc.piMet ? 'var(--c-pass-bg)' : 'var(--c-fail-bg)',
+        background: vegCalc.pi === null ? 'var(--c-panel-2)' : vegCalc.hasReassignment && vegCalc.piMorph?.met && morphQualOk ? 'var(--c-pass-bg)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? 'var(--c-auto-partial-bg)' : vegCalc.piMet ? 'var(--c-pass-bg)' : 'var(--c-fail-bg)',
         color: vegCalc.hasReassignment && vegCalc.piMorph?.met ? morphQualOk ? 'var(--c-pass)' : 'var(--c-auto-partial)' : piColor,
-        border: `1px solid ${vegCalc.pi === null ? 'var(--c-rule-strong)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? 'var(--c-pass)' : vegCalc.piMet ? 'var(--c-pass)' : 'var(--c-fail)'}`
+        border: `1px solid ${vegCalc.pi === null ? 'var(--c-rule-strong)' : vegCalc.hasReassignment && vegCalc.piMorph?.met && morphQualOk ? 'var(--c-pass)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? '#92400e' : vegCalc.piMet ? 'var(--c-pass)' : 'var(--c-fail)'}`
       }
     }, vegCalc.pi === null ? '—' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? morphQualOk ? 'PASS (IND. 3)' : 'GATED' : piGatedMet ? 'PASS' : vegCalc.piMet ? 'GATED' : 'FAIL')),
     labelStyle: {
@@ -22185,7 +22183,7 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       lineHeight: 1.5
     }
-  }, "\u26A0 PI passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, the Prevalence Index only counts when BOTH hydric soil AND wetland hydrology are confirmed (or disturbed/problematic).")))), React.createElement(Collapsible, {
+  }, "\u26A0 PI passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, the Prevalence Index only counts when hydric soil AND wetland hydrology each pass or are significantly disturbed or naturally problematic.")))), React.createElement(Collapsible, {
     defaultOpen: false,
     resetKey: collapsibleResetKey,
     label: React.createElement("span", {
@@ -22201,308 +22199,235 @@ function WetlandApp() {
       padding: '6px 16px',
       borderTop: '2px solid var(--c-rule)'
     },
-    headerExtra: React.createElement(React.Fragment, null, morphAdaptEntries.filter(e => e.speciesId).length > 0 && React.createElement("span", {
+    headerExtra: morphAdaptEntries.filter(e => e.speciesId).length > 0 && React.createElement("span", {
+      style: {fontSize: 10, color: 'var(--c-sub)', marginLeft: 6}
+    }, morphAdaptEntries.filter(e => e.speciesId).length, " entr", morphAdaptEntries.filter(e => e.speciesId).length === 1 ? 'y' : 'ies')
+  }, React.createElement("div", null,
+    React.createElement("div", {
       style: {
-        fontSize: 10,
-        background: 'var(--c-auto-full-bg)',
-        color: 'var(--c-info)',
-        border: '1px solid var(--c-info)',
-        borderRadius: 3,
-        padding: '1px 5px',
-        marginLeft: 4
-      }
-    }, morphAdaptEntries.filter(e => e.speciesId).length, " entr", morphAdaptEntries.filter(e => e.speciesId).length === 1 ? 'y' : 'ies'))
-  }, React.createElement("div", {
-    style: {
-      padding: '10px 16px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 8,
-      background: 'var(--c-panel-2)'
-    }
-  }, React.createElement("div", {
-    style: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      gap: 16
-    }
-  }, React.createElement("div", {
-    style: {
-      width: '100%'
-    }
-  }, React.createElement("div", {
-    style: {
-      marginTop: 4,
-      padding: '4px 8px',
-      borderRadius: 3,
-      background: 'rgba(251,191,36,0.08)',
-      border: '1px solid rgba(251,191,36,0.25)',
-      fontSize: 10,
-      color: 'var(--c-warn)',
-      lineHeight: 1.5
-    }
-  }, "\u26A0 Requires both hydric soil ", React.createElement("strong", null, "and"), " wetland hydrology indicators to be present (Ch. 2, p. 26 step 3)"))), React.createElement("button", {
-    onClick: addMorphEntry,
-    style: {
-      width: '100%',
-      fontSize: 11,
-      color: 'var(--c-warn)',
-      border: '1px dashed var(--c-warn)',
-      borderRadius: 3,
-      padding: '5px',
-      background: 'none',
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 5
-    }
-  }, "+ Add ", React.createElement("span", {
-    style: {
-      padding: '1px 5px',
-      borderRadius: 3,
-      background: 'var(--c-warn-bg)',
-      color: 'var(--c-warn)',
-      border: '1px solid var(--c-warn)',
-      fontWeight: 700,
-      fontSize: 9
-    }
-  }, "FACU"), " Species"), morphAdaptEntries.length === 0 && React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: 'var(--c-sub-2)',
-      padding: '8px 10px',
-      borderRadius: 4,
-      background: 'var(--c-panel-2)',
-      lineHeight: 1.6
-    }
-  }, "Use this indicator when a FACU species in the plot shows morphological adaptations (adventitious roots, shallow root systems near soil surface) that are present on >50% of individuals in the potential wetland area but ", React.createElement("em", null, "not"), " in surrounding non-wetland areas. A qualifying FACU species is reassigned to FAC status, and the dominance test and prevalence index are recalculated. This is a secondary indicator \u2014 both hydric soil and wetland hydrology must already be present."), morphAdaptEntries.map((entry, ei) => {
-    const rawStatus = entry.speciesId ? statusOf(entry.speciesId) || 'UPL' : '';
-    const pctNum = parseFloat(entry.pct);
-    const inStrata = !!entry.speciesId && vegCalc.allValid.some(v => v.speciesId === entry.speciesId);
-    const qualifies = rawStatus === 'FACU' && pctNum > 50 && entry.notInUpland && inStrata;
-    const eligible = rawStatus === 'FACU';
-    return React.createElement("div", {
-      key: entry.id,
-      style: {
-        background: qualifies ? 'var(--c-pass-bg)' : 'var(--c-panel-2)',
-        border: `1px solid ${qualifies ? 'var(--c-pass)' : 'var(--c-rule-strong)'}`,
-        borderRadius: 6,
-        padding: '10px 12px'
-      }
-    }, React.createElement("div", {
-      style: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 6
-      }
-    }, React.createElement("span", {
-      style: {
+        padding: '8px 16px 6px',
         fontSize: 11,
-        fontWeight: 700,
-        color: qualifies ? 'var(--c-pass)' : 'var(--c-sub)'
-      }
-    }, "Species ", ei + 1, qualifies ? ' — ✓ REASSIGNED FACU→FAC' : ''), React.createElement("button", {
-      onClick: () => removeMorphEntry(entry.id),
-      style: {
-        background: 'none',
-        border: 'none',
         color: 'var(--c-sub)',
-        padding: '2px 7px',
-        fontSize: 12,
-        cursor: 'pointer',
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }
-    }, React.createElement("span", {
-      style: {
-        position: 'relative',
-        top: '-0.5px'
-      }
-    }, "\u2715"))), React.createElement("div", {
-      style: {
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0,1fr) 72px',
-        gap: 6,
-        marginBottom: 6
-      }
-    }, React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: 'var(--c-sub-2)',
-        marginBottom: 2
-      }
-    }, "FACU species"), React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: 'var(--c-sub-2)',
-        lineHeight: 1.3
-      }
-    }, "% with adaptation"), React.createElement("div", null, React.createElement(SpeciesSearch, {
-      value: entry.speciesId,
-      onChange: id => updateMorphEntry(entry.id, 'speciesId', id),
-      filterStatus: ['FACU']
-    })), React.createElement("input", {
-      type: "number",
-      min: "0",
-      max: "100",
-      step: "1",
-      placeholder: "0",
-      value: entry.pct,
-      onChange: e => updateMorphEntry(entry.id, 'pct', e.target.value),
-      style: {
-        width: '100%',
-        background: 'var(--c-input)',
-        border: `1px solid ${pctNum > 50 ? inStrata ? 'var(--c-pass)' : 'var(--c-fail)' : 'var(--c-rule-strong)'}`,
-        borderRadius: 4,
-        padding: '4px 6px',
-        fontSize: 10,
-        color: 'var(--c-ink)',
-        outline: 'none',
-        boxSizing: 'border-box'
-      }
-    })), entry.pct && React.createElement("div", {
-      style: {
-        fontSize: 10,
-        marginBottom: 6,
-        color: pctNum > 50 ? inStrata ? 'var(--c-pass)' : 'var(--c-fail)' : 'var(--c-fail)'
-      }
-    }, pctNum > 50 ? inStrata ? '✓ >50% threshold met' : '✗ Species not found in vegetation strata — add to a stratum to qualify' : '✗ Need >50%'), React.createElement("div", {
-      style: {
-        marginBottom: 6
-      }
-    }, React.createElement("div", {
-      style: {
-        fontSize: 10,
-        color: 'var(--c-sub-2)',
-        marginBottom: 2
-      }
-    }, "Describe adaptation observed (e.g., adventitious roots, shallow root systems near soil surface)"), React.createElement("input", {
-      type: "text",
-      placeholder: "Description of morphological adaptation...",
-      value: entry.adaptDesc,
-      onChange: e => updateMorphEntry(entry.id, 'adaptDesc', e.target.value),
-      style: {
-        width: '100%',
-        background: 'var(--c-input)',
-        border: '1px solid var(--c-rule-strong)',
-        borderRadius: 4,
-        padding: '4px 8px',
-        fontSize: 10,
-        color: 'var(--c-ink)',
-        outline: 'none',
-        boxSizing: 'border-box'
-      }
-    })), React.createElement("label", {
-      style: {
-        display: 'flex',
-        gap: 6,
-        alignItems: 'flex-start',
-        cursor: 'pointer'
-      }
-    }, React.createElement(CustomCheckbox, {
-      checked: entry.notInUpland,
-      onChange: v => updateMorphEntry(entry.id, 'notInUpland', v),
-      style: {
-        marginTop: 1
-      }
-    }), React.createElement("div", {
-      style: {
-        fontSize: 11,
-        color: 'var(--c-ink-2)',
         lineHeight: 1.5
       }
-    }, "Confirmed: this adaptation is present mainly in the potential wetland area, and is ", React.createElement("strong", null, "NOT"), " also commonly present on the same species in adjacent non-wetland areas (required per Ch. 2 procedure step 1)")), !qualifies && eligible && entry.pct && React.createElement("div", {
+    }, "Indicator 3: reassigns qualifying FACU species to FAC status, then recalculates the dominance test and prevalence index. A species qualifies when >50% of individuals show morphological adaptations (e.g., adventitious roots, shallow root systems) in the plot but ", React.createElement("em", null, "not"), " in adjacent non-wetland areas."),
+    !(soilsSideOk && hydroSideOk) && React.createElement("div", {
       style: {
-        marginTop: 6,
+        margin: '0 16px 6px',
+        padding: '4px 8px',
+        borderRadius: 3,
+        background: 'rgba(251,191,36,0.08)',
+        border: '1px solid rgba(251,191,36,0.25)',
         fontSize: 10,
         color: 'var(--c-warn)',
         lineHeight: 1.5
       }
-    }, !eligible ? 'Not FACU — only FACU species can be reassigned.' : '', pctNum <= 50 ? ' >50% threshold not met.' : ''));
-  }), vegCalc.hasReassignment && React.createElement("div", {
-    style: {
-      padding: '8px 10px',
-      borderRadius: 5,
-      background: 'var(--c-auto-full-bg)',
-      border: '1px solid rgba(96,165,250,0.2)'
-    }
-  }, React.createElement("div", {
-    style: {
-      fontSize: 11,
-      fontWeight: 700,
-      color: 'var(--c-info)',
-      marginBottom: 6
-    }
-  }, "Indicator 3 \u2014 Recalculated Results (After FACU\u2192FAC Reassignment)"), React.createElement("div", {
-    style: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: 6,
-      marginBottom: 6
-    }
-  }, React.createElement("div", {
-    style: {
-      background: 'var(--c-panel-2)',
-      borderRadius: 4,
-      padding: '6px 8px'
-    }
-  }, React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: 'var(--c-sub-2)',
-      marginBottom: 2
-    }
-  }, "Reassigned species (FACU\u2192FAC):"), [...vegCalc.reassignedFACU].map(id => {
-    const p = plantById(id);
-    return p ? React.createElement("div", {
-      key: id,
+    }, "⚠ Hydric soil AND wetland hydrology must each pass or be significantly disturbed or naturally problematic to apply the morphological adaptations indicator."),
+    morphAdaptEntries.length > 0 && React.createElement("div", {
       style: {
-        fontSize: 11,
-        color: 'var(--c-info)'
+        display: 'grid',
+        gridTemplateColumns: 'minmax(0,1fr) 70px 108px 36px',
+        gap: 6,
+        padding: '5px 16px',
+        background: 'var(--c-panel-2)',
+        borderBottom: '1px solid var(--c-rule)',
+        fontFamily: 'var(--font-mono)',
+        fontSize: 10,
+        fontWeight: 600,
+        color: 'var(--c-sub)',
+        textTransform: 'uppercase',
+        letterSpacing: 'var(--ls-cap)'
       }
-    }, p[0]) : null;
-  })), React.createElement("div", {
-    style: {
-      background: 'var(--c-panel-2)',
-      borderRadius: 4,
-      padding: '6px 8px'
-    }
-  }, React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: 'var(--c-sub-2)',
-      marginBottom: 2
-    }
-  }, "Dominance test (reassigned):"), React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: vegCalc.domMorph && vegCalc.domMorph.met ? 'var(--c-pass)' : 'var(--c-fail)',
-      fontWeight: 700
-    }
-  }, vegCalc.domMorph ? `${vegCalc.domMorph.pct}% hydro doms — ${vegCalc.domMorph.met ? 'PASS' : 'FAIL'}` : '—'), React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: 'var(--c-sub-2)',
-      marginTop: 4,
-      marginBottom: 2
-    }
-  }, "Prevalence index (reassigned):"), React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: vegCalc.piMorph && vegCalc.piMorph.met ? 'var(--c-pass)' : 'var(--c-fail)',
-      fontWeight: 700
-    }
-  }, vegCalc.piMorph && vegCalc.piMorph.pi !== null ? `PI=${vegCalc.piMorph.pi.toFixed(2)} — ${vegCalc.piMorph.met ? 'PASS' : 'FAIL'}` : '—'))), React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && morphQualOk ? 'var(--c-pass)' : (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'var(--c-auto-partial)' : 'var(--c-fail)',
-      fontWeight: 700
-    }
-  }, (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && morphQualOk ? '✓ Indicator 3 SATISFIED — vegetation is hydrophytic after reassignment' : (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? '⚠ Reassignment passes mathematically, but Indicator 3 cannot be applied — hydric soil and wetland hydrology must both be confirmed first (Ch. 2 p. 26 step 3)' : '✗ Indicator 3 not satisfied — reassignment did not yield a pass on dominance test or prevalence index')))), React.createElement(Collapsible, {
+    },
+      React.createElement("span", null, "FACU Species"),
+      React.createElement("span", {style: {textAlign: 'center'}}, "% Adapt."),
+      React.createElement("span", {style: {textAlign: 'center'}}, "Not in Upland"),
+      React.createElement("span", null)
+    ),
+    morphAdaptEntries.map((entry, ei) => {
+      const rawStatus = entry.speciesId ? statusOf(entry.speciesId) || 'UPL' : '';
+      const pctNum = parseFloat(entry.pct);
+      const inStrata = !!entry.speciesId && vegCalc.allValid.some(v => v.speciesId === entry.speciesId);
+      const qualifies = rawStatus === 'FACU' && pctNum > 50 && entry.notInUpland && inStrata;
+      const missingInStrata = !!entry.speciesId && pctNum > 50 && !inStrata;
+      const needsPct = !!entry.speciesId && !(pctNum > 50);
+      const needsUpland = !!entry.speciesId && pctNum > 50 && inStrata && !entry.notInUpland;
+      const statusMsg = qualifies ? '✓ Qualifies — FACU→FAC reassignment applied'
+        : missingInStrata ? '✗ Not found in vegetation strata — add species to a stratum to qualify'
+        : needsPct ? '✗ >50% threshold not met'
+        : needsUpland ? '⚠ Confirm adaptation is absent in adjacent non-wetland areas'
+        : null;
+      return React.createElement("div", {key: entry.id},
+        React.createElement("div", {
+          style: {
+            display: 'grid',
+            gridTemplateColumns: 'minmax(0,1fr) 70px 108px 36px',
+            gap: 6,
+            padding: '8px 16px',
+            alignItems: 'center',
+            background: qualifies ? 'var(--c-pass-bg)' : 'var(--c-panel)'
+          }
+        },
+          React.createElement(SpeciesSearch, {
+            value: entry.speciesId,
+            onChange: id => updateMorphEntry(entry.id, 'speciesId', id),
+            filterStatus: ['FACU']
+          }),
+          React.createElement("input", {
+            type: "number",
+            min: "0",
+            max: "100",
+            step: "1",
+            placeholder: "0",
+            value: entry.pct,
+            onChange: e => updateMorphEntry(entry.id, 'pct', e.target.value),
+            style: {
+              width: '100%',
+              textAlign: 'center',
+              background: 'var(--c-input)',
+              border: `1px solid ${pctNum > 50 ? inStrata ? 'var(--c-pass)' : 'var(--c-fail)' : 'var(--c-rule-strong)'}`,
+              borderRadius: 4,
+              padding: '5px 4px',
+              fontSize: 13,
+              color: 'var(--c-ink)',
+              outline: 'none',
+              fontVariantNumeric: 'tabular-nums'
+            }
+          }),
+          React.createElement("div", {style: {display: 'flex', justifyContent: 'center', alignItems: 'center'}},
+            React.createElement(CustomCheckbox, {
+              checked: entry.notInUpland,
+              onChange: v => updateMorphEntry(entry.id, 'notInUpland', v)
+            })
+          ),
+          React.createElement("button", {
+            onClick: () => removeMorphEntry(entry.id),
+            style: {background: 'none', border: 'none', color: 'var(--c-sub)', padding: 0, fontSize: 16, cursor: 'pointer', width: 36, height: 36, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6}
+          }, "×")
+        ),
+        React.createElement("div", {
+          style: {
+            padding: '4px 16px 8px',
+            borderBottom: '1px solid var(--c-rule)',
+            background: qualifies ? 'var(--c-pass-bg)' : 'var(--c-panel)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4
+          }
+        },
+          React.createElement("input", {
+            type: "text",
+            placeholder: "Adaptation observed (e.g., adventitious roots, shallow root systems near soil surface)…",
+            value: entry.adaptDesc,
+            onChange: e => updateMorphEntry(entry.id, 'adaptDesc', e.target.value),
+            style: {
+              width: '100%',
+              background: 'var(--c-input)',
+              border: '1px solid var(--c-rule-strong)',
+              borderRadius: 4,
+              padding: '4px 8px',
+              fontSize: 11,
+              color: 'var(--c-ink)',
+              outline: 'none',
+              boxSizing: 'border-box'
+            }
+          }),
+          statusMsg && React.createElement("div", {
+            style: {fontSize: 10, color: qualifies ? 'var(--c-pass)' : needsUpland ? 'var(--c-warn)' : 'var(--c-fail)', lineHeight: 1.4}
+          }, statusMsg)
+        )
+      );
+    }),
+    React.createElement("div", {
+      style: {padding: '10px 16px', background: 'var(--c-panel-2)'}
+    },
+      React.createElement("button", {
+        onClick: addMorphEntry,
+        style: {
+          width: '100%',
+          minHeight: 40,
+          fontFamily: 'var(--font-sans)',
+          fontSize: 13,
+          fontWeight: 600,
+          color: 'var(--c-warn)',
+          border: '1.5px dashed var(--c-warn)',
+          borderRadius: 6,
+          padding: '8px 16px',
+          background: 'none',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 6
+        }
+      }, React.createElement("span", {style: {fontSize: 16, fontWeight: 400}}, "+"), " Add FACU Row")
+    ),
+    vegCalc.hasReassignment && React.createElement("div", {
+      style: {borderTop: '1px solid var(--c-rule)', background: 'var(--c-panel-2)'}
+    },
+      React.createElement("div", {
+        style: {
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          padding: '6px 16px 2px',
+          gap: 8
+        }
+      },
+        React.createElement("div", {
+          style: {fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--c-sub)', textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)'}
+        }, "Reassigned"),
+        React.createElement("div", {
+          style: {fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--c-sub)', textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)'}
+        }, "Recalculated")
+      ),
+      React.createElement("div", {
+        style: {display: 'grid', gridTemplateColumns: '1fr 1fr', padding: '2px 16px 8px', gap: 8, alignItems: 'start'}
+      },
+        React.createElement("div", null,
+          [...vegCalc.reassignedFACU].map(id => {
+            const p = plantById(id);
+            return p ? React.createElement("div", {key: id, style: {fontSize: 11, color: 'var(--c-pass)', fontWeight: 600}}, p[0]) : null;
+          })
+        ),
+        React.createElement("div", {style: {display: 'flex', flexDirection: 'column', gap: 3}},
+          React.createElement("div", {style: {display: 'flex', gap: 6, alignItems: 'baseline'}},
+            React.createElement("span", {style: {fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--c-sub)', textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)'}}, "DT"),
+            React.createElement("span", {style: {fontSize: 11, fontWeight: 700, color: vegCalc.domMorph?.met ? 'var(--c-pass)' : 'var(--c-fail)'}},
+              vegCalc.domMorph ? `${vegCalc.domMorph.pct}% hydro doms — ${vegCalc.domMorph.met ? 'PASS' : 'FAIL'}` : '—'
+            )
+          ),
+          React.createElement("div", {style: {display: 'flex', gap: 6, alignItems: 'baseline'}},
+            React.createElement("span", {style: {fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--c-sub)', textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)'}}, "PI"),
+            React.createElement("span", {style: {fontSize: 11, fontWeight: 700, color: vegCalc.piMorph?.met ? 'var(--c-pass)' : 'var(--c-fail)'}},
+              vegCalc.piMorph?.pi !== null && vegCalc.piMorph?.pi !== undefined ? `PI=${vegCalc.piMorph.pi.toFixed(2)} — ${vegCalc.piMorph.met ? 'PASS' : 'FAIL'}` : '—'
+            )
+          )
+        )
+      ),
+      React.createElement("div", {
+        style: {
+          margin: '8px 16px',
+          padding: '4px 8px',
+          borderRadius: 3,
+          fontSize: 10,
+          lineHeight: 1.5,
+          background: (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && morphQualOk ? 'var(--c-pass-bg)'
+            : (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'rgba(251,191,36,0.08)'
+            : 'var(--c-fail-bg)',
+          border: `1px solid ${(vegCalc.domMorph?.met || vegCalc.piMorph?.met) && morphQualOk ? 'rgba(13,138,122,0.35)' : (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'rgba(251,191,36,0.25)' : 'rgba(194,55,31,0.35)'}`,
+          color: (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && morphQualOk ? 'var(--c-pass)'
+            : (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'var(--c-auto-partial)'
+            : 'var(--c-fail)'
+        }
+      },
+        (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && morphQualOk
+          ? '✓ Indicator 3 SATISFIED — vegetation is hydrophytic after reassignment'
+          : (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk
+            ? '⚠ Reassignment passes mathematically, but Indicator 3 cannot be applied — hydric soil and wetland hydrology must each pass or be significantly disturbed or naturally problematic'
+            : '✗ Indicator 3 not satisfied — reassignment did not yield a pass on dominance test or prevalence index'
+      )
+    )
+  )), React.createElement(Collapsible, {
     defaultOpen: false,
     resetKey: collapsibleResetKey,
     label: React.createElement("span", {
@@ -22523,7 +22448,7 @@ function WetlandApp() {
       padding: '8px 16px 10px',
       background: 'var(--c-panel-2)'
     }
-  },  !vegDistOrProb && React.createElement("div", {
+  },  !(soilsSideOk && hydroSideOk) && React.createElement("div", {
     style: {
       marginBottom: 6,
       padding: '4px 8px',
@@ -22534,19 +22459,8 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       lineHeight: 1.5
     }
-  }, "⚠ Vegetation must be flagged as significantly disturbed or naturally problematic (in the Site Conditions panel) to enable this option."),
-   vegDistOrProb && probHydroVeg && !probVegMet && React.createElement("div", {
-    style: {
-      marginBottom: 6,
-      padding: '4px 8px',
-      background: 'rgba(251,191,36,0.08)',
-      border: '1px solid rgba(251,191,36,0.25)',
-      borderRadius: 3,
-      fontSize: 10,
-      color: 'var(--c-warn)',
-      lineHeight: 1.5
-    }
-  }, "\u26A0 Soil AND Hydrology must pass (or be disturbed/problematic) for problematic hydrophytic vegetation to confirm wetland."),
+  }, "\u26A0 Hydric soil AND wetland hydrology must each pass or be significantly disturbed or naturally problematic to enable this option."),
+
   probVegMet && React.createElement("div", {
     style: {
       marginBottom: 6,
@@ -22558,18 +22472,18 @@ function WetlandApp() {
       color: 'var(--c-pass)',
       lineHeight: 1.5
     }
-  }, "\u2713 Criterion satisfied \u2014 " + (soilsMetPrelim && hydroMet ? "hydric soil and wetland hydrology are present." : soilsMetPrelim ? "hydric soil present; hydrology is disturbed/problematic (Ch. 5 exception)." : hydroMet ? "wetland hydrology present; soils are disturbed/problematic (Ch. 5 exception)." : "soils and hydrology both disturbed/problematic (2+ factor Ch. 5 exception).")),
+  }, "\u2713 Criterion satisfied \u2014 " + (soilsMetStandard && hydroMet ? "hydric soil and wetland hydrology are present." : soilsMetStandard ? "hydric soil present; hydrology is disturbed/problematic (Ch. 5 exception)." : hydroMet ? "wetland hydrology present; soils are disturbed/problematic (Ch. 5 exception)." : "soils and hydrology both disturbed/problematic (Ch. 5 exception).")),
   React.createElement("label", {
     style: {
       display: 'flex',
       gap: 8,
       alignItems: 'flex-start',
-      cursor: vegDistOrProb ? 'pointer' : 'not-allowed',
-      opacity: vegDistOrProb ? 1 : 0.45
+      cursor: soilsSideOk && hydroSideOk ? 'pointer' : 'not-allowed',
+      opacity: soilsSideOk && hydroSideOk ? 1 : 0.45
     }
   }, React.createElement(CustomCheckbox, {
-    checked: probHydroVeg && vegDistOrProb,
-    onChange: v => vegDistOrProb && setProbHydroVeg(v),
+    checked: probHydroVeg,
+    onChange: v => soilsSideOk && hydroSideOk && setProbHydroVeg(v),
     style: {
       marginTop: 2
     }
@@ -23289,12 +23203,13 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontSize: 11,
-      padding: '1px 6px',
+      padding: '2px 6px 1px',
       borderRadius: 3,
+      fontWeight: 700,
+      lineHeight: 1,
       background: 'var(--c-auto-full-bg)',
       color: 'var(--c-auto-full)',
       border: '1px solid var(--c-auto-full)',
-      fontWeight: 700,
       whiteSpace: 'nowrap'
     }
   }, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "\u2726")), "Auto-selected \u2014 non-editable"), React.createElement("div", {
@@ -23309,12 +23224,13 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontSize: 11,
-      padding: '1px 6px',
+      padding: '2px 6px 1px',
       borderRadius: 3,
+      fontWeight: 700,
+      lineHeight: 1,
       background: 'var(--c-auto-partial-bg)',
       color: 'var(--c-auto-partial)',
       border: '1px solid var(--c-auto-partial)',
-      fontWeight: 700,
       whiteSpace: 'nowrap'
     }
   }, "PARTIAL \u25D1"), "Partially met by soil data \u2014 addl. field observations req."), React.createElement("div", {
@@ -23329,12 +23245,13 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontSize: 11,
-      padding: '1px 6px',
+      padding: '2px 6px 1px',
       borderRadius: 3,
+      fontWeight: 700,
+      lineHeight: 1,
       background: 'rgba(167,139,250,0.15)',
       color: 'var(--c-auto-combo)',
       border: '1px solid var(--c-auto-combo)',
-      fontWeight: 700,
       whiteSpace: 'nowrap'
     }
   }, "COMBO ", React.createElement("span", {
@@ -23370,12 +23287,14 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontSize: 11,
-      padding: '1px 6px',
+      padding: '2px 6px 1px',
       borderRadius: 3,
+      fontWeight: 700,
+      lineHeight: 1,
       background: 'rgba(21,128,61,0.12)',
       color: 'var(--c-pass)',
       border: '1px solid var(--c-pass)',
-      fontWeight: 700
+      whiteSpace: 'nowrap'
     }
   }, "LRR \u2713"), "Applicable to selected LRR"), React.createElement("div", {
     style: {
@@ -23389,12 +23308,14 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontSize: 11,
-      padding: '1px 6px',
+      padding: '2px 6px 1px',
       borderRadius: 3,
+      fontWeight: 700,
+      lineHeight: 1,
       background: 'var(--c-fail-bg)',
       color: 'var(--c-fail)',
       border: '1px solid var(--c-fail)',
-      fontWeight: 700
+      whiteSpace: 'nowrap'
     }
   }, "LRR \u2717"), "Not applicable to selected LRR \u2014 row dimmed"))), React.createElement("div", {
     onClick: () => setShowAllSoilsRule(v => !v),
@@ -23603,7 +23524,7 @@ function WetlandApp() {
     key: code,
     style: {
       fontSize: 11,
-      padding: '1px 5px',
+      padding: '2px 5px 1px',
       borderRadius: 3,
       fontWeight: 700,
       background: 'var(--c-auto-full-bg)',
@@ -23613,7 +23534,7 @@ function WetlandApp() {
   }, code)), React.createElement("span", {
     style: {
       fontSize: 11,
-      padding: '1px 6px',
+      padding: '2px 6px 1px',
       borderRadius: 3,
       background: 'var(--c-auto-full-bg)',
       color: 'var(--c-info)',
@@ -23681,7 +23602,7 @@ function WetlandApp() {
       border: '1px solid rgba(20,184,166,0.2)',
       color: 'var(--c-pass)'
     }
-  }, "\u2713 ", React.createElement("strong", null, "Indicators active."), " ", vegMet && hydroMet && !multipleDistOrProb ? 'Hydrophytic vegetation and wetland hydrology are both confirmed.' : multipleDistOrProb ? `Active via exception: ${distOrProbCount} factors disturbed/problematic (${[vegDistOrProb && 'vegetation', soilDistOrProb && 'soils', hydroDistOrProb && 'hydrology'].filter(Boolean).join(', ')}). Per ERDC/TN WRAP-17-1, 2+ factors required.` : 'Conditions met.') : React.createElement("div", {
+  }, "\u2713 ", React.createElement("strong", null, "Indicators active."), " ", rawVegMet && hydroMet ? 'Hydrophytic vegetation and wetland hydrology are both confirmed.' : rawVegMet ? 'Vegetation confirmed; hydrology is significantly disturbed or naturally problematic.' : hydroMet ? 'Wetland hydrology confirmed; vegetation is significantly disturbed or naturally problematic.' : 'Both vegetation and hydrology are significantly disturbed or naturally problematic.') : React.createElement("div", {
     style: {
       fontSize: 10,
       color: 'var(--c-warn)',
@@ -23691,12 +23612,12 @@ function WetlandApp() {
       background: 'rgba(251,191,36,0.08)',
       border: '1px solid rgba(251,191,36,0.25)'
     }
-  }, "\u26A0 ", React.createElement("strong", null, "Problematic hydric soil indicators"), " per 2024 ENG Form 6116-1 and ERDC/EL TR-08-28 Ch. 3. All require both ", React.createElement("strong", null, "hydrophytic vegetation AND wetland hydrology"), " to be present. Exception: 2 or more factors marked significantly disturbed or naturally problematic. ", React.createElement("span", {
+  }, "\u26A0 Problematic hydric soil indicators per 2024 ENG Form 6116-1 and ERDC/EL TR-08-28 Ch. 3. Require hydrophytic vegetation AND wetland hydrology to be present, significantly disturbed, or naturally problematic. ", React.createElement("span", {
     style: {
       color: 'var(--c-fail)',
       fontWeight: 700
     }
-  }, "Currently unselectable \u2014 neither condition is met."))), HYDRIC_PROBLEMATIC.map(ind => {
+  }, "Currently unselectable \u2014 this condition is not met."))), HYDRIC_PROBLEMATIC.map(ind => {
     const a = autoFor(ind.code);
     const isPartial = a && !!a.partial;
     return React.createElement(HydricRow, {
@@ -23826,9 +23747,9 @@ function WetlandApp() {
       background: 'var(--c-panel-2)',
       borderBottom: '1px solid var(--c-rule)',
       display: 'flex',
-      gap: 12,
-      flexWrap: 'wrap',
-      alignItems: 'center'
+      flexDirection: 'column',
+      gap: 6,
+      alignItems: 'flex-start'
     }
   }, React.createElement("div", {
     style: {
@@ -23842,12 +23763,13 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontSize: 11,
-      padding: '1px 6px',
+      padding: '2px 6px 1px',
       borderRadius: 3,
+      fontWeight: 700,
+      lineHeight: 1,
       background: 'var(--c-auto-full-bg)',
       color: 'var(--c-auto-full)',
       border: '1px solid var(--c-auto-full)',
-      fontWeight: 700,
       whiteSpace: 'nowrap'
     }
   }, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "\u2726")), "Auto-selected \u2014 non-editable"), React.createElement("div", {
@@ -23862,15 +23784,16 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontSize: 11,
-      padding: '1px 6px',
+      padding: '2px 6px 1px',
       borderRadius: 3,
+      fontWeight: 700,
+      lineHeight: 1,
       background: 'var(--c-auto-partial-bg)',
       color: 'var(--c-auto-partial)',
       border: '1px solid var(--c-auto-partial)',
-      fontWeight: 700,
       whiteSpace: 'nowrap'
     }
-  }, "PARTIAL \u25d1"), "Partially met by hydro data \u2014 addl. field observations req."))), React.createElement("div", {
+  }, "PARTIAL \u25d1"), "Partially met by soil data \u2014 addl. field observations req."))), React.createElement("div", {
     style: {
       borderBottom: '1px solid var(--c-rule)'
     }
