@@ -11663,10 +11663,10 @@ function inferHydricIndicators(horizons) {
     return h.redoxRows || [];
   }
   function hasRedoxConcMassOrPL(h, pctMin = 2) {
-    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && (rx.type.startsWith('C') || rx.loc.startsWith('PL')));
+    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && (rx.type.startsWith('C ') || rx.loc.startsWith('PL')));
   }
   function hasRedoxMass(h, pctMin = 2) {
-    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && rx.type.startsWith('C'));
+    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && rx.type.startsWith('C '));
   }
   function hasRedoxPL(h, pctMin = 2) {
     return redoxRows(h).some(rx => N(rx.pct) >= pctMin && rx.loc.startsWith('PL'));
@@ -11682,7 +11682,7 @@ function inferHydricIndicators(horizons) {
     return c === 'D' || c === 'P';
   }
   function hasDistOrPromConcMassOrPL(h, pctMin = 2) {
-    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && (rx.type.startsWith('C') || rx.loc.startsWith('PL')) && isDP(h, rx));
+    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(h, rx));
   }
   function aboveLayersChromaOK(qualLayerTop) {
     const above = horizons.filter(h => hzBot(h) <= qualLayerTop + 0.1 && hzTop(h) < qualLayerTop);
@@ -11853,7 +11853,7 @@ function inferHydricIndicators(horizons) {
   {
     const q = sorted.find(h => hzTop(h) <= 6 && isTrueSandy(h.texture) && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 4 && hasDistOrPromConcMassOrPL(h, 2));
     if (q && aboveLayersChromaOK(hzTop(q))) {
-      const rxDesc = q.redoxRows.filter(rx => N(rx.pct) >= 2 && (rx.type.startsWith('C') || rx.loc.startsWith('PL')) && isDP(q, rx)).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
+      const rxDesc = q.redoxRows.filter(rx => N(rx.pct) >= 2 && (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(q, rx)).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
       inferred['S5'] = {
         reason: `Sandy layer at ${hzTop(q)}–${hzBot(q)} in.: ${hzThick(q).toFixed(1)} in. thick (≥4 in. req.), chroma ${q.matrixChroma} (≤2), ${rxDesc} distinct/prominent redox concentrations as soft masses/pore linings (Table A1).`
       };
@@ -11892,7 +11892,7 @@ function inferHydricIndicators(horizons) {
     const q = sorted.find(h => isLoamy(h.texture) && hzThick(h) >= 4 && N(h.matrixValue) <= 3 && hzBot(h) - minOff <= 12 && (N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConcMassOrPL(h, 5)));
     if (q) {
       const minPct = N(q.matrixChroma) <= 1 ? 2 : 5;
-      const rxDesc = q.redoxRows.filter(rx => N(rx.pct) >= minPct && (rx.type.startsWith('C') || rx.loc.startsWith('PL')) && isDP(q, rx)).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
+      const rxDesc = q.redoxRows.filter(rx => N(rx.pct) >= minPct && (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(q, rx)).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
       inferred['F6'] = {
         reason: `Loamy/clayey at ${hzTop(q)}–${hzBot(q)} in.: ${hzThick(q).toFixed(1)} in. thick (≥4 in.), value ${q.matrixValue}/chroma ${q.matrixChroma}, entirely within 12 in. of mineral surface, with ${rxDesc} distinct/prominent redox concentrations (Table A1).`
       };
@@ -11932,11 +11932,11 @@ function inferHydricIndicators(horizons) {
       if (!RED_HUES.includes(h.matrixHue)) return false;
       if (N(h.matrixValue) < 2 || N(h.matrixValue) > 4) return false;
       if (N(h.matrixChroma) < 2 || N(h.matrixChroma) > 4) return false;
-      const qualPct = redoxRows(h).filter(rx => (rx.type.startsWith('C') || rx.type.startsWith('D')) && isDP(h, rx)).reduce((s, rx) => s + N(rx.pct), 0);
+      const qualPct = redoxRows(h).filter(rx => (rx.type.startsWith('C ') || rx.type.startsWith('D')) && isDP(h, rx)).reduce((s, rx) => s + N(rx.pct), 0);
       return qualPct >= 10;
     });
     if (q) {
-      const qualPct = redoxRows(q).filter(rx => (rx.type.startsWith('C') || rx.type.startsWith('D')) && isDP(q, rx)).reduce((s, rx) => s + N(rx.pct), 0);
+      const qualPct = redoxRows(q).filter(rx => (rx.type.startsWith('C ') || rx.type.startsWith('D')) && isDP(q, rx)).reduce((s, rx) => s + N(rx.pct), 0);
       inferred['F21'] = {
         reason: `Layer at ${hzTop(q)}–${hzBot(q)} in.: hue ${q.matrixHue}, value ${q.matrixValue}/chroma ${q.matrixChroma} — red-colored range, ${hzThick(q).toFixed(1)} in. thick, ${qualPct}% distinct/prominent C/D redox (≥10% req., Table A1). SOILS DATA MET, however confirm red parent material origin (CCPI <30) and redoximorphic context in the field.`,
         partial: true
@@ -19733,7 +19733,7 @@ function WetlandApp() {
         if (top > 10) continue;
         const rx = h.redoxRows && h.redoxRows.find(r => {
           const rv = Number(r.value); const rc = Number(r.chroma);
-          return r.type && r.type.startsWith('C') && rv >= 1 && rv <= 4 && rc <= 2;
+          return r.type && r.type.startsWith('C ') && rv >= 1 && rv <= 4 && rc <= 2;
         });
         if (rx) { triggerDesc = `${rx.hue || '?'} ${rx.value}/${rx.chroma} redox concentrations within 10 in.`; break; }
       }
