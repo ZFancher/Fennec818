@@ -19352,8 +19352,6 @@ function WetlandApp() {
   const [morphAdaptEntries, setMorphAdaptEntries] = useState([]);
   const [probHydroVeg, setProbHydroVeg] = useState(false);
   const [probHydroVegRemarks, setProbHydroVegRemarks] = useState('');
-  const [probHydrology, setProbHydrology] = useState(false);
-  const [probHydrologyRemarks, setProbHydrologyRemarks] = useState('');
   function addMorphEntry() {
     setMorphAdaptEntries(e => [...e, {
       id: Date.now().toString(),
@@ -19601,8 +19599,6 @@ function WetlandApp() {
     setVegRemarks('');
     setSoilRemarks('');
     setHydroRemarks('');
-    setProbHydrology(false);
-    setProbHydrologyRemarks('');
     setMorphAdaptEntries([]);
     setProbHydroVeg(false);
     setProbHydroVegRemarks('');
@@ -19653,8 +19649,6 @@ function WetlandApp() {
       if (s.morphAdaptEntries) setMorphAdaptEntries(s.morphAdaptEntries);
       if (s.probHydroVeg !== undefined) setProbHydroVeg(s.probHydroVeg);
       if (s.probHydroVegRemarks !== undefined) setProbHydroVegRemarks(s.probHydroVegRemarks);
-      if (s.probHydrology !== undefined) setProbHydrology(s.probHydrology);
-      if (s.probHydrologyRemarks !== undefined) setProbHydrologyRemarks(s.probHydrologyRemarks);
     } catch (e) {
       console.warn('Failed to restore form:', e);
     }
@@ -19691,8 +19685,6 @@ function WetlandApp() {
           morphAdaptEntries,
           probHydroVeg,
           probHydroVegRemarks,
-          probHydrology,
-          probHydrologyRemarks,
           gpsStatus,
           gpsAccuracy,
           gpsFromJson
@@ -19702,7 +19694,7 @@ function WetlandApp() {
       }
     }, 600);
     return () => clearTimeout(t);
-  }, [siteInfo, strata, horizons, restrictiveType, restrictiveDepth, chkHydric, chkHydricProb, chkP, chkS, hydroMeasure, plotSizes, bareGround, bioticCrust, normalCirc, sigDistVeg, sigDistSoil, sigDistHydro, natProbVeg, natProbSoil, natProbHydro, spgiRemarks, vegRemarks, soilRemarks, hydroRemarks, morphAdaptEntries, probHydroVeg, probHydroVegRemarks, probHydrology, probHydrologyRemarks, gpsStatus, gpsAccuracy, gpsFromJson]);
+  }, [siteInfo, strata, horizons, restrictiveType, restrictiveDepth, chkHydric, chkHydricProb, chkP, chkS, hydroMeasure, plotSizes, bareGround, bioticCrust, normalCirc, sigDistVeg, sigDistSoil, sigDistHydro, natProbVeg, natProbSoil, natProbHydro, spgiRemarks, vegRemarks, soilRemarks, hydroRemarks, morphAdaptEntries, probHydroVeg, probHydroVegRemarks, gpsStatus, gpsAccuracy, gpsFromJson]);
   const [activeTab, setActiveTab] = useState('site');
   const [theme, setTheme] = useState(() => {
     try { return localStorage.getItem('aw.theme') || 'light'; } catch { return 'light'; }
@@ -19925,8 +19917,7 @@ function WetlandApp() {
   const vegDistOrProb = sigDistVeg || natProbVeg;
   const soilDistOrProb = sigDistSoil || natProbSoil;
   const hydroDistOrProb = sigDistHydro || natProbHydro;
-  const hydroBPJ = probHydrology && hydroDistOrProb;
-  const hydroMet = hydroMetStandard || hydroBPJ;
+  const hydroMet = hydroMetStandard;
   const effectiveSoilAuto = useMemo(() => {
     let result = _effectiveSoilAutoBase;
     if (result['A2'] && result['A2'].partial && vegCalc.vegMet && hydroMet) {
@@ -20257,8 +20248,6 @@ function WetlandApp() {
       morphAdaptEntries,
       probHydroVeg,
       probHydroVegRemarks,
-      probHydrology,
-      probHydrologyRemarks,
       gpsStatus,
       gpsAccuracy
     };
@@ -20312,8 +20301,6 @@ function WetlandApp() {
     if (s.morphAdaptEntries) setMorphAdaptEntries(s.morphAdaptEntries);
     if (s.probHydroVeg !== undefined) setProbHydroVeg(s.probHydroVeg);
     if (s.probHydroVegRemarks !== undefined) setProbHydroVegRemarks(s.probHydroVegRemarks);
-    if (s.probHydrology !== undefined) setProbHydrology(s.probHydrology);
-    if (s.probHydrologyRemarks !== undefined) setProbHydrologyRemarks(s.probHydrologyRemarks);
     if (s.gpsStatus !== undefined) setGpsStatus(s.gpsStatus);
     if (s.gpsAccuracy !== undefined) setGpsAccuracy(s.gpsAccuracy);
     setGpsFromJson(!!(s.siteInfo?.lat || s.siteInfo?.lng));
@@ -23951,99 +23938,7 @@ function WetlandApp() {
       fontFamily: 'var(--font-sans)',
       lineHeight: 1.5
     }
-  }))), React.createElement(Collapsible, {
-    defaultOpen: false,
-    resetKey: collapsibleResetKey,
-    label: React.createElement("span", {
-      style: {
-        fontFamily: 'var(--font-mono)', fontSize: 10,
-        fontWeight: 700,
-        color: 'var(--c-warn)',
-        textTransform: 'uppercase',
-        letterSpacing: 'var(--ls-cap)'
-      }
-    }, "Problematic Wetland Hydrology (Ch. 5)"),
-    labelStyle: {
-      padding: '6px 16px',
-      borderTop: '2px solid var(--c-rule)',
-      background: 'var(--c-panel-2)'
-    }
-  }, React.createElement("div", {
-    style: {
-      padding: '8px 16px 10px',
-      background: 'var(--c-panel-2)'
-    }
-  }, React.createElement("label", {
-    style: {
-      display: 'flex',
-      gap: 8,
-      alignItems: 'flex-start',
-      cursor: hydroDistOrProb ? 'pointer' : 'not-allowed',
-      opacity: hydroDistOrProb ? 1 : 0.45
-    }
-  }, React.createElement(CustomCheckbox, {
-    checked: probHydrology && hydroDistOrProb,
-    onChange: v => hydroDistOrProb && setProbHydrology(v),
-    style: {
-      marginTop: 2
-    }
-  }), React.createElement("div", {
-    style: {
-      flex: 1
-    }
-  }, React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: 'var(--c-ink-2)',
-      fontWeight: 600
-    }
-  }, "Wetland hydrology criterion met via best professional judgment"), React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: 'var(--c-sub)',
-      marginTop: 2,
-      lineHeight: 1.5
-    }
-  }, "Used when standard hydrology indicators are absent or undetectable due to significant disturbance (drainage alteration, channelization, pumping, drought, etc.) but landscape position, soil morphology, and other indirect evidence support hydrology presence under normal conditions (ERDC/EL TR-08-28 Ch. 5). Requires sig. disturbed or naturally problematic hydrology to be flagged above."), probHydrology && hydroDistOrProb && React.createElement("input", {
-    type: "text",
-    placeholder: "Describe basis for best professional judgment determination (landscape position, soil morphology, historical evidence, etc.)\u2026",
-    value: probHydrologyRemarks,
-    onChange: e => setProbHydrologyRemarks(e.target.value),
-    style: {
-      width: '100%',
-      marginTop: 5,
-      background: 'var(--c-input)',
-      border: '1px solid var(--c-rule-strong)',
-      borderRadius: 4,
-      padding: '4px 8px',
-      fontSize: 10,
-      color: 'var(--c-ink)',
-      outline: 'none',
-      boxSizing: 'border-box'
-    }
-  }))), hydroBPJ && React.createElement("div", {
-    style: {
-      marginTop: 6,
-      padding: '4px 8px',
-      background: 'var(--c-pass-bg)',
-      border: '1px solid var(--c-pass)',
-      borderRadius: 3,
-      fontSize: 10,
-      color: 'var(--c-pass)',
-      lineHeight: 1.5
-    }
-  }, "\u2713 Hydrology criterion met via Ch. 5 best professional judgment \u2014 document rationale thoroughly in field notes and remarks."), !hydroDistOrProb && React.createElement("div", {
-    style: {
-      marginTop: 6,
-      padding: '4px 8px',
-      background: 'rgba(251,191,36,0.08)',
-      border: '1px solid rgba(251,191,36,0.25)',
-      borderRadius: 3,
-      fontSize: 10,
-      color: 'var(--c-warn)',
-      lineHeight: 1.5
-    }
-  }, "\u26A0 Hydrology must be marked as significantly disturbed or naturally problematic (in the Site Conditions panel) to enable this option.")))), React.createElement("div", {
+  }))), React.createElement("div", {
     id: "module-verdict",
     className: isWetland ? 'verdict-pass' : 'verdict-fail',
     style: {
