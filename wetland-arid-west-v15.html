@@ -22035,11 +22035,10 @@ function WetlandApp() {
         fontSize: 10,
         color: changed ? vegCalc.hasReassignment && vegCalc.piMorph ? vegCalc.piMorph.met ? 'var(--c-pass)' : 'var(--c-fail)' : 'var(--c-pass)' : dispColor
       }
-    }, dispCov > 0 ? dispCov.toFixed(1) + '%' : '—'), React.createElement("div", {
+    }, dispCov > 0 ? dispCov.toFixed(1) + '%' : '—'), changed && React.createElement("div", {
       style: {
         fontSize: 10,
-        color: 'var(--c-sub-2)',
-        visibility: changed ? 'visible' : 'hidden'
+        color: 'var(--c-sub-2)'
       }
     }, "std: ", cov > 0 ? cov.toFixed(1) + '%' : '—')), React.createElement("div", {
       style: {
@@ -22065,11 +22064,10 @@ function WetlandApp() {
         fontSize: 10,
         color: changed ? vegCalc.hasReassignment && vegCalc.piMorph ? vegCalc.piMorph.met ? 'var(--c-pass)' : 'var(--c-fail)' : 'var(--c-pass)' : dispColor
       }
-    }, dispCov > 0 ? (dispCov * w).toFixed(1) : '—'), React.createElement("div", {
+    }, dispCov > 0 ? (dispCov * w).toFixed(1) : '—'), changed && React.createElement("div", {
       style: {
         fontSize: 10,
-        color: 'var(--c-sub-2)',
-        visibility: changed ? 'visible' : 'hidden'
+        color: 'var(--c-sub-2)'
       }
     }, "std: ", cov > 0 ? (cov * w).toFixed(1) : '—')));
   }), React.createElement("div", {
