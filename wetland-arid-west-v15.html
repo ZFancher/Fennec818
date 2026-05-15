@@ -11279,7 +11279,7 @@ const HYDRIC_ALL = [{
   label: 'Iron Monosulfides',
   lrr: 'All LRRs',
   autoable: false,
-  desc: 'Positive identification of dark-gray or black iron monosulfide (FeS) concentrations (value ≤4, chroma ≤2) starting ≤10 in. (25 cm) from surface. The presence of FeS concentrations is confirmed by documenting dark areas and then: (A) oxidation via air exposure or application of dilute hydrogen peroxide (~3% H₂O₂), resulting in Munsell value increase of ≥1; OR (B) H₂S gas evolution after applying dilute (1M) HCl. Cannot auto-select — requires field chemical tests.',
+  desc: 'Positive identification of dark-gray or black iron monosulfide (FeS) concentrations (value ≤4, chroma ≤2) starting ≤10 in. (25 cm) from surface. The presence of FeS concentrations is confirmed by documenting dark areas and then: (A) oxidation via air exposure or application of dilute hydrogen peroxide (~3% H₂O₂), resulting in Munsell value increase of ≥1; OR (B) H₂S gas evolution after applying dilute (1M) HCl. Cannot be fully auto-selected — chemical field confirmation of iron monosulfide concentrations (H₂O₂ oxidation or HCl gas test) cannot be inferred from soil profile data alone.',
   fieldVerify: true,
   fieldQuestions: [{
     id: 'fq_a18_dark',
@@ -19733,16 +19733,16 @@ function WetlandApp() {
         if (top > 10) continue;
         const rx = h.redoxRows && h.redoxRows.find(r => {
           const rv = Number(r.value); const rc = Number(r.chroma);
-          return rv >= 1 && rv <= 4 && rc <= 2;
+          return r.type && r.type.startsWith('C') && rv >= 1 && rv <= 4 && rc <= 2;
         });
         if (rx) { triggerDesc = `${rx.hue || '?'} ${rx.value}/${rx.chroma} redox concentrations within 10 in.`; break; }
       }
       if (triggerDesc && a4Active) base['A18'] = {
-        reason: `Dark concentrations (${triggerDesc}) + A4/C1 (H₂S) confirmed. Step 1: positively document dark-gray or black FeS concentrations (value ≤4, chroma ≤2) starting ≤10 in. Step 2: confirm FeS — (A) apply ~3% H₂O₂ or air-expose: Munsell value increase ≥1 required; OR (B) apply 1M HCl: H₂S gas evolution required.`,
+        reason: `FeS concentration detected: ${triggerDesc} within 10 in., and H₂S confirmed via A4/C1. SOILS DATA MET, however physical documentation of dark-gray or black concentrations (value ≤4, chroma ≤2) and chemical confirmation via H₂O₂ oxidation or HCl gas test are required.`,
         partial: true,
         partialLabel: 'Possible FeS — verify with H₂O₂ or HCl'
       };else if (triggerDesc && !a4Active) base['A18'] = {
-        reason: `Dark concentrations (${triggerDesc}); A4/C1 (H₂S) not confirmed. Step 1: positively document dark-gray or black FeS concentrations (value ≤4, chroma ≤2) starting ≤10 in. Step 2: confirm FeS — (A) apply ~3% H₂O₂ or air-expose: Munsell value increase ≥1 required; OR (B) apply 1M HCl: H₂S gas evolution required.`,
+        reason: `FeS concentration detected: ${triggerDesc} within 10 in.; H₂S not confirmed via A4/C1. SOILS DATA MET, however chemical field confirmation is required — (A) apply ~3% H₂O₂ or air-expose: Munsell value increase ≥1; OR (B) apply 1M HCl: H₂S gas evolution.`,
         partial: true,
         partialLabel: 'Dark concentrations ≤10 in. — verify FeS'
       };
