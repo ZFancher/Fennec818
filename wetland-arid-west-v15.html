@@ -19340,6 +19340,11 @@ function WetlandApp() {
     }
     function onBlur(e) {
       if (!tags.includes(e.target?.tagName)) return;
+      // Only restore scroll when the virtual keyboard is actually open (iOS/iPadOS).
+      // visualViewport.height is reduced by the keyboard height; on desktop it
+      // equals window.innerHeight so the check short-circuits and no jump occurs.
+      const vv = window.visualViewport;
+      if (!vv || vv.height >= window.innerHeight - 50) return;
       // blur fires before the iOS keyboard begins its close animation, so
       // scrolling here is hidden under the keyboard — the correct position
       // is revealed as the keyboard slides away with no visible snap.
