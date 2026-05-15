@@ -19335,11 +19335,28 @@ function WetlandApp() {
   useEffect(() => {
     const tags = ['INPUT', 'SELECT', 'TEXTAREA'];
     let savedScrollY = 0;
+    let trackScroll = false;
+    let trackTimer = null;
     function onPointerDown(e) {
-      if (tags.includes(e.target?.tagName)) savedScrollY = window.scrollY;
+      if (!tags.includes(e.target?.tagName)) return;
+      savedScrollY = window.scrollY;
+      trackScroll = false;
+      clearTimeout(trackTimer);
+      // Delay before tracking intentional scrolls so the automatic
+      // keyboard-opening scroll iOS triggers is not mistaken for user input.
+      trackTimer = setTimeout(() => { trackScroll = true; }, 400);
+    }
+    function onScroll() {
+      if (trackScroll) savedScrollY = window.scrollY;
     }
     function onBlur(e) {
       if (!tags.includes(e.target?.tagName)) return;
+      // Null the scroll anchor so the React re-render that follows blur
+      // (indicator recalculation, row height changes, etc.) does not trigger
+      // compensatory scrolling that jumps the viewport back to the field.
+      _sa.current = { el: null, top: 0 };
+      clearTimeout(trackTimer);
+      trackScroll = false;
       // Only restore scroll when the virtual keyboard is actually open (iOS/iPadOS).
       // visualViewport.height is reduced by the keyboard height; on desktop it
       // equals window.innerHeight so the check short-circuits and no jump occurs.
@@ -19352,9 +19369,12 @@ function WetlandApp() {
     }
     document.addEventListener('pointerdown', onPointerDown, true);
     document.addEventListener('blur', onBlur, true);
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       document.removeEventListener('pointerdown', onPointerDown, true);
       document.removeEventListener('blur', onBlur, true);
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(trackTimer);
     };
   }, []);
   const [morphAdaptEntries, setMorphAdaptEntries] = useState([]);
