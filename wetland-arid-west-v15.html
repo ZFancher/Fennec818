@@ -17631,7 +17631,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
         ...chips.conc.map((c,i)  =>chipEl(c,'var(--c-redox-conc)','Conc.' +(chips.conc.length>1  ?' '+(i+1):''))),
         ...chips.depl.map((c,i)  =>chipEl(c,'var(--c-redox-depl)','Depl.' +(chips.depl.length>1  ?' '+(i+1):'')))),
       React.createElement('div',{style:{display:'flex',gap:8}},
-        React.createElement('button',{onClick:()=>{polyRef.current=null;setPhase('position');},style:{flex:1,background:'var(--c-input)',color:'var(--c-ink)',border:'1px solid var(--c-rule-strong)',borderRadius:6,padding:'8px 0',fontSize:13,cursor:'pointer'}},'Retry'),
+        React.createElement('button',{onClick:()=>{setPhase('position');},style:{flex:1,background:'var(--c-input)',color:'var(--c-ink)',border:'1px solid var(--c-rule-strong)',borderRadius:6,padding:'8px 0',fontSize:13,cursor:'pointer'}},'Retry'),
         React.createElement('button',{onClick:handleAccept,style:{flex:2,background:'var(--c-pass)',color:'var(--c-action-fg)',border:'none',borderRadius:6,padding:'8px 0',fontSize:14,fontWeight:600,cursor:'pointer'}},'Use These Colors')))
   );
 }
