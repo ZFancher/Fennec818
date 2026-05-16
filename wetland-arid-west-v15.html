@@ -17211,10 +17211,13 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       const now = Date.now();
       if (now - lastFrame < 33) return; lastFrame = now;
 
+      const dpr = window.devicePixelRatio || 1;
       const W = canvas.offsetWidth, H = canvas.offsetHeight;
       if (!W || !H) return;
-      if (canvas.width !== W) canvas.width = W;
-      if (canvas.height !== H) canvas.height = H;
+      if (canvas.width !== Math.round(W * dpr) || canvas.height !== Math.round(H * dpr)) {
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+      }
       if (!polyRef.current) {
         polyRef.current = { pts: [
           {x:W*0.22,y:H*0.23},{x:W*0.78,y:H*0.23},
@@ -17274,6 +17277,8 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
   // ── Drawing ──────────────────────────────────────────────────────────────
   function drawPolyOverlay(canvas, W, H) {
     const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
     const poly = polyRef.current;
     if (!poly) return;
@@ -17463,7 +17468,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
   // ── Pointer / drag ────────────────────────────────────────────────────────
   function getCanvasPt(e, canvas) {
     const r=canvas.getBoundingClientRect();
-    return [(e.clientX-r.left)*(canvas.width/r.width),(e.clientY-r.top)*(canvas.height/r.height)];
+    return [e.clientX-r.left, e.clientY-r.top];
   }
 
   function onPointerDown(e) {
@@ -17501,7 +17506,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     } else {
       poly.pts=snapPts.map(p=>({x:p.x+dx,y:p.y+dy}));
     }
-    drawPolyOverlay(canvas, canvas.width, canvas.height);
+    drawPolyOverlay(canvas, canvas.offsetWidth, canvas.offsetHeight);
   }
 
   function onPointerUp() { dragRef.current=null; }
@@ -17741,11 +17746,15 @@ function SoilCameraCapture({ onSelect, onClose }) {
       const now = Date.now();
       if (now - lastFrame < 33) return; lastFrame = now;
 
+      const dpr = window.devicePixelRatio || 1;
       const W = canvas.offsetWidth, H = canvas.offsetHeight;
       if (!W || !H) return;
-      if (canvas.width !== W) canvas.width = W;
-      if (canvas.height !== H) canvas.height = H;
+      if (canvas.width !== Math.round(W * dpr) || canvas.height !== Math.round(H * dpr)) {
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+      }
       const ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
 
       // Grab only the object-fit:cover visible region of the video
@@ -17843,12 +17852,12 @@ function SoilCameraCapture({ onSelect, onClose }) {
     const rect = canvas.getBoundingClientRect();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const px = (clientX - rect.left) * (canvas.width / rect.width);
-    const py = (clientY - rect.top)  * (canvas.height / rect.height);
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
     soilPointRef.current = { x: px, y: py };
 
     // Compute cover-crop region from the live video frame.
-    const W = canvas.width, H = canvas.height;
+    const W = canvas.offsetWidth, H = canvas.offsetHeight;
     const vW = video.videoWidth, vH = video.videoHeight;
     if (!vW || !vH) return;
     const vAsp = vW / vH, cAsp = W / H;
