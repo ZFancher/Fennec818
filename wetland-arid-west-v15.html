@@ -17720,12 +17720,14 @@ function SoilCameraCapture({ onSelect, onClose }) {
   const lastDetectRef = useRef(0);
   const cardDetectedRef = useRef(false);
   const phaseRef = useRef('preview');
+  const crosshairColorRef = useRef('#0d8a7a');
 
   useEffect(() => { phaseRef.current = phase; }, [phase]);
 
   useEffect(() => {
     grabCanvasRef.current = document.createElement('canvas');
     fullResCanvasRef.current = document.createElement('canvas');
+    crosshairColorRef.current = getComputedStyle(document.documentElement).getPropertyValue('--c-redox-conc').trim() || '#0d8a7a';
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
     let active = true;
@@ -17822,7 +17824,7 @@ function SoilCameraCapture({ onSelect, onClose }) {
       const sp = soilPointRef.current;
       if (sp) {
         const cr = soilSampleRRef.current;
-        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--c-redox-conc').trim() || '#0d8a7a'; ctx.lineWidth = 1.5;
+        ctx.strokeStyle = crosshairColorRef.current; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.arc(sp.x, sp.y, cr, 0, Math.PI * 2); ctx.stroke();
         ctx.beginPath();
         ctx.moveTo(sp.x - cr - 8, sp.y); ctx.lineTo(sp.x - cr, sp.y);
