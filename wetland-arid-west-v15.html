@@ -11225,7 +11225,7 @@ const HYDRIC_ALL = [{
   lrr: 'All LRRs',
   autoable: true,
   minProfileDepth: 8,
-  desc: 'A histic epipedon underlain by mineral soil material with chroma ≤2. Most histic epipedons are organic surface horizons ≥8 in. (20 cm) thick. Requires aquic conditions or artificial drainage; however, aquic conditions can be assumed if indicators of hydrophytic vegetation AND wetland hydrology are both present on the site. Cannot be fully auto-selected — aquic conditions or artificial drainage cannot be confirmed from soil data alone; requires corroboration from wetland hydrology and hydrophytic vegetation indicators.'
+  desc: 'A histic epipedon underlain by mineral soil material with chroma ≤2. Most histic epipedons are organic surface horizons ≥8 in. (20 cm) thick. Requires aquic conditions or artificial drainage; however, aquic conditions can be assumed if indicators of hydrophytic vegetation AND wetland hydrology are both present. Cannot always be fully auto-selected — if wetland hydrology AND hydrophytic vegetation indicators are not present, aquic conditions or artificial drainage must be field-verified.'
 }, {
   id: 'A3',
   code: 'A3',
@@ -11725,7 +11725,7 @@ function inferHydricIndicators(horizons) {
     if (organicThick >= 8 && firstOrganic) {
       const below = sorted.find(h => hzTop(h) >= organicEnd && h.depthTo !== '' && h.texture && !isHistosolOrganic(h.texture) && (h.matrixHue === 'N' || h.matrixChroma !== '') && N(h.matrixChroma) <= 2);
       if (below) inferred['A2'] = {
-        reason: `${organicThick.toFixed(1)} in. of organic surface material (${firstOrganic.texture}, ≥8 in. req.) underlain by mineral soil (${below.texture}, chroma ${below.matrixChroma} ≤2 req.). SOIL REQUIREMENTS MET. However, aquic conditions must be confirmed — assumed present if both vegetation and wetland hydrology criteria are met.`,
+        reason: `${organicThick.toFixed(1)} in. of organic surface material (${firstOrganic.texture}, ≥8 in. req.) underlain by mineral soil (${below.texture}, chroma ${below.matrixChroma} ≤2 req.). SOIL REQUIREMENTS MET. However, aquic conditions or artificial drainage must be field-verified — aquic conditions may be assumed present if both vegetation and wetland hydrology criteria are met.`,
         partial: true
       };
     }
