@@ -17813,7 +17813,7 @@ function SoilCameraCapture({ onSelect, onClose }) {
       const sp = soilPointRef.current;
       if (sp) {
         const cr = soilSampleRRef.current;
-        ctx.strokeStyle = 'var(--c-redox-conc)'; ctx.lineWidth = 1.5;
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--c-redox-conc').trim() || '#0d8a7a'; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.arc(sp.x, sp.y, cr, 0, Math.PI * 2); ctx.stroke();
         ctx.beginPath();
         ctx.moveTo(sp.x - cr - 8, sp.y); ctx.lineTo(sp.x - cr, sp.y);
