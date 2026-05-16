@@ -17306,7 +17306,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       const sx = grab ? W / grab.width : 1;
       const sy = grab ? H / grab.height : 1;
       const c = det.corners;
-      ctx.strokeStyle = '#14b8a6'; ctx.lineWidth = 3;
+      ctx.strokeStyle = '#14b8a6'; ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.moveTo(c[0].x*sx, c[0].y*sy); ctx.lineTo(c[1].x*sx, c[1].y*sy);
       ctx.lineTo(c[2].x*sx, c[2].y*sy); ctx.lineTo(c[3].x*sx, c[3].y*sy);
@@ -17318,7 +17318,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
         const TR = cardSpaceToImage(c, u + pw, v - pw);
         const BR = cardSpaceToImage(c, u + pw, v + pw);
         const BL = cardSpaceToImage(c, u - pw, v + pw);
-        ctx.strokeStyle = CARD_REFERENCE_PATCHES[i].hex; ctx.lineWidth = 2;
+        ctx.strokeStyle = CARD_REFERENCE_PATCHES[i].hex; ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(TL.x*sx, TL.y*sy); ctx.lineTo(TR.x*sx, TR.y*sy);
         ctx.lineTo(BR.x*sx, BR.y*sy); ctx.lineTo(BL.x*sx, BL.y*sy);
@@ -17788,7 +17788,7 @@ function SoilCameraCapture({ onSelect, onClose }) {
       const det = detectionRef.current;
       if (det) {
         const c = det.corners;
-        ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 3;
+        ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(c[0].x, c[0].y); ctx.lineTo(c[1].x, c[1].y);
         ctx.lineTo(c[2].x, c[2].y); ctx.lineTo(c[3].x, c[3].y);
@@ -17801,7 +17801,7 @@ function SoilCameraCapture({ onSelect, onClose }) {
           const TR = cardSpaceToImage(c, u + pw, v - pw);
           const BR = cardSpaceToImage(c, u + pw, v + pw);
           const BL = cardSpaceToImage(c, u - pw, v + pw);
-          ctx.strokeStyle = CARD_REFERENCE_PATCHES[i].hex; ctx.lineWidth = 2;
+          ctx.strokeStyle = CARD_REFERENCE_PATCHES[i].hex; ctx.lineWidth = 1.5;
           ctx.beginPath();
           ctx.moveTo(TL.x, TL.y); ctx.lineTo(TR.x, TR.y);
           ctx.lineTo(BR.x, BR.y); ctx.lineTo(BL.x, BL.y);
