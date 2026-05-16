@@ -17103,6 +17103,51 @@ function ptInPoly(x, y, pts) {
   return inside;
 }
 
+// Touch-reliable range slider — bypasses iOS scroll-event competition.
+// Uses pointer capture so drags are tracked even outside the element.
+function RangeSlider({ min, max, step, value, onChange, accentColor }) {
+  const trackRef = useRef(null);
+  const dragging = useRef(false);
+
+  function valueFromPointer(e) {
+    const rect = trackRef.current.getBoundingClientRect();
+    const pct  = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const raw  = min + pct * (max - min);
+    return Math.max(min, Math.min(max, Math.round(raw / step) * step));
+  }
+  function onPointerDown(e) {
+    e.preventDefault();
+    trackRef.current.setPointerCapture(e.pointerId);
+    dragging.current = true;
+    onChange(valueFromPointer(e));
+  }
+  function onPointerMove(e) {
+    if (!dragging.current) return;
+    onChange(valueFromPointer(e));
+  }
+  function onPointerUp(e) {
+    dragging.current = false;
+  }
+
+  const pct = ((value - min) / (max - min) * 100).toFixed(2);
+  return React.createElement('div', {
+    ref: trackRef,
+    onPointerDown, onPointerMove, onPointerUp,
+    style: { position:'relative', height:28, display:'flex', alignItems:'center',
+             cursor:'pointer', touchAction:'none', userSelect:'none', WebkitUserSelect:'none' }
+  },
+    React.createElement('div', { style: { position:'absolute', left:0, right:0, height:4,
+      borderRadius:2, background:'var(--c-rule-strong)' } },
+      React.createElement('div', { style: { position:'absolute', left:0, top:0, bottom:0,
+        width: pct+'%', background: accentColor, borderRadius:2 } })
+    ),
+    React.createElement('div', { style: { position:'absolute', left: pct+'%',
+      transform:'translateX(-50%)', width:22, height:22, borderRadius:'50%',
+      background: accentColor, boxShadow:'0 1px 4px rgba(0,0,0,0.35)',
+      pointerEvents:'none' } })
+  );
+}
+
 function SoilAnalyzeCapture({ onAnalyze, onClose }) {
   const [phase, setPhase] = useState('position'); // 'position' | 'analyzing' | 'review'
   const [cardOk, setCardOk] = useState(false);
@@ -17612,7 +17657,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
           React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:3}},
             React.createElement('span',{style:{fontSize:11,color:'var(--c-redox-conc)',fontWeight:600,letterSpacing:'0.04em'}},'Concentrations'),
             React.createElement('span',{style:{fontSize:10,color:'var(--c-ink-2)'}},['Prominent only','Distinct+','Faint+'][Math.round(concSens)])),
-          React.createElement('input',{type:'range',min:0,max:2,step:0.01,value:concSens,onChange:e=>setConcSens(Number(e.target.value)),style:{display:'block',width:'100%',accentColor:'var(--c-redox-conc)'}}),
+          React.createElement(RangeSlider,{min:0,max:2,step:0.01,value:concSens,onChange:setConcSens,accentColor:'var(--c-redox-conc)'}),
           React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginTop:2}},
             React.createElement('span',{style:{fontSize:9,color:'var(--c-sub-2)'}},'← Prominent only'),
             React.createElement('span',{style:{fontSize:9,color:'var(--c-sub-2)'}},'All faint →'))),
@@ -17620,7 +17665,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
           React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:3}},
             React.createElement('span',{style:{fontSize:11,color:'var(--c-redox-depl)',fontWeight:600,letterSpacing:'0.04em'}},'Depletions'),
             React.createElement('span',{style:{fontSize:10,color:'var(--c-ink-2)'}},'chroma ≤ '+Number(deplSens).toFixed(1))),
-          React.createElement('input',{type:'range',min:0,max:4,step:0.1,value:deplSens,onChange:e=>setDeplSens(Number(e.target.value)),style:{display:'block',width:'100%',accentColor:'var(--c-redox-depl)'}}),
+          React.createElement(RangeSlider,{min:0,max:4,step:0.1,value:deplSens,onChange:setDeplSens,accentColor:'var(--c-redox-depl)'}),
           React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginTop:2}},
             React.createElement('span',{style:{fontSize:9,color:'var(--c-sub-2)'}},'← Strict (≤ 1)'),
             React.createElement('span',{style:{fontSize:9,color:'var(--c-sub-2)'}},'Inclusive (≤ 4) →')))),
