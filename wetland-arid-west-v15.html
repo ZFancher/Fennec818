@@ -18781,7 +18781,7 @@ function HydricRow({
     : ind.testLRR
       ? React.createElement("span", {style:{fontSize:11,fontWeight:700,lineHeight:1,padding:'2px 6px 1px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)',whiteSpace:'nowrap',flexShrink:0}}, (ind.testLRR.match(/LRR [A-Z]/)||[ind.testLRR])[0])
       : null;
-  const hasSubContent = (isAuto && autoReason) || (isPartial && !checked && autoReason) || (isPartial && checked) || exp;
+  const hasSubContent = (isPartial && !checked && autoReason && autoReason.includes('SOIL REQUIREMENTS MET')) || (isPartial && checked) || exp;
   return React.createElement("div", {
     onClick: e => {
       if (e.target.closest('button') || e.target.closest('input')) return;
@@ -18825,8 +18825,7 @@ function HydricRow({
     hasSubContent && React.createElement("div", {
       style:{padding:'0 16px 10px',display:'flex',flexDirection:'column',gap:4}
     },
-      (isAuto && autoReason) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-full)',lineHeight:1.5}}, autoReason.replace(/^Auto-selected:\s*/i,'')),
-      (isPartial && !checked && autoReason) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-partial)',lineHeight:1.5}}, autoReason.replace(/^Partial:\s*/i,'')),
+      (isPartial && !checked && autoReason && autoReason.includes('SOIL REQUIREMENTS MET')) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-partial)',lineHeight:1.5}}, autoReason.slice(autoReason.indexOf('SOIL REQUIREMENTS MET'))),
       (isPartial && checked) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-pass)',lineHeight:1.5}}, "✓ Field observations confirmed"),
       exp && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-sub)',lineHeight:1.65,whiteSpace:'pre-line',paddingTop:2}}, ind.desc)
     )
@@ -18854,7 +18853,7 @@ function IndRow({
     : ind.testLRR
       ? React.createElement("span", {style:{fontSize:11,fontWeight:700,lineHeight:1,padding:'2px 6px 1px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)',whiteSpace:'nowrap',flexShrink:0}}, (ind.testLRR.match(/LRR [A-Z]/)||[ind.testLRR])[0])
       : null;
-  const hasSubContent = ind.measureHint || (autoChecked && reasonText) || isAutoPartial || (autoPartial && checked) || exp || !!warningBox;
+  const hasSubContent = ind.measureHint || (isAutoPartial && autoPartial?.reason?.includes('SOIL REQUIREMENTS MET')) || (autoPartial && checked) || exp || !!warningBox;
   return React.createElement("div", {
     onClick: e => {
       if (e.target.closest('button') || e.target.closest('input')) return;
@@ -18905,8 +18904,7 @@ function IndRow({
         React.createElement("input", {type:"number",min:"0",step:"0.1",placeholder:"depth (in.)",value:measureVal||'',onChange:e=>onMeasureChange&&onMeasureChange(ind.id,e.target.value),style:{width:82,background:'var(--c-input)',border:'1px solid var(--c-rule-strong)',borderRadius:4,padding:'3px 6px',fontSize:14,color:'var(--c-ink)',outline:'none'}}),
         React.createElement("span", {style:{fontFamily:'var(--font-sans)',fontSize:11,color:'var(--c-sub)'}}, ind.measureHint)
       ),
-      (autoChecked && reasonText) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-full)',lineHeight:1.5}}, reasonText.replace(/^Auto-selected:\s*/i,'')),
-      isAutoPartial && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-partial)',lineHeight:1.5}}, autoPartial.reason),
+      (isAutoPartial && autoPartial?.reason?.includes('SOIL REQUIREMENTS MET')) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-partial)',lineHeight:1.5}}, autoPartial.reason.slice(autoPartial.reason.indexOf('SOIL REQUIREMENTS MET'))),
       (autoPartial && checked) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-pass)',lineHeight:1.5}}, "✓ Field observations confirmed"),
       warningBox,
       exp && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-sub)',lineHeight:1.65,whiteSpace:'pre-line',paddingTop:2}}, ind.desc)
