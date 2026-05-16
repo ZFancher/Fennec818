@@ -17369,13 +17369,15 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     const result = computeClassification(concSens, deplSens);
     if (!result) return;
     const { clusterRole } = result;
+    const deplHex = getComputedStyle(document.documentElement).getPropertyValue('--c-redox-depl').trim();
+    const dR=parseInt(deplHex.slice(1,3),16), dG=parseInt(deplHex.slice(3,5),16), dB=parseInt(deplHex.slice(5,7),16);
     const ov = ctx.createImageData(W, H);
     const od = ov.data;
     for (let i=0; i<allLabels.length; i++) {
       const lbl=allLabels[i]; if (lbl===255) continue;
       const r=clusterRole[lbl], pi=i*4;
-      if (r===1) { od[pi]=57;  od[pi+1]=255; od[pi+2]=20;  od[pi+3]=180; } // neon green
-      if (r===2) { od[pi]=0;   od[pi+1]=191; od[pi+2]=255; od[pi+3]=180; } // electric blue
+      if (r===1) { od[pi]=57;  od[pi+1]=255; od[pi+2]=20;  od[pi+3]=180; } // neon green — concentration
+      if (r===2) { od[pi]=dR;  od[pi+1]=dG;  od[pi+2]=dB;  od[pi+3]=180; } // --c-redox-depl — depletion
     }
     const tmp=document.createElement('canvas'); tmp.width=W; tmp.height=H;
     tmp.getContext('2d').putImageData(ov, 0, 0);
@@ -17597,9 +17599,9 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
             React.createElement('span',{style:{fontSize:9,color:'var(--c-sub-2)'}},'All faint →'))),
         React.createElement('div',{style:{flex:1}},
           React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:3}},
-            React.createElement('span',{style:{fontSize:11,color:'var(--c-info)',fontWeight:600,letterSpacing:'0.04em'}},'Depletions'),
+            React.createElement('span',{style:{fontSize:11,color:'var(--c-redox-depl)',fontWeight:600,letterSpacing:'0.04em'}},'Depletions'),
             React.createElement('span',{style:{fontSize:10,color:'var(--c-ink-2)'}},'chroma ≤ '+Number(deplSens).toFixed(1))),
-          React.createElement('input',{type:'range',min:0,max:4,step:0.1,value:deplSens,onChange:e=>setDeplSens(Number(e.target.value)),style:{display:'block',width:'100%',accentColor:'var(--c-info)'}}),
+          React.createElement('input',{type:'range',min:0,max:4,step:0.1,value:deplSens,onChange:e=>setDeplSens(Number(e.target.value)),style:{display:'block',width:'100%',accentColor:'var(--c-redox-depl)'}}),
           React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginTop:2}},
             React.createElement('span',{style:{fontSize:9,color:'var(--c-sub-2)'}},'← Strict (≤ 1)'),
             React.createElement('span',{style:{fontSize:9,color:'var(--c-sub-2)'}},'Inclusive (≤ 4) →')))),
@@ -17608,7 +17610,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       React.createElement('div',{style:{display:'flex',flexWrap:'wrap',gap:5}},
         ...chips.matrix.map(c=>chipEl(c,'var(--c-sub)','Matrix')),
         ...chips.conc.map((c,i)  =>chipEl(c,'#39ff14','Conc.' +(chips.conc.length>1  ?' '+(i+1):''))),
-        ...chips.depl.map((c,i)  =>chipEl(c,'var(--c-info)','Depl.' +(chips.depl.length>1  ?' '+(i+1):'')))),
+        ...chips.depl.map((c,i)  =>chipEl(c,'var(--c-redox-depl)','Depl.' +(chips.depl.length>1  ?' '+(i+1):'')))),
       React.createElement('div',{style:{display:'flex',gap:8}},
         React.createElement('button',{onClick:()=>{polyRef.current=null;setPhase('position');},style:{flex:1,background:'var(--c-input)',color:'var(--c-ink)',border:'1px solid var(--c-rule-strong)',borderRadius:6,padding:'8px 0',fontSize:13,cursor:'pointer'}},'Retry'),
         React.createElement('button',{onClick:handleAccept,style:{flex:2,background:'var(--c-pass)',color:'var(--c-action-fg)',border:'none',borderRadius:6,padding:'8px 0',fontSize:14,fontWeight:600,cursor:'pointer'}},'Use These Colors')))
