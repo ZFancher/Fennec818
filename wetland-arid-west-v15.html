@@ -17162,6 +17162,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
   const grabCanvasRef   = useRef(null);      // off-screen 640px detection canvas
   const fullResCanvasRef= useRef(null);      // off-screen full-res canvas for k-means
   const polyRef         = useRef(null);      // {pts:[{x,y}×4]} quad in display px
+  const prevSizeRef     = useRef(null);      // {W,H} last known canvas size for rescale
   const detectionRef    = useRef(null);      // last valid measureCard() result
   const dragRef         = useRef(null);      // active drag state
   const animRef         = useRef(null);
@@ -17219,6 +17220,14 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
           {x:W*0.22,y:H*0.23},{x:W*0.78,y:H*0.23},
           {x:W*0.78,y:H*0.63},{x:W*0.22,y:H*0.63}
         ]};
+        prevSizeRef.current = {W, H};
+      } else if (prevSizeRef.current && (prevSizeRef.current.W !== W || prevSizeRef.current.H !== H)) {
+        const {W:pW, H:pH} = prevSizeRef.current;
+        const sx = W / pW, sy = H / pH;
+        polyRef.current.pts = polyRef.current.pts.map(p => ({x: p.x * sx, y: p.y * sy}));
+        prevSizeRef.current = {W, H};
+      } else if (!prevSizeRef.current) {
+        prevSizeRef.current = {W, H};
       }
 
       const vW=video.videoWidth, vH=video.videoHeight;
