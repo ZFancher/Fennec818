@@ -11443,9 +11443,9 @@ const PRIMARY = [{
   id: 'A3h',
   code: 'A3',
   label: 'Saturation',
-  measureHint: 'Auto-selects if saturation depth ≤12 in. (30 cm).',
+  measureHint: 'Enter observed depth. Auto-selects if ≤12 in. with A2 water table recorded below, or if restrictive layer ≤12 in. is present (episaturation waiver).',
   measureThreshold: 12,
-  desc: 'Soil saturated (glistening water on soil squeezed in hand) to within ≤12 in. (30 cm) of the surface, including the capillary fringe, during the growing season. Distinct from free water (A2) — this may be capillary saturation above a water table. Enter depth to saturation to auto-select.'
+  desc: 'Visual observation of saturated soil conditions ≤12 in. (30 cm) from the soil surface as indicated by water glistening on the surfaces and broken interior faces of soil samples removed from the pit or auger hole. This indicator must be associated with an existing water table located immediately below the saturated zone (fill in A2 depth field); however, this requirement is waived under episaturated conditions if there is a restrictive soil layer or bedrock within 12 in. (30 cm) of the surface.'
 }, {
   id: 'B1r',
   code: 'B1',
@@ -19972,16 +19972,18 @@ function WetlandApp() {
     if (a1Active) m['A1h'] = true;
     const a2 = parseFloat(hydroMeasure['A2h']);
     if (!isNaN(a2) && a2 <= 12) m['A2h'] = true;
-    const a3 = parseFloat(hydroMeasure['A3h']);
-    if (!isNaN(a3) && a3 <= 12) m['A3h'] = true;
-    if (a1Active && !m['A3h']) m['A3h'] = {
-      reason: 'Auto-selected: Surface water (A1) confirmed — saturation is implicit when surface water is present.'
-    };
     const rDepth = parseFloat(restrictiveDepth);
     const rPresent = restrictiveType && restrictiveType !== 'None observed' && !isNaN(rDepth) && rDepth > 0;
-    if (rPresent && rDepth <= 12 && !m['A3h']) m['A3h'] = {
-      reason: `Auto-selected: Restrictive layer (${restrictiveType}) at ${rDepth} in. ≤12 in. triggers episaturation waiver for A3 (ERDC/EL TR-08-28 §4).`
-    };
+    const a3depth = parseFloat(hydroMeasure['A3h']);
+    if (!isNaN(a3depth) && a3depth >= 0 && a3depth <= 12) {
+      const waterTableBelow = !isNaN(a2) && a2 > a3depth;
+      const episatWaiver = rPresent && rDepth <= 12 && rDepth > a3depth;
+      if (waterTableBelow) {
+        m['A3h'] = {reason: `Auto-selected: Saturation at ${a3depth} in. ≤12 in., water table at ${a2} in. below the saturated zone.`};
+      } else if (episatWaiver) {
+        m['A3h'] = {reason: `Auto-selected: Saturation at ${a3depth} in. ≤12 in. — episaturation waiver: ${restrictiveType} at ${rDepth} in. within 12 in. of surface.`};
+      }
+    }
     if (!!chkHydric['A4']) m['C1'] = {
       reason: 'Auto-selected: Soil indicator A4 (Hydrogen Sulfide) is checked in the Soils module.'
     };
@@ -20023,10 +20025,23 @@ function WetlandApp() {
     return null;
   }, [vegCalc.allDominants]);
   const effectiveHydroAuto = useMemo(() => {
-    return {
-      ...hydroAutoMet
-    };
-  }, [hydroAutoMet]);
+    const result = { ...hydroAutoMet };
+    if (!result['A3h']) {
+      const rDepth = parseFloat(restrictiveDepth);
+      const rPresent = restrictiveType && restrictiveType !== 'None observed' && !isNaN(rDepth) && rDepth > 0;
+      if (rPresent) {
+        const vegEvidence = sigDistVeg || natProbVeg || !!probHydroVeg || vegCalc.vegMet;
+        const soilHydroEvidence = sigDistSoil || natProbSoil || Object.values(chkP).some(Boolean) || Object.values(chkS).some(Boolean);
+        if (vegEvidence && soilHydroEvidence) {
+          result['A3h'] = {
+            reason: `Possible A3: ${restrictiveType} at ${rDepth} in. within 12 in. of surface suggests episaturation, with supporting site-level vegetation and soil/hydrology evidence. Saturation not directly observed — inspect soil faces and broken interior surfaces for glistening.`,
+            partial: true
+          };
+        }
+      }
+    }
+    return result;
+  }, [hydroAutoMet, restrictiveType, restrictiveDepth, sigDistVeg, natProbVeg, probHydroVeg, vegCalc, sigDistSoil, natProbSoil, chkP, chkS]);
   const hydroAutoCount = Object.values(effectiveHydroAuto).filter(v => v && !v?.partial).length + (d3Auto && !chkS['D3'] ? 1 : 0) + (d5Auto && !chkS['D5'] ? 1 : 0);
   const numP = Object.entries({
     ...chkP,
