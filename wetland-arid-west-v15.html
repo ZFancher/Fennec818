@@ -12024,6 +12024,13 @@ function inferHydricIndicators(horizons) {
       };
     }
   }
+  {
+    const q = sorted.find(h => hzTop(h) <= 12 && hasRedoxConcMassOrPL(h, 2));
+    if (q) inferred['C6'] = {
+      reason: `${q.texture || '?'} layer at ${hzTop(q)}–${hzBot(q)} in.: ≥2% redox concentrations as soft masses or pore linings within ≤12 in. of surface. SOIL REQUIREMENTS MET. However, confirm all of the following before selecting: (1) soil was cultivated within the last two years — verify with landowner, aerial photography, or FSA records; (2) redox concentrations are pore linings or soft masses with diffuse boundaries, not sharp-bounded features inherited from pre-tillage conditions; (3) concentrations are continuous and unbroken, indicating formation since last tillage, not before; (4) concentrations occur within the tilled zone specifically, not merely within 12 in. of the surface.`,
+      partial: true
+    };
+  }
   return inferred;
 }
 function plantById(id) {
