@@ -17254,9 +17254,18 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
       ctx.moveTo(c[0].x*sx, c[0].y*sy); ctx.lineTo(c[1].x*sx, c[1].y*sy);
       ctx.lineTo(c[2].x*sx, c[2].y*sy); ctx.lineTo(c[3].x*sx, c[3].y*sy);
       ctx.closePath(); ctx.stroke();
-      det.regions.forEach((reg, i) => {
+      det.regions.forEach((_, i) => {
+        const [u, v] = CARD_LAYOUT.patchCenters[i];
+        const pw = CARD_LAYOUT.patchSampleRadius;
+        const TL = cardSpaceToImage(c, u - pw, v - pw);
+        const TR = cardSpaceToImage(c, u + pw, v - pw);
+        const BR = cardSpaceToImage(c, u + pw, v + pw);
+        const BL = cardSpaceToImage(c, u - pw, v + pw);
         ctx.strokeStyle = CARD_REFERENCE_PATCHES[i].hex; ctx.lineWidth = 2;
-        ctx.strokeRect((reg.cx - reg.r) * sx, (reg.cy - reg.r) * sy, reg.r * 2 * sx, reg.r * 2 * sy);
+        ctx.beginPath();
+        ctx.moveTo(TL.x*sx, TL.y*sy); ctx.lineTo(TR.x*sx, TR.y*sy);
+        ctx.lineTo(BR.x*sx, BR.y*sy); ctx.lineTo(BL.x*sx, BL.y*sy);
+        ctx.closePath(); ctx.stroke();
       });
     }
   }
@@ -17707,9 +17716,18 @@ function SoilCameraCapture({ onSelect, onClose }) {
         ctx.lineTo(c[2].x, c[2].y); ctx.lineTo(c[3].x, c[3].y);
         ctx.closePath(); ctx.stroke();
 
-        det.regions.forEach((reg, i) => {
+        det.regions.forEach((_, i) => {
+          const [u, v] = CARD_LAYOUT.patchCenters[i];
+          const pw = CARD_LAYOUT.patchSampleRadius;
+          const TL = cardSpaceToImage(c, u - pw, v - pw);
+          const TR = cardSpaceToImage(c, u + pw, v - pw);
+          const BR = cardSpaceToImage(c, u + pw, v + pw);
+          const BL = cardSpaceToImage(c, u - pw, v + pw);
           ctx.strokeStyle = CARD_REFERENCE_PATCHES[i].hex; ctx.lineWidth = 2;
-          ctx.strokeRect(reg.cx - reg.r, reg.cy - reg.r, reg.r * 2, reg.r * 2);
+          ctx.beginPath();
+          ctx.moveTo(TL.x, TL.y); ctx.lineTo(TR.x, TR.y);
+          ctx.lineTo(BR.x, BR.y); ctx.lineTo(BL.x, BL.y);
+          ctx.closePath(); ctx.stroke();
         });
       }
 
