@@ -19982,19 +19982,6 @@ function WetlandApp() {
     if (!isNaN(bc) && bc > 0) m['B12'] = {
       reason: `Biotic crust cover entered: ${bc}%. Any value >0% triggers this indicator.`
     };
-    const gleyHues = ['N', '10Y', '5GY', '10GY', '5G', '10G', '5BG', '10BG', '5B', '10B', '5PB'];
-    const c4layer = horizons.find(h => {
-      const top = Number(h.depthFrom) || 0;
-      const bot = Number(h.depthTo) || 0;
-      if (bot === 0 || top >= 12) return false;
-      const isOrganic = ['muck', 'mucky peat', 'peat'].includes((h.texture || '').toLowerCase());
-      if (isOrganic) return false;
-      return gleyHues.includes(h.matrixHue) && Number(h.matrixValue) >= 4 && (h.matrixHue === 'N' || Number(h.matrixChroma) <= (h.matrixHue === '5G' ? 2 : 1));
-    });
-    if (c4layer && !chkP['C4']) m['C4'] = {
-      reason: `Gleyed matrix (${c4layer.matrixHue} ${c4layer.matrixValue}/${c4layer.matrixChroma}) at ${c4layer.depthFrom}–${c4layer.depthTo} in. in the upper 12 in. SOIL REQUIREMENTS MET. However, presence of ferrous iron must be confirmed — test immediately after opening the pit: (A) apply α,α-dipyridyl solution to freshly exposed soil (pink/red reaction over >50% of layer required); OR (B) observe the exposed matrix for a chroma increase upon air exposure. Check this indicator only after confirming by at least one method.`,
-      partial: true
-    };
     const c7layer = horizons.find(h => {
       const top = Number(h.depthFrom) || 0;
       const bot = Number(h.depthTo) || 0;
