@@ -11436,9 +11436,9 @@ const PRIMARY = [{
   id: 'A2h',
   code: 'A2',
   label: 'High Water Table',
-  measureHint: 'Auto-selects if depth ≤12 in. (30 cm).',
+  measureHint: 'Auto-selects if depth ≤12 in.; Partial if 13–24 in.',
   measureThreshold: 12,
-  desc: 'Direct, visual observation of the water table ≤12 in. (30 cm) or less below the surface in a soil pit, auger hole, or shallow monitoring well. This indicator includes water tables derived from perched water, throughflow, and discharging groundwater (e.g., in seeps) that may be moving laterally near the soil surface.'
+  desc: 'Direct, visual observation of the water table ≤12 in. (30 cm) or less below the surface in a soil pit, auger hole, or shallow monitoring well. This indicator includes water tables derived from perched water, throughflow, and discharging groundwater (e.g., in seeps) that may be moving laterally near the soil surface. A Partial selection indicates a water table at 13–24 in. — present but below the primary ≤12 in. threshold. Document: site visit timing relative to normal wet-season conditions and whether seasonal fluctuation likely brings the water table to ≤12 in. during the growing season.'
 }, {
   id: 'A3h',
   code: 'A3',
@@ -19971,7 +19971,8 @@ function WetlandApp() {
     const a1Active = !isNaN(a1val) && a1val >= 0;
     if (a1Active) m['A1h'] = true;
     const a2 = parseFloat(hydroMeasure['A2h']);
-    if (!isNaN(a2) && a2 <= 12) m['A2h'] = true;
+    if (!isNaN(a2) && a2 >= 0 && a2 <= 12) m['A2h'] = true;
+    else if (!isNaN(a2) && a2 > 12 && a2 <= 24) m['A2h'] = {reason: `Water table at ${a2} in. — within 13–24 in. range (below primary ≤12 in. threshold).`, partial: true};
     const rDepth = parseFloat(restrictiveDepth);
     const rPresent = restrictiveType && restrictiveType !== 'None observed' && !isNaN(rDepth) && rDepth > 0;
     const a3depth = parseFloat(hydroMeasure['A3h']);
