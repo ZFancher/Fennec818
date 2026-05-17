@@ -11827,7 +11827,7 @@ function inferHydricIndicators(horizons) {
       const above = sorted.filter(a => hzBot(a) <= hzTop(h) + 0.1 && a !== h);
       if (!above.length) continue;
       if (hzTop(above[0]) >= 6) continue;
-      const to12 = above.filter(a => hzBot(a) <= 12.5);
+      const to12 = above.filter(a => hzTop(a) < 12);
       const beyond = above.filter(a => hzTop(a) >= 12);
       if (!to12.every(a => a.texture && a.matrixValue !== '' && (a.matrixHue === 'N' || a.matrixChroma !== '') && N(a.matrixValue) <= 2.5 && N(a.matrixChroma) <= 1)) continue;
       if (!beyond.every(a => a.texture && a.matrixValue !== '' && (a.matrixHue === 'N' || a.matrixChroma !== '') && N(a.matrixValue) <= 3 && N(a.matrixChroma) <= 1)) continue;
