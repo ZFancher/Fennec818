@@ -20688,7 +20688,8 @@ function WetlandApp() {
         hckP.forEach(([x, y, id]) => ck(p2, x, y, chkHydricProb[id]));
         ck(p2, 505, 394, soilsMet);
         ck(p2, 550, 394, !soilsMet);
-        ml(p2, 80, 368, soilRemarks);
+        const _c4RmNote = effectiveHydroAuto['C4'] ? 'The presence of a reduced matrix within 12 inches of the soil surface indicates that this soil is hydric based on the hydric soil definition: “a soil that formed under conditions of saturation, flooding or ponding long enough during the growing season to develop anaerobic conditions in the upper part”.' : '';
+        ml(p2, 80, 368, [_c4RmNote, soilRemarks].filter(Boolean).join('\n'));
         const hydP_L = [[47, 273, 'A1h'], [47, 261, 'A2h'], [47, 249, 'A3h'], [47, 237, 'B1r'], [47, 225, 'B2r'], [47, 213, 'B3r'], [47, 201, 'B6'], [47, 188, 'B7'], [47, 176, 'B9']];
         hydP_L.forEach(([x, y, id]) => ck(p2, x, y, chkP[id] || effectiveHydroAuto[id] && !effectiveHydroAuto[id].partial));
         const hydP_M = [[217, 273, 'B11'], [217, 261, 'B12'], [217, 249, 'B13'], [217, 237, 'C1'], [217, 225, 'C3'], [217, 213, 'C4'], [217, 201, 'C6'], [217, 188, 'C7'], [217, 176, 'HOTHERprim']];
@@ -23777,7 +23778,7 @@ function WetlandApp() {
       letterSpacing: 'var(--ls-cap)',
       marginBottom: 4
     }
-  }, "Remarks"), React.createElement("div", {className:"remarks-wrap"}, React.createElement("textarea", {
+  }, "Remarks"), React.createElement("div", {className:"remarks-wrap"}, effectiveHydroAuto['C4'] && React.createElement("p", {style:{margin:'0 0 4px 0',padding:'6px 8px',background:'var(--c-input)',border:'1px solid var(--c-rule-strong)',borderRadius:4,fontSize:10,fontStyle:'italic',color:'var(--c-ink)',lineHeight:1.5,fontFamily:'var(--font-sans)'}}, 'The presence of a reduced matrix within 12 inches of the soil surface indicates that this soil is hydric based on the hydric soil definition: \u201ca soil that formed under conditions of saturation, flooding or ponding long enough during the growing season to develop anaerobic conditions in the upper part\u201d.'), React.createElement("textarea", {
     key: 'remarks-soil-' + remarksResetKey,
     rows: 4,
     placeholder: "Gleying, mottling, additional observations\u2026",
