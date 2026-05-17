@@ -11561,7 +11561,7 @@ const SECONDARY = [{
   id: 'D3',
   code: 'D3',
   label: 'Shallow Aquitard',
-  desc: 'An aquitard (impermeable soil layer or bedrock — fragipan, cemented layer, dense till, lacustrine deposit, clay layer) within 12 in. (30 cm) of the surface, capable of perching water in depressions or flat areas. Often identifiable by lack of root penetration through the layer; redoximorphic features commonly occur in the layer(s) above it. Indicators of hydrophytic vegetation and hydric soil must also be present. Local judgment should indicate the perched water table is likely to occur during the growing season in most years.'
+  desc: 'An aquitard (impermeable soil layer or bedrock — fragipan, cemented layer, dense till, lacustrine deposit, clay layer) within 12 in. (30 cm) of the surface, capable of perching water in depressions or flat areas. Often identifiable by lack of root penetration through the layer; redoximorphic features commonly occur in the layer(s) above it. Indicators of hydrophytic vegetation and hydric soil must also be present, unless significantly disturbed or naturally problematic. Local judgment should indicate the perched water table is likely to occur during the growing season in most years.'
 }, {
   id: 'D5',
   code: 'D5',
@@ -24001,10 +24001,10 @@ function WetlandApp() {
       color: 'var(--c-sub)'
     }
   }, numS, " selected", numS === 1 ? ' (need 2+)' : '')), SECONDARY.map(ind => {
-    const secAuto = ind.id === 'D3' && d3Auto && !chkS['D3'] ? d3Auto : ind.id === 'D5' && d5Auto && !chkS['D5'] ? d5Auto : null;
-    const d5Dimmed = ind.id === 'D5' && !d5Auto && !chkS['D5'];
     const d3VegOk = vegMet || vegDistOrProb;
     const d3SoilOk = soilsMet || soilDistOrProb;
+    const secAuto = ind.id === 'D3' && d3Auto && !chkS['D3'] && d3VegOk && d3SoilOk ? d3Auto : ind.id === 'D5' && d5Auto && !chkS['D5'] ? d5Auto : null;
+    const d5Dimmed = ind.id === 'D5' && !d5Auto && !chkS['D5'];
     const d3Dimmed = ind.id === 'D3' && (!d3VegOk || !d3SoilOk) && !chkS['D3'];
     const dimmed = d5Dimmed || d3Dimmed;
     const d5Details = ind.id === 'D5' && vegCalc.allDominants?.length > 0 ? (() => {
@@ -24019,7 +24019,7 @@ function WetlandApp() {
     })() : null;
     const warnStyle = {marginTop: 4, padding: '4px 8px', borderRadius: 3, background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.25)', fontSize: 10, color: 'var(--c-warn)', lineHeight: 1.5};
     const warningElem = (ind.id === 'D3' && !(d3VegOk && d3SoilOk))
-      ? React.createElement("div", {style: warnStyle}, "\u26A0 Hydrophytic vegetation ", React.createElement("strong", null, "and"), " hydric soil must both be present (or marked SD/NP) to use this indicator (per indicator description and Ch. 4). ", !d3VegOk && !d3SoilOk ? 'Neither has passed or been marked SD/NP.' : !d3VegOk ? 'Vegetation has not passed or been marked SD/NP.' : 'Hydric soil has not passed or been marked SD/NP.', " ", React.createElement("span", {style: {color: 'var(--c-fail)'}}, "Indicator dimmed until both criteria met."))
+      ? React.createElement("div", {style: warnStyle}, "\u26A0 Hydrophytic vegetation ", React.createElement("strong", null, "and"), " hydric soil must both be present (or significantly disturbed/naturally problematic) to use this indicator. ", !d3VegOk && !d3SoilOk ? 'Neither criterion has been met.' : !d3VegOk ? 'Hydrophytic vegetation criterion has not been met.' : 'Hydric soil criterion has not been met.', " ", React.createElement("span", {style: {color: 'var(--c-fail)'}}, "Indicator dimmed until both criteria met."))
       : (ind.id === 'D5' && !d5Auto)
         ? React.createElement("div", {style: warnStyle}, d5Details ? React.createElement(React.Fragment, null, "\u26A0 FAC-Neutral not met \u2014 ", d5Details.hydro, " OBL/FACW vs ", d5Details.upland, " FACU/UPL dominant", d5Details.upland !== 1 ? 's' : '', " among ", d5Details.nonFAC, " non-FAC dominant", d5Details.nonFAC !== 1 ? 's' : '', ". OBL/FACW must outnumber FACU/UPL. ", React.createElement("span", {style: {color: 'var(--c-fail)'}}, "Indicator dimmed until criteria met.")) : React.createElement(React.Fragment, null, "\u26A0 Derived from vegetation dominance data (pre-morphological adaptations reassignment). Enter species and cover in the Vegetation module. OBL/FACW dominants (FAC excluded) must outnumber FACU/UPL dominants. ", React.createElement("span", {style: {color: 'var(--c-fail)'}}, "Indicator dimmed until criteria met.")))
         : null;
