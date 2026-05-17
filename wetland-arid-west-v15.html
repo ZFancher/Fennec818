@@ -11865,7 +11865,7 @@ function inferHydricIndicators(horizons) {
   }
   {
     const q = sorted.find(h => hzTop(h) <= 6 && isLoamyMuck(h.texture) && hzThick(h) >= 4);
-    if (q) inferred['F1'] = {
+    if (q && aboveLayersChromaOK(hzTop(q))) inferred['F1'] = {
       reason: `Loamy muck at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in.; ≥4 in. req.), starting ≤6 in. Approved LRRs B, C, D.`
     };
   }
@@ -11884,6 +11884,7 @@ function inferHydricIndicators(horizons) {
       if (!thickOK) continue;
       const needsRedox = N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2;
       if (needsRedox && !hasDistOrPromConcMassOrPL(h, 2)) continue;
+      if (!aboveLayersChromaOK(hzTop(h))) continue;
       inferred['F3'] = {
         reason: `Loamy/clayey layer at ${hzTop(h)}–${hzBot(h)} in.: depleted matrix (value ${h.matrixValue} chroma ${h.matrixChroma} ≥60%), ${hzThick(h).toFixed(1)} in. thick.${needsRedox ? ' Distinct/prominent redox verified at 4/1–5/2 (Table A1).' : ''}`
       };
@@ -11894,7 +11895,7 @@ function inferHydricIndicators(horizons) {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
     const q = sorted.find(h => isLoamy(h.texture) && hzThick(h) >= 4 && N(h.matrixValue) <= 3 && hzBot(h) - minOff <= 12 && (N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConcMassOrPL(h, 5)));
-    if (q) {
+    if (q && aboveLayersChromaOK(hzTop(q))) {
       const minPct = N(q.matrixChroma) <= 1 ? 2 : 5;
       const rxDesc = q.redoxRows.filter(rx => N(rx.pct) >= minPct && (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(q, rx)).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
       inferred['F6'] = {
@@ -11913,7 +11914,7 @@ function inferHydricIndicators(horizons) {
       const deplPct = redoxRows(h).filter(rx => rx.type.startsWith('D')).reduce((s, rx) => s + N(rx.pct), 0);
       return N(h.matrixChroma) <= 1 && deplPct >= 10 || N(h.matrixChroma) <= 2 && deplPct >= 20;
     });
-    if (q) {
+    if (q && aboveLayersChromaOK(hzTop(q))) {
       const deplPct = redoxRows(q).filter(rx => rx.type.startsWith('D')).reduce((s, rx) => s + N(rx.pct), 0);
       const variant = N(q.matrixChroma) <= 1 ? 1 : 2;
       inferred['F7'] = {
@@ -19538,6 +19539,7 @@ function WetlandApp() {
   const [collapsibleResetKey, setCollapsibleResetKey] = useState(0);
   const [showAllSoilsRule, setShowAllSoilsRule] = useState(false);
   const [showSandySoilsRule, setShowSandySoilsRule] = useState(false);
+  const [showLoamySoilsRule, setShowLoamySoilsRule] = useState(false);
   const [chkP, setChkP] = useState({});
   const [chkS, setChkS] = useState({});
   const vegCalc = useMemo(() => {
@@ -20196,11 +20198,11 @@ function WetlandApp() {
         S1: 'requires a mucky-modified sandy layer ≥2 in. thick starting ≤6 in., with mineral layers above having dominant chroma ≤2, or such layers with dominant chroma >2 totaling <6 in',
         S4: 'requires a sandy layer with gleyed matrix (gley hue, value ≥4, ≥60% of layer) starting ≤6 in.',
         S5: 'requires a sandy layer ≥4 in. thick starting ≤6 in., matrix ≥60% chroma ≤2, with ≥2% distinct/prominent redox concentrations as soft masses or pore linings',
-        F1: 'requires a mucky-modified loamy/clayey layer ≥4 in. thick starting ≤6 in.',
-        F2: 'requires a loamy/clayey layer with gleyed matrix (gley hue, value ≥4, ≥60% of layer) starting ≤12 in.',
-        F3: 'requires a loamy/clayey depleted matrix (≥60% value ≥4, chroma ≤2), either ≥2 in. starting ≤4 in. or ≥6 in. starting ≤10 in. from surface',
-        F6: 'requires a loamy/clayey layer ≥4 in. thick entirely within 12 in. of mineral surface, value ≤3, with ≥2% distinct/prominent redox concentrations (chroma ≤1) or ≥5% (chroma ≤2)',
-        F7: 'requires a loamy/clayey layer ≥4 in. thick entirely within 12 in. of mineral surface, value ≤3, with ≥10% redox depletions (chroma ≤1) or ≥20% (chroma ≤2)',
+        F1: 'requires a mucky-modified loamy/clayey layer ≥4 in. thick starting ≤6 in.; any mineral layers above must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <6 in.',
+        F2: 'requires a loamy/clayey layer with gleyed matrix (gley hue, value ≥4, ≥60% of layer) starting ≤12 in.; any mineral layers above must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <6 in.',
+        F3: 'requires a loamy/clayey depleted matrix (≥60% value ≥4, chroma ≤2), either ≥2 in. starting ≤4 in. or ≥6 in. starting ≤10 in. from surface; any mineral layers above must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <6 in.',
+        F6: 'requires a loamy/clayey layer ≥4 in. thick entirely within 12 in. of mineral surface, value ≤3, with ≥2% distinct/prominent redox concentrations (chroma ≤1) or ≥5% (chroma ≤2); any mineral layers above must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <6 in.',
+        F7: 'requires a loamy/clayey layer ≥4 in. thick entirely within 12 in. of mineral surface, value ≤3, with ≥10% redox depletions (chroma ≤1) or ≥20% (chroma ≤2); any mineral layers above must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <6 in.',
         F18: 'requires a Loamy/Clayey or Mucky Loam/Clay layer ≥4 in. thick starting ≤12 in., or ≥2 in. thick starting ≤6 in. from surface; partial suggestion only shown when both hydrophytic vegetation and wetland hydrology are met'
       };
       const _AUTOABLE = new Set(Object.keys(_HINTS));
@@ -23581,30 +23583,57 @@ function WetlandApp() {
       probValid: probValid
     });
   }), React.createElement("div", {
+    onClick: () => setShowLoamySoilsRule(v => !v),
     style: {
       padding: '5px 16px',
       fontSize: 10,
       fontWeight: 700,
       color: 'var(--c-warn)',
       background: 'rgba(253,186,116,0.04)',
-      borderBottom: '1px solid var(--c-rule)',
+      borderBottom: showLoamySoilsRule ? 'none' : '1px solid var(--c-rule)',
       borderTop: '1px solid var(--c-rule)',
       display: 'flex',
-      justifyContent: 'space-between'
+      alignItems: 'center',
+      gap: 6,
+      cursor: 'pointer'
     }
   }, React.createElement("span", {
     style: {
-      fontFamily: 'var(--font-mono)', fontSize: 10,
-      fontWeight: 700,
-      textTransform: 'uppercase',
-      letterSpacing: 'var(--ls-cap)'
+      fontFamily: 'var(--font-mono)', fontWeight: 700, textTransform: 'uppercase',
+      letterSpacing: 'var(--ls-cap)', flex: 1
     }
   }, "Loamy and Clayey Soils"), React.createElement("span", {
     style: {
       fontWeight: 400,
       color: 'var(--c-sub)'
     }
-  }, HYDRIC_LOAMY.filter(i => chkHydric[i.id] || autoFor(i.code)).length, " active")), HYDRIC_LOAMY.map(ind => {
+  }, HYDRIC_LOAMY.filter(i => {
+    const a = autoFor(i.code);
+    const isAuto = a && !a.partial && !a.combo;
+    return chkHydric[i.id] || isAuto;
+  }).length, " active"), React.createElement("button", {
+    onClick: () => setShowLoamySoilsRule(v => !v),
+    title: showLoamySoilsRule ? 'Hide above-layer chroma rule' : 'Show above-layer chroma rule',
+    style: {
+      background: 'none', border: 'none', cursor: 'pointer', padding: '0 2px',
+      color: 'var(--c-sub)', fontSize: 9, lineHeight: 1, flexShrink: 0
+    }
+  }, showLoamySoilsRule ? '▲' : '▼')),
+  showLoamySoilsRule && React.createElement("div", {
+    style: {
+      padding: '8px 16px 10px',
+      fontSize: 11,
+      lineHeight: 1.6,
+      color: 'var(--c-sub)',
+      background: 'rgba(253,186,116,0.04)',
+      borderBottom: '1px solid var(--c-rule)'
+    }
+  }, React.createElement("div", {
+    style: { fontWeight: 600, color: 'var(--c-warn)', marginBottom: 4, fontFamily: 'var(--font-sans)', textTransform: 'none', letterSpacing: 'normal', fontSize: 11 }
+  }, "Above-layer mineral chroma requirement"), React.createElement("div", {style:{fontFamily:'var(--font-sans)'}},
+    "For indicators F1, F2, F3, F6, and F7: all mineral layers above any qualifying layer must have a dominant chroma ≤2, OR the combined thickness of mineral layers above the qualifying layer with a dominant chroma >2 must be <6 in. (15 cm). If this requirement is not met, the indicator will not auto-select, and selecting it manually will generate a data consistency warning. F8, F12, and F21 are exempt — F8 (Redox Depressions) applies exclusively to closed depressions where ponding-driven redox concentrations are the qualifying feature, not matrix depletion; F12 (Iron-Manganese Masses) has no auto-inference path and requires manual selection; F21 (Red Parent Material) is derived from red parent material with inherently elevated chroma from parent material origin, not drainage, so the above-layer chroma requirement cannot meaningfully apply."
+  )),
+  HYDRIC_LOAMY.map(ind => {
     const a = autoFor(ind.code);
     const isPartial = a && !!a.partial;
     return React.createElement(HydricRow, {
