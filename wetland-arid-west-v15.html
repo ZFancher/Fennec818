@@ -20029,7 +20029,7 @@ function WetlandApp() {
   const effectiveHydroAuto = useMemo(() => {
     return { ...hydroAutoMet };
   }, [hydroAutoMet]);
-  const hydroAutoCount = Object.values(effectiveHydroAuto).filter(v => v && !v?.partial).length + (d3Auto && !chkS['D3'] ? 1 : 0) + (d5Auto && !chkS['D5'] ? 1 : 0);
+  const hydroAutoCount = Object.values(effectiveHydroAuto).filter(v => v && !v?.partial).length + (d3Auto && !d3Auto.partial && !chkS['D3'] ? 1 : 0) + (d5Auto && !chkS['D5'] ? 1 : 0);
   const numP = Object.entries({
     ...chkP,
     ...effectiveHydroAuto
@@ -20040,7 +20040,7 @@ function WetlandApp() {
   }).length;
   const numS = Object.values({
     ...chkS,
-    ...(d3Auto && !chkS['D3'] ? {
+    ...(d3Auto && !d3Auto.partial && !chkS['D3'] ? {
       D3: d3Auto
     } : {}),
     ...(d5Auto && !chkS['D5'] ? {
@@ -20691,7 +20691,7 @@ function WetlandApp() {
         const hydS_R = [[403, 273, 'B1nr'], [403, 261, 'B2nr'], [403, 249, 'B3nr'], [403, 237, 'B10'], [403, 225, 'C2'], [403, 213, 'C8'], [403, 201, 'C9'], [403, 188, 'D3'], [403, 176, 'D5']];
         hydS_R.forEach(([x, y, id]) => {
           const secAuto = id === 'D3' && d3Auto && !chkS['D3'] ? d3Auto : id === 'D5' && d5Auto && !chkS['D5'] ? d5Auto : null;
-          ck(p2, x, y, chkS[id] || secAuto);
+          ck(p2, x, y, chkS[id] || (secAuto && !secAuto?.partial));
         });
         const swAct = chkP['A1h'] || effectiveHydroAuto['A1h'] && !effectiveHydroAuto['A1h'].partial;
         ck(p2, 170, 151, swAct);
@@ -24029,8 +24029,9 @@ function WetlandApp() {
       }
     }, React.createElement(IndRow, {
       ind: ind,
-      checked: !!chkS[ind.id] || !!secAuto,
-      autoChecked: secAuto || false,
+      checked: !!chkS[ind.id] || (!!secAuto && !secAuto?.partial),
+      autoChecked: (secAuto && !secAuto?.partial) ? secAuto : false,
+      autoPartial: secAuto?.partial ? secAuto : undefined,
       autoReason: secAuto?.reason,
       onChange: dimmed ? () => {} : (id, v) => setChkS(p => ({
         ...p,
