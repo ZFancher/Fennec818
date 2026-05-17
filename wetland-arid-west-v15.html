@@ -23489,7 +23489,7 @@ function WetlandApp() {
   }, React.createElement("div", {
     style: { fontWeight: 600, color: 'var(--c-warn)', marginBottom: 4, fontFamily: 'var(--font-sans)', textTransform: 'none', letterSpacing: 'normal', fontSize: 11 }
   }, "Above-layer mineral chroma requirement"), React.createElement("div", {style:{fontFamily:'var(--font-sans)'}},
-    "For indicators A1, A3, A9, and A10: all mineral layers above the qualifying indicator layer must have a dominant chroma \u22642. If any mineral layers above have a dominant chroma >2, those layers must total \u22646 in. (15\u202fcm) combined \u2014 otherwise the indicator will not auto-infer, and selecting it manually will generate a data consistency warning. A2, A11, A12, and A18 are exempt \u2014 A2 requires the organic layer to begin at the soil surface, so no mineral layers above it can exist; A11 and A12 carry explicit above-layer requirements in their descriptions; A18 is triggered by a separate inference path (H\u2082S/FeS confirmation) and is not subject to this rule."
+    "For indicators A1, A3, A9, and A10: all mineral layers above the qualifying indicator layer must have a dominant chroma \u22642. If any mineral layers above have a dominant chroma >2, those layers must total \u22646 in. (15\u202fcm) combined \u2014 otherwise the indicator will not auto-select, and selecting it manually will generate a data consistency warning. A2, A11, A12, and A18 are exempt \u2014 A2 requires the organic layer to begin at the soil surface, so no mineral layers above it can exist; A11 and A12 carry explicit above-layer requirements in their descriptions; A18 is triggered by a separate inference path (H\u2082S/FeS confirmation) and is not subject to this rule."
   )),
   HYDRIC_ALL.map(ind => {
     const a = autoFor(ind.code);
@@ -23559,7 +23559,7 @@ function WetlandApp() {
   }, React.createElement("div", {
     style: { fontWeight: 600, color: 'var(--c-warn)', marginBottom: 4, fontFamily: 'var(--font-sans)', textTransform: 'none', letterSpacing: 'normal', fontSize: 11 }
   }, "Above-layer mineral chroma requirement"), React.createElement("div", {style:{fontFamily:'var(--font-sans)'}},
-    "For indicators S1, S4, and S5 (S6 is exempt): all mineral layers above any qualifying layer must have a dominant chroma ≤2, OR the combined thickness of mineral layers above the qualifying layer with a dominant chroma >2 must be <6 in. (15 cm). If this requirement is not met, the indicator will not auto-infer, and selecting it manually will generate a data consistency warning."
+    "For indicators S1, S4, and S5 (S6 is exempt): all mineral layers above any qualifying layer must have a dominant chroma ≤2, OR the combined thickness of mineral layers above the qualifying layer with a dominant chroma >2 must be <6 in. (15 cm). If this requirement is not met, the indicator will not auto-select, and selecting it manually will generate a data consistency warning."
   )),
   HYDRIC_SANDY.map(ind => {
     const a = autoFor(ind.code);
