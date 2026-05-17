@@ -20001,6 +20001,13 @@ function WetlandApp() {
     if (c7layer) m['C7'] = {
       reason: `Auto-selected: Muck layer at surface (${c7layer.depthFrom}–${c7layer.depthTo} in., ${(Number(c7layer.depthTo) - Number(c7layer.depthFrom)).toFixed(1)} in. thick ≤1 in.) meets C7 Thin Muck Surface.`
     };
+    const c4layer = horizons.find(h => {
+      const top = Number(h.depthFrom) || 0;
+      return top <= 12 && (h.redoxRows || []).some(rx => rx.type && rx.type.startsWith('RM'));
+    });
+    if (c4layer) m['C4'] = {
+      reason: `Auto-selected: Reduced Matrix (RM) redox entered at ${c4layer.depthFrom}–${c4layer.depthTo} in. within 12 in. of surface — direct observation of ferrous iron reduction.`
+    };
     return m;
   }, [hydroMeasure, bioticCrust, chkHydric, chkP, horizons, restrictiveType, restrictiveDepth]);
   const d3Auto = useMemo(() => {
