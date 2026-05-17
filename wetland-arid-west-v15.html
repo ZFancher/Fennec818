@@ -18854,7 +18854,7 @@ function IndRow({
     : ind.testLRR
       ? React.createElement("span", {style:{fontSize:11,fontWeight:700,lineHeight:1,padding:'2px 6px 1px',borderRadius:3,marginLeft:5,background:lrrMismatch?'var(--c-fail-bg)':'var(--c-pass-bg)',color:lrrMismatch?'var(--c-fail)':'var(--c-pass)',border:lrrMismatch?'1px solid var(--c-fail)':'1px solid var(--c-pass)',whiteSpace:'nowrap',flexShrink:0}}, (ind.testLRR.match(/LRR [A-Z]/)||[ind.testLRR])[0])
       : null;
-  const hasSubContent = ind.measureHint || (isAutoPartial && autoPartial?.reason?.includes('SOIL REQUIREMENTS MET')) || (autoPartial && checked) || exp || !!warningBox;
+  const hasSubContent = ind.measureHint || (isAutoPartial && autoPartial?.reason?.includes('SOIL REQUIREMENTS MET')) || (isAutoPartial && autoPartial?.reason?.includes('PRELIMINARY CONDITIONS MET')) || (autoPartial && checked) || exp || !!warningBox;
   return React.createElement("div", {
     onClick: e => {
       if (e.target.closest('button') || e.target.closest('input')) return;
@@ -18906,6 +18906,7 @@ function IndRow({
         React.createElement("span", {style:{fontFamily:'var(--font-sans)',fontSize:11,color:'var(--c-sub)'}}, ind.measureHint)
       ),
       (isAutoPartial && autoPartial?.reason?.includes('SOIL REQUIREMENTS MET')) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-partial)',lineHeight:1.5}}, "Soil Requirements Met — Additional field observations and/or tests are required before indicator may be confirmed (see indicator description)."),
+      (isAutoPartial && autoPartial?.reason?.includes('PRELIMINARY CONDITIONS MET')) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-partial)',lineHeight:1.5}}, "Preliminary Conditions Met — Additional field observations are required before indicator may be confirmed (see indicator description)."),
       (autoPartial && checked) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-pass)',lineHeight:1.5}}, "✓ Field observations confirmed"),
       warningBox,
       exp && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-sub)',lineHeight:1.65,whiteSpace:'pre-line',paddingTop:2}}, ind.desc)
@@ -20007,7 +20008,7 @@ function WetlandApp() {
     const rDepth = parseFloat(restrictiveDepth);
     const rPresent = restrictiveType && restrictiveType !== 'None observed' && !isNaN(rDepth) && rDepth > 0;
     if (rPresent && rDepth <= 12) return {
-      reason: `Restrictive layer (${restrictiveType}) at ${rDepth} in. ≤12 in. of the surface may indicate a shallow aquitard. VERIFY: (1) layer is impermeable and capable of perching water (fragipan, cemented layer, dense till, lacustrine deposit, or clay layer); (2) site is a depression or flat area; (3) hydrophytic vegetation and hydric soil indicators are present; (4) local judgment supports likelihood of perched water during the growing season in most years.`,
+      reason: `Restrictive layer (${restrictiveType}) at ${rDepth} in. within 12 in. of the surface. PRELIMINARY CONDITIONS MET. Confirm: (1) layer is impermeable and capable of perching water (fragipan, cemented layer, dense till, lacustrine deposit, or clay layer); (2) site is a depression or flat area; (3) local judgment supports likelihood of perched water during the growing season in most years.`,
       partial: true
     };
     return null;
