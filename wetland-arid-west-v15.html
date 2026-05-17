@@ -12025,13 +12025,6 @@ function inferHydricIndicators(horizons) {
       };
     }
   }
-  {
-    const q = sorted.find(h => hzTop(h) <= 12 && hasRedoxConcMassOrPL(h, 2));
-    if (q) inferred['C6'] = {
-      reason: `${q.texture || '?'} layer at ${hzTop(q)}–${hzBot(q)} in.: ≥2% redox concentrations as soft masses or pore linings within ≤12 in. of surface. SOIL REQUIREMENTS MET. However, confirm all of the following before selecting: (1) soil was cultivated within the last two years — verify with landowner, aerial photography, or FSA records; (2) redox concentrations are pore linings or soft masses with diffuse boundaries, not sharp-bounded features inherited from pre-tillage conditions; (3) concentrations are continuous and unbroken, indicating formation since last tillage, not before; (4) concentrations occur within the tilled zone specifically, not merely within 12 in. of the surface.`,
-      partial: true
-    };
-  }
   return inferred;
 }
 function plantById(id) {
@@ -20014,7 +20007,8 @@ function WetlandApp() {
     const rDepth = parseFloat(restrictiveDepth);
     const rPresent = restrictiveType && restrictiveType !== 'None observed' && !isNaN(rDepth) && rDepth > 0;
     if (rPresent && rDepth <= 12) return {
-      reason: `Auto-selected: Restrictive layer (${restrictiveType}) at ${rDepth} in. ≤24 in. indicates shallow aquitard. Secondary indicator — verify in context of depression or flat landscape.`
+      reason: `Restrictive layer (${restrictiveType}) at ${rDepth} in. ≤12 in. of the surface may indicate a shallow aquitard. VERIFY: (1) layer is impermeable and capable of perching water (fragipan, cemented layer, dense till, lacustrine deposit, or clay layer); (2) site is a depression or flat area; (3) hydrophytic vegetation and hydric soil indicators are present; (4) local judgment supports likelihood of perched water during the growing season in most years.`,
+      partial: true
     };
     return null;
   }, [restrictiveType, restrictiveDepth]);
