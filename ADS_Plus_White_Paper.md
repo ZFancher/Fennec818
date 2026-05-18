@@ -21,6 +21,9 @@ The ADS is a Microsoft Excel workbook developed by USACE for use in the Arid Wes
 **Limitations of the ADS alone:**
 - Requires a laptop or desktop computer; not practical for direct field use
 - Requires Microsoft Excel
+- Even when used on a laptop in the field, the ADS is cumbersome by design. Entering or modifying soil horizon depths — a routine operation during a delineation — triggers Excel's formula-protection warnings, requiring the user to navigate and dismiss multiple dialog boxes for each change. Many simple data entry operations follow the same pattern: click, warning, dismiss, click again. In field conditions — standing at a sample point, possibly in wind, heat, or difficult terrain — this friction is significant
+- The ADS is slow to respond compared to a native mobile application. Opening it, navigating between its sheets, and waiting for formula recalculation after each entry all add latency that compounds across a multi-point delineation day
+- The ADS is fragile in practice. The Excel workbook contains a large and complex formula network; in real-world use it is possible to confuse or break this network such that indicator auto-selection stops working correctly — sometimes without the user being aware. Formula errors introduced by unexpected data entry, copy-paste operations, or file version conflicts can silently produce wrong outputs
 - Provides no field photography, camera-assisted soil color reading, or site documentation
 - Performs auto-inference internally but does not explain *why* an indicator fired or why it did not — only the final "X" (auto-selected) or blank result is visible; intermediate reasoning is not surfaced
 - Does not calculate the effect of Morphological Adaptations (Indicator 3) on the Dominance Test or Prevalence Index; that adjustment must be done manually
