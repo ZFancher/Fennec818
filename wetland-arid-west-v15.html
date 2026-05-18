@@ -20236,6 +20236,11 @@ function WetlandApp() {
     });
     const _enteredHz = horizons.filter(h => h.depthFrom !== '' || h.depthTo !== '' || h.texture);
     const _hasSufficientHz = _enteredHz.length > 0 && _enteredHz.every(h => h.depthFrom !== '' && h.depthTo !== '' && h.texture && (!(h.redoxRows && h.redoxRows.length > 0) || h.redoxRows.every(rx => rx.pct !== '')));
+    if (chkP['C7'] && !effectiveHydroAuto['C7'] && _hasSufficientHz) w.push({
+      code: 'C7',
+      msg: 'C7 (Thin Muck Surface) is manually selected but the entered soil data does not support it. This indicator requires a muck-textured layer ≤1 in. thick starting at the soil surface (0 in.).',
+      _mismatch: true
+    });
     {
       const _HINTS = {
         A2: 'requires an organic surface horizon (muck, mucky peat, or peat) ≥8 in. thick, directly underlain by mineral soil with chroma ≤2',
