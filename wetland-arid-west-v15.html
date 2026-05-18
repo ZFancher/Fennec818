@@ -12037,6 +12037,45 @@ function inferHydricIndicators(horizons) {
       };
     }
   }
+  if (!inferred['F1'] && !inferred['F6']) {
+    const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
+    const minOff = firstMin ? hzTop(firstMin) : 0;
+    const f1c = sorted.find(h => hzTop(h) <= 6 && isLoamyMuck(h.texture) && hzThick(h) >= 2);
+    const f6c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 6 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConcMassOrPL(h, 5)) && h !== f1c);
+    if (f1c && f6c && aboveLayersChromaOK(hzTop(f6c))) {
+      inferred['F1+F6'] = {
+        reason: `Combo pair: F1 candidate (${hzTop(f1c)}–${hzBot(f1c)} in., loamy muck ${hzThick(f1c).toFixed(1)} in.) and F6 candidate (${hzTop(f6c)}–${hzBot(f6c)} in., dark loamy + redox ${hzThick(f6c).toFixed(1)} in.). Combined satisfy Table 8 minimum thickness. Verify both layers.`,
+        combo: true,
+        codes: ['F1', 'F6']
+      };
+    }
+  }
+  if (!inferred['F1'] && !inferred['F7']) {
+    const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
+    const minOff = firstMin ? hzTop(firstMin) : 0;
+    const f1c = sorted.find(h => hzTop(h) <= 6 && isLoamyMuck(h.texture) && hzThick(h) >= 2);
+    const f7c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 6 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasRedoxDepletion(h, 10) || N(h.matrixChroma) <= 2 && hasRedoxDepletion(h, 20)) && h !== f1c);
+    if (f1c && f7c && aboveLayersChromaOK(hzTop(f7c))) {
+      inferred['F1+F7'] = {
+        reason: `Combo pair: F1 candidate (${hzTop(f1c)}–${hzBot(f1c)} in., loamy muck ${hzThick(f1c).toFixed(1)} in.) and F7 candidate (${hzTop(f7c)}–${hzBot(f7c)} in., dark loamy + redox depletions ${hzThick(f7c).toFixed(1)} in.). Combined satisfy Table 8 minimum thickness. Verify both layers.`,
+        combo: true,
+        codes: ['F1', 'F7']
+      };
+    }
+  }
+  if (!inferred['F6'] && !inferred['F7']) {
+    const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
+    const minOff = firstMin ? hzTop(firstMin) : 0;
+    const f6c = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConcMassOrPL(h, 5)));
+    const f7c = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasRedoxDepletion(h, 10) || N(h.matrixChroma) <= 2 && hasRedoxDepletion(h, 20)) && h !== f6c);
+    if (f6c && f7c && aboveLayersChromaOK(hzTop(f6c))) {
+      inferred['F6+F7'] = {
+        reason: `Combo pair: F6 candidate (${hzTop(f6c)}–${hzBot(f6c)} in., dark loamy + redox concentrations ${hzThick(f6c).toFixed(1)} in.) and F7 candidate (${hzTop(f7c)}–${hzBot(f7c)} in., dark loamy + redox depletions ${hzThick(f7c).toFixed(1)} in.). Combined satisfy Table 8 minimum thickness. Verify both layers.`,
+        combo: true,
+        codes: ['F6', 'F7']
+      };
+    }
+  }
   return inferred;
 }
 function plantById(id) {
