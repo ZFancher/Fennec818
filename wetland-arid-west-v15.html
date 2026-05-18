@@ -12000,6 +12000,17 @@ function inferHydricIndicators(horizons) {
       };
     }
   }
+  if (!inferred['F1'] && !inferred['S5']) {
+    const f1c = sorted.find(h => hzTop(h) <= 6 && isLoamyMuck(h.texture) && hzThick(h) >= 2);
+    const s5c = sorted.find(h => isSandyLayer(h.texture) && hzTop(h) <= 6 && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 2 && hasDistOrPromConcMassOrPL(h, 2) && h !== f1c);
+    if (f1c && s5c && aboveLayersChromaOK(hzTop(s5c))) {
+      inferred['F1+S5'] = {
+        reason: `Combo pair: F1 candidate (${hzTop(f1c)}–${hzBot(f1c)} in., loamy muck ${hzThick(f1c).toFixed(1)} in.) and S5 candidate (${hzTop(s5c)}–${hzBot(s5c)} in., sandy low-chroma + redox ${hzThick(s5c).toFixed(1)} in.). Combined satisfy Table 8 minimum thickness. Verify both layers.`,
+        combo: true,
+        codes: ['F1', 'S5']
+      };
+    }
+  }
   if (!inferred['F7'] && !inferred['F3']) {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
