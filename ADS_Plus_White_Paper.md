@@ -43,7 +43,7 @@ Survey 123 is an Esri-based mobile data collection application used by USACE reg
 - No data consistency checks — users can select any indicator regardless of supporting data, with no warning or notification
 - No disallowing of selections — a user can simultaneously check "yes" and "no" for hydrophytic vegetation, hydric soils, wetland hydrology, and the final wetland determination without any feedback
 - No active context — the application does not tell the user why an indicator would or would not be supported by the data they have entered
-- No soil profile diagram, camera-assisted soil color reading, or Munsell reference
+- No soil profile diagram, camera-assisted soil color reading, ped color distribution analysis, or Munsell reference
 - No in-app vegetation calculation (no Dominance Test, Prevalence Index, FAC-Neutral Test, or Morphological Adaptations calculation)
 
 **The Survey 123 → NRV → ADS workflow:**
@@ -112,16 +112,55 @@ Users enter observed hydrology measurements (depth to inundation, depth to satur
 
 All other hydrology indicators are manual-selection-only, consistent with the ADS.
 
-### 4. Soil Color Camera Module
+### 4. Camera-Based Soil Color Modules
 
-ADS Plus includes a full-screen camera overlay module for camera-assisted soil color measurement. The user prints a custom Munsell reference card (design included in the app), places it against the soil sample, and activates the camera module. The module:
+ADS Plus includes two camera-based tools for soil color measurement in the field. Both are built on a shared technical foundation — a printed reference card and a real-time Color Correction Matrix — and diverge from there in what they measure and what they return. Neither has any equivalent in the ADS, Survey 123, or any other currently available wetland delineation tool.
 
-- Detects the reference card in the camera feed using computer vision
-- Solves a Color Correction Matrix (CCM) to compensate for variable lighting conditions
-- Samples the target soil area and computes the nearest Munsell notation (hue, value, chroma)
-- Returns the matched color directly into the horizon entry row
+**The Color Calibration Foundation**
 
-This eliminates the need to carry physical Munsell soil color charts in the field and reduces the subjectivity of manual color matching under varying light conditions.
+The fundamental problem with using a phone camera for colorimetric work is that a camera does not see color as a human eye does. The same soil ped photographed in direct sun, open shade, and indoor light will produce dramatically different RGB values, even though a delineator's eye and a Munsell chart would read the same result each time. To solve this, both camera modules require the user to hold a custom printed reference card — included in the app — in the frame alongside the soil sample. The card contains color patches whose true Lab values are known in advance. By comparing what the camera says those colors are versus what they actually are, the app computes a **Color Correction Matrix (CCM)**: a 3×3 linear transform that corrects the camera's entire spectral response for current lighting conditions. The CCM is solved fresh for each new card detection using least-squares regression, so it adapts automatically to sun, shade, overcast, or any mixed light without any user action. A Laplacian variance sharpness check is run over the card patches after each capture; if the card appears blurry, a non-blocking warning prompts the user to hold steady and retry.
+
+All color matching is performed in **CIE L\*a\*b\*** space rather than RGB, because Lab is perceptually uniform — equal distances in Lab correspond to equal perceived color differences, which is what matters for nearest-chip lookup and for detecting the contrast between soil matrix and redox features. Munsell chroma maps directly to `C* = √(a² + b²)`: distance from the neutral axis of the Lab sphere.
+
+---
+
+**Function 1: Single-Point Munsell Matcher**
+
+The first module is designed for rapid, targeted color readings — the digital equivalent of pressing a Munsell chip against a specific spot on a ped face. The camera runs continuously at approximately 8 frames per second while detecting and maintaining a running CCM from the reference card. The user taps any point on the live frame; a circular region around that point is sampled at native camera resolution (the circle scales with the apparent size of the reference card, keeping the sample area proportionally consistent regardless of working distance), converted to Lab, and averaged to a single Lab triplet. That triplet is compared against every chip in the app's Munsell Lab table — approximately 430 chips spanning hues 5R through 2.5Y, covering the full range of mineral soils — using CIE76 ΔE distance (the standard perceptual color difference metric). The nearest chip is returned immediately: its Munsell notation is displayed in a persistent result panel alongside a rendered color swatch and the ΔE confidence value.
+
+The function remains live after each tap. The user can tap a different spot at any time to update the result, enabling rapid comparison across multiple locations on the same ped face — useful for confirming a dominant matrix color, checking whether a candidate redox feature is distinctly different from background, or verifying color stability across the ped face before committing the reading to the horizon entry row.
+
+---
+
+**Function 2: Ped Analysis with Color Distribution (SoilAnalyzeCapture)**
+
+The second module is the more technically ambitious of the two, and represents a capability with no parallel in any current wetland delineation tool. Rather than reading a single point, it characterizes the **full distribution of colors across an entire ped face** — simultaneously identifying the matrix color and any concentration and depletion zones, reporting each with a percentage of the sampled area. This is the kind of analysis a field scientist does visually when describing a horizon, but done computationally from a single photograph.
+
+The workflow:
+1. The user positions a draggable four-corner polygon over the soil ped face in the live camera frame.
+2. On trigger, a full-resolution frame is captured. Every pixel inside the polygon has the CCM applied and is converted to Lab.
+3. The pixel population is fed into **k-means++ clustering** with K=6 clusters — an algorithm that partitions the color samples into groups by finding the 6 color centers that minimize total within-cluster distance. The ++ initialization spreads starting centroids across the color space, reducing the chance of poor convergence.
+4. Each cluster centroid is matched to its nearest Munsell chip via the same ΔE lookup used in Function 1. Clusters that resolve to the same Munsell chip are merged, collapsing any phantom duplicates.
+5. The merged cluster with the highest pixel count is designated the **matrix color** — consistent with USACE field methodology, which recognizes only one matrix color per horizon.
+6. Remaining clusters are evaluated for minimum contrast from the matrix:
+   - **Concentrations** are identified using the **USDA Hydric Soils Table A1 contrast classification** — the same Faint/Distinct/Prominent framework used in the NRCS *Field Indicators* guide — based on hue step, value, and chroma differences between the feature and the matrix. A user-controlled slider sweeps continuously from Prominent-only (most restrictive) to Faint+ (most inclusive), and the overlay updates in real time as the slider moves.
+   - **Depletions** are identified by absolute low Munsell chroma relative to a second user-controlled slider (threshold range chroma ≤0 to ≤4). Sliding to ≤2 captures the most common USACE depletion criterion; ≤1 captures only unambiguous strongly reduced gray zones.
+7. Percentages for the matrix and each feature are computed as the raw pixel share of the sampled polygon area, reported independently and rounded to the nearest integer. Features at or below 1% are suppressed — no USACE hydric soil indicator requires a redox feature present at less than 2%.
+8. An **overlay** is rendered on the ped image: concentration pixels in teal, depletion pixels in amber, uncolored areas representing the matrix. The overlay updates in real time as either slider moves, letting the delineator explore the full color distribution of the ped before recording a result.
+
+The output — matrix Munsell notation, concentration type/color/percent, depletion color/percent — maps directly to the fields in the ADS Plus horizon entry form and to the redox feature descriptions required on the ENG Form 6116-1. A delineator can complete a full, quantitative horizon color description from a single photograph taken in the field.
+
+A detailed technical description of both camera modules, including the CCM mathematics, k-means++ algorithm, USDA contrast classification logic, and known limitations, is available in the companion document *Mobile Camera-Based Soil Color Detection in ADS Plus: A Technical White Paper*.
+
+| | Single-Point Matcher | Ped Analysis (SoilAnalyzeCapture) |
+|---|---|---|
+| Primary use | Recording a matrix or feature color | Full color distribution of a ped |
+| Output | Single Munsell HVC notation | Matrix + concentrations + depletions with % area |
+| User input | Single tap | Polygon placement |
+| Processing time | Near-instant | 1–3 seconds |
+| Redox detection | None | Concentration and depletion zones |
+| Classification basis | Nearest ΔE | K-means + USDA Table A1 contrast |
+| Best field application | Uniform matrix, specific features | Heterogeneous ped with visible redox |
 
 ### 5. In-App Munsell Reference Charts
 
@@ -194,7 +233,8 @@ No external software, no upload to NRV, no transfer to Excel, no second device r
 | Morphological Adaptations (Indicator 3) calculation | Yes — including gating rules | No | No |
 | LRR-gated indicator logic | Yes | Yes | No |
 | Problematic indicator tracking | Yes | Yes | No |
-| Camera-assisted soil color measurement | Yes | No | No |
+| Camera-assisted single-point Munsell color reading | Yes | No | No |
+| Camera-based ped analysis: matrix + redox % distribution | Yes | No | No |
 | In-app Munsell reference charts | Yes | No | No |
 | Real-time soil profile diagram | Yes | No | No |
 | GPS coordinate capture | Yes | No | Yes |
@@ -256,4 +296,4 @@ ADS Plus is structured to support capabilities that are not yet implemented pend
 
 ADS Plus represents a ground-up rethinking of the wetland delineation data workflow for the Arid West — one that treats the field delineator as the primary user rather than the back-office data processor. By unifying data entry, inference, reference materials, photo documentation, and form output into a single offline-capable application, ADS Plus eliminates the multi-tool, multi-step friction of the current Survey 123 → NRV → ADS pipeline, reduces the risk of contradictory data on the final regulatory output, and provides a level of real-time guidance and data quality feedback that neither the ADS nor Survey 123 currently offer.
 
-The application matches the ADS on the indicators it has been designed to cover, exceeds it in technical accuracy for several indicator criteria, and adds a substantial set of capabilities — camera-assisted soil color measurement, morphological adaptations calculation, data consistency enforcement, in-app PDF production, and full JSON state portability — that have no equivalent in the existing toolkit.
+The application matches the ADS on the indicators it has been designed to cover, exceeds it in technical accuracy for several indicator criteria, and adds a substantial set of capabilities that have no equivalent in the existing toolkit. Among the most significant: two camera-based soil color tools — one for rapid single-point Munsell matching and one (SoilAnalyzeCapture) that performs full ped analysis using k-means clustering and the USDA Table A1 contrast classification to simultaneously identify and quantify matrix color, redox concentrations, and depletions from a single photograph. Combined with morphological adaptations calculation, data consistency enforcement, in-app PDF production, and full JSON state portability, ADS Plus represents a meaningful step forward in field delineation practice for the Arid West.
