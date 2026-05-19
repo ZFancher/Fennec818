@@ -20138,9 +20138,12 @@ function WetlandApp() {
     const a = effectiveSoilAuto[ind.code];
     return a && !a.combo && !a.partial;
   }).length;
-  const numHydricProb = Object.entries(chkHydricProb).filter(([id, v]) => {
-    if (id === 'A9prob') return !!v && a9IsProb;
-    return !!v;
+  const numHydricProb = HYDRIC_PROBLEMATIC.filter(ind => {
+    if (ind.id === 'A9prob' && !a9IsProb) return false;
+    const manualChecked = !!chkHydricProb[ind.id];
+    const auto = effectiveSoilAuto[ind.code];
+    const autoFires = !!auto && !auto.partial && !auto.combo;
+    return manualChecked || autoFires;
   }).length;
   const soilsMetStandard = numHydricActive >= 1;
   const allHydricIndsWithProb = [...allHydricInds, ...HYDRIC_PROBLEMATIC];
