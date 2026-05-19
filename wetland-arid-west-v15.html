@@ -23869,7 +23869,7 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       fontWeight: 700
     }
-  }, "Manual selection is possible without having also selected these criteria but will generate a data consistency warning."))), HYDRIC_PROBLEMATIC.map(ind => {
+  }, "Manual selection is possible without having met these criteria but will generate a data consistency warning."))), HYDRIC_PROBLEMATIC.map(ind => {
     const a = autoFor(ind.code);
     const isPartial = a && !!a.partial;
     return React.createElement(HydricRow, {
