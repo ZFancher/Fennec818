@@ -23620,7 +23620,7 @@ function WetlandApp() {
     const isAuto = a && !a.partial && !a.combo;
     return chkHydric[i.id] || isAuto;
   }).length, " active"), React.createElement("button", {
-    onClick: () => setShowSandySoilsRule(v => !v),
+    onClick: e => { e.stopPropagation(); setShowSandySoilsRule(v => !v); },
     title: showSandySoilsRule ? 'Hide above-layer chroma rule' : 'Show above-layer chroma rule',
     style: {
       background: 'none', border: 'none', cursor: 'pointer', padding: '0 4px',
@@ -23690,7 +23690,7 @@ function WetlandApp() {
     const isAuto = a && !a.partial && !a.combo;
     return chkHydric[i.id] || isAuto;
   }).length, " active"), React.createElement("button", {
-    onClick: () => setShowLoamySoilsRule(v => !v),
+    onClick: e => { e.stopPropagation(); setShowLoamySoilsRule(v => !v); },
     title: showLoamySoilsRule ? 'Hide above-layer chroma rule' : 'Show above-layer chroma rule',
     style: {
       background: 'none', border: 'none', cursor: 'pointer', padding: '0 4px',
