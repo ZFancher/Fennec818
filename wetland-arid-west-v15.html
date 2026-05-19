@@ -23550,7 +23550,7 @@ function WetlandApp() {
     const isAuto = a && !a.partial && !a.combo;
     return chkHydric[i.id] || isAuto;
   }).length, " active"), React.createElement("button", {
-    onClick: () => setShowAllSoilsRule(v => !v),
+    onClick: e => { e.stopPropagation(); setShowAllSoilsRule(v => !v); },
     title: showAllSoilsRule ? 'Hide above-layer chroma rule' : 'Show above-layer chroma rule',
     style: {
       background: 'none', border: 'none', cursor: 'pointer', padding: '0 4px',
