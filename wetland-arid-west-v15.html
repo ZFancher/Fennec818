@@ -11666,26 +11666,26 @@ function inferHydricIndicators(horizons) {
     return h.redoxRows || [];
   }
   function hasRedoxConcMassOrPL(h, pctMin = 2) {
-    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && (rx.type.startsWith('C ') || rx.loc.startsWith('PL')));
+    return redoxRows(h).filter(rx => rx.type.startsWith('C ') || rx.loc.startsWith('PL')).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
   }
   function hasRedoxMass(h, pctMin = 2) {
-    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && rx.type.startsWith('C '));
+    return redoxRows(h).filter(rx => rx.type.startsWith('C ')).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
   }
   function hasRedoxPL(h, pctMin = 2) {
-    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && rx.loc.startsWith('PL'));
+    return redoxRows(h).filter(rx => rx.loc.startsWith('PL')).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
   }
   function hasAnyRedox(h, pctMin = 2) {
-    return redoxRows(h).some(rx => N(rx.pct) >= pctMin);
+    return redoxRows(h).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
   }
   function hasRedoxDepletion(h, pctMin = 2) {
-    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && rx.type.startsWith('D'));
+    return redoxRows(h).filter(rx => rx.type.startsWith('D')).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
   }
   function isDP(h, rx) {
     const c = contrastClass(h.matrixHue, h.matrixValue, h.matrixChroma, rx.hue, rx.value, rx.chroma);
     return c === 'D' || c === 'P';
   }
   function hasDistOrPromConcMassOrPL(h, pctMin = 2) {
-    return redoxRows(h).some(rx => N(rx.pct) >= pctMin && (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(h, rx));
+    return redoxRows(h).filter(rx => (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(h,rx)).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
   }
   function aboveLayersChromaOK(qualLayerTop) {
     const above = horizons.filter(h => hzBot(h) <= qualLayerTop + 0.1 && hzTop(h) < qualLayerTop);
@@ -11857,7 +11857,7 @@ function inferHydricIndicators(horizons) {
   {
     const q = sorted.find(h => hzTop(h) <= 6 && isSandyLayer(h.texture) && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 4 && hasDistOrPromConcMassOrPL(h, 2));
     if (q && aboveLayersChromaOK(hzTop(q))) {
-      const rxDesc = q.redoxRows.filter(rx => N(rx.pct) >= 2 && (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(q, rx)).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
+      const rxDesc = q.redoxRows.filter(rx => (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(q, rx) && N(rx.pct) > 0).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
       inferred['S5'] = {
         reason: `Sandy layer at ${hzTop(q)}–${hzBot(q)} in.: ${hzThick(q).toFixed(1)} in. thick (≥4 in. req.), chroma ${q.matrixChroma} (≤2), ${rxDesc} distinct/prominent redox concentrations as soft masses/pore linings (Table A1).`
       };
@@ -11897,7 +11897,7 @@ function inferHydricIndicators(horizons) {
     const q = sorted.find(h => isLoamy(h.texture) && hzThick(h) >= 4 && N(h.matrixValue) <= 3 && hzBot(h) - minOff <= 12 && (N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConcMassOrPL(h, 5)));
     if (q && aboveLayersChromaOK(hzTop(q))) {
       const minPct = N(q.matrixChroma) <= 1 ? 2 : 5;
-      const rxDesc = q.redoxRows.filter(rx => N(rx.pct) >= minPct && (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(q, rx)).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
+      const rxDesc = q.redoxRows.filter(rx => (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(q, rx) && N(rx.pct) > 0).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
       inferred['F6'] = {
         reason: `Loamy/clayey at ${hzTop(q)}–${hzBot(q)} in.: ${hzThick(q).toFixed(1)} in. thick (≥4 in.), value ${q.matrixValue}/chroma ${q.matrixChroma}, entirely within 12 in. of mineral surface, with ${rxDesc} distinct/prominent redox concentrations (Table A1).`
       };
@@ -17457,9 +17457,9 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     mx.pct = Math.round(mx.rawCount / total * 100);
     [...conc, ...depl].forEach(e => { e.pct = Math.round(e.rawCount / total * 100); });
 
-    // Step 7: rank all features by percentage (type-agnostic), filter ≤1%, cap at 5
+    // Step 7: rank all features by percentage (type-agnostic), filter 0%, cap at 5
     const allFeatures = [...conc, ...depl]
-      .filter(e => e.pct > 1)
+      .filter(e => e.pct >= 1)
       .sort((a, b) => b.pct - a.pct)
       .slice(0, 5);
     const concOut = allFeatures.filter(e => conc.includes(e));
