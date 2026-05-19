@@ -18852,13 +18852,13 @@ function HydricRow({
       }
     },
       React.createElement("div", {
-        onClick: e => { e.stopPropagation(); if (!dimmed && !isAuto && !isCombo) onManualChange(ind.id, !effectivelyChecked); },
-        style: {display:'flex',alignItems:'center',gap:10,flexShrink:0,cursor:dimmed||isAuto||isCombo?'default':'pointer'}
+        onClick: e => { e.stopPropagation(); if (!isAuto && !isCombo) onManualChange(ind.id, !effectivelyChecked); },
+        style: {display:'flex',alignItems:'center',gap:10,flexShrink:0,cursor:isAuto||isCombo?'default':'pointer'}
       },
         React.createElement("div", {style:{flexShrink:0,pointerEvents:'none'}},
           isAuto || isCombo
             ? React.createElement(CustomCheckbox, {checked:true,auto:!isCombo,combo:isCombo,disabled:true,color:isCombo?'#a78bfa':undefined})
-            : React.createElement(CustomCheckbox, {checked:effectivelyChecked,onChange:v=>!dimmed&&onManualChange(ind.id,v),disabled:dimmed})
+            : React.createElement(CustomCheckbox, {checked:effectivelyChecked,onChange:v=>onManualChange(ind.id,v),disabled:false})
         ),
         React.createElement("div", {style:{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:700,color:codeColor,minWidth:32,letterSpacing: 'var(--ls-cap)',flexShrink:0}}, ind.code),
       ),
@@ -20128,9 +20128,8 @@ function WetlandApp() {
   const a9IsProb = siteInfo.lrr === 'C';
   const _lrrOkSoil = ind => !siteInfo.lrr || !ind.lrr || ind.lrr.includes('All LRRs') || ind.lrr.includes('LRR ' + siteInfo.lrr) || ind.lrr.includes('LRRs B, C, D');
   const numHydricActive = allHydricInds.filter(ind => {
-    if (!_lrrOkSoil(ind)) return false;
     const a = effectiveSoilAuto[ind.code];
-    const isAuto = a && !a.partial && !a.combo;
+    const isAuto = _lrrOkSoil(ind) && a && !a.partial && !a.combo;
     return chkHydric[ind.id] || isAuto;
   }).length;
   const autoCount = allHydricInds.filter(ind => {
@@ -20211,6 +20210,14 @@ function WetlandApp() {
         });
       });
     }
+    HYDRIC_PROBLEMATIC.forEach(ind => {
+      if (!chkHydricProb[ind.id] || probValid) return;
+      w.push({
+        code: ind.code,
+        msg: `${ind.code} (${ind.label}) is manually selected as a problematic indicator, but the required conditions are not met — both hydrophytic vegetation and wetland hydrology must be confirmed, significantly disturbed, or naturally problematic.`,
+        _mismatch: true
+      });
+    });
     if (isWetland && normalCirc === false) w.push({
       code: 'W4',
       msg: 'Final determination is YES but Normal Circumstances are marked as absent. Per ERDC/EL TR-08-28 Ch. 5, atypical-situation methods must be applied before a final determination can be made.'
@@ -20268,17 +20275,12 @@ function WetlandApp() {
         if (ind.noHorizonReq || !_AUTOABLE.has(ind.code)) return;
         if (!(chkHydric[ind.id] || chkHydricProb[ind.id])) return;
         if (effectiveSoilAuto[ind.code] && _hasSufficientHz) return;
-        if (w.some(x => x._mismatch && x.code === ind.code)) return;
-        const _existingLrr = w.find(x => x._lrr && x.code === ind.code);
-        if (_existingLrr) {
-          _existingLrr.msg += ` Additionally, the entered soil data does not support this indicator — it ${_HINTS[ind.code]}.`;
-        } else {
-          w.push({
-            code: ind.code,
-            msg: `${ind.code} (${ind.label}) is manually selected but the entered soil data does not support it. This indicator ${_HINTS[ind.code]}.`,
-            _mismatch: true
-          });
-        }
+        if (w.some(x => x._mismatch && !x._lrr && x.code === ind.code)) return;
+        w.push({
+          code: ind.code,
+          msg: `${ind.code} (${ind.label}) is manually selected but the entered soil data does not support it. This indicator ${_HINTS[ind.code]}.`,
+          _mismatch: true
+        });
       });
     }
     if (chkHydric['A2'] && !(vegMet && hydroMet)) {
@@ -20299,7 +20301,7 @@ function WetlandApp() {
       }
     }
     return w;
-  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, hydroMet, soilProfileWarning, soilWarnDetail]);
+  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, hydroMet, soilProfileWarning, soilWarnDetail, probValid]);
   const criteriaCount = [vegMet, soilsMet, hydroMet].filter(Boolean).length;
   const passBadge = {
     background: 'var(--c-pass-bg)',
@@ -23847,10 +23849,10 @@ function WetlandApp() {
     }
   }, "\u26A0 Problematic hydric soil indicators per 2024 ENG Form 6116-1 and ERDC/EL TR-08-28 Ch. 3. Require hydrophytic vegetation AND wetland hydrology to be present, significantly disturbed, or naturally problematic. ", React.createElement("span", {
     style: {
-      color: 'var(--c-fail)',
+      color: 'var(--c-warn)',
       fontWeight: 700
     }
-  }, "Currently unselectable \u2014 this condition is not met."))), HYDRIC_PROBLEMATIC.map(ind => {
+  }, "Manual selection is possible but will generate a data consistency warning."))), HYDRIC_PROBLEMATIC.map(ind => {
     const a = autoFor(ind.code);
     const isPartial = a && !!a.partial;
     return React.createElement(HydricRow, {
