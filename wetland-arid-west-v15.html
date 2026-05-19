@@ -374,6 +374,8 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   /* Warn / gate / info */
   --c-warn: #b45309;
   --c-warn-bg: #fff4e0;
+  --c-warn-tint: #fffaed;
+  --c-warn-tint-border: #feefc8;
   --c-gate: #b45309;
   --c-gate-bg: #fff8eb;
   --c-info: #1e40af;
@@ -457,6 +459,8 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
 
   --c-warn: #f59e0b;
   --c-warn-bg: #372b19;
+  --c-warn-tint: #2a251c;
+  --c-warn-tint-border: #51421d;
   --c-gate: #f59e0b;
   --c-gate-bg: #2a231a;
   --c-info: #60a5fa;
@@ -23860,8 +23864,8 @@ function WetlandApp() {
       lineHeight: 1.5,
       padding: '4px 8px',
       borderRadius: 3,
-      background: 'rgba(251,191,36,0.08)',
-      border: '1px solid rgba(251,191,36,0.25)'
+      background: 'var(--c-warn-tint)',
+      border: '1px solid var(--c-warn-tint-border)'
     }
   }, "\u26A0 Problematic hydric soil indicators per 2024 ENG Form 6116-1 and ERDC/EL TR-08-28 Ch. 3. Require hydrophytic vegetation AND wetland hydrology to be present, significantly disturbed, or naturally problematic. ", React.createElement("span", {
     style: {
