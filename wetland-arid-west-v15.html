@@ -11255,7 +11255,7 @@ const HYDRIC_ALL = [{
   label: '1 cm Muck',
   lrr: 'Approved: LRR D',
   autoable: true,
-  minProfileDepth: 7,
+  minProfileDepth: 1,
   desc: 'A layer of muck (sapric; NOT mucky peat or peat) ≥0.5 in. thick, value ≤3, chroma ≤1, starting ≤6 in. (15 cm) from surface. Muck has Organic Content (OC) ≥12%, is too decomposed to identify plant parts, is generally black/greasy, no visible sand grains. Approved in LRR D (Interior Deserts subregion); for testing in LRR C.'
 }, {
   id: 'A11',
@@ -11263,7 +11263,7 @@ const HYDRIC_ALL = [{
   label: 'Depleted Below Dark Surface',
   lrr: 'All LRRs except W, X, Y',
   autoable: true,
-  minProfileDepth: 7,
+  minProfileDepth: 3,
   desc: 'Depleted or gleyed matrix (≥60% value ≥4, chroma ≤2) starting ≤12 in. (30 cm) from surface with minimum thickness of either: (1) ≥6 in. (15 cm), or (2) ≥2 in. (5 cm) if those 5 cm consists of fragmental soil material (≥90% rock fragments). ≥2% distinct or prominent redox concentrations are required in a depleted matrix with colors 4/1, 4/2, or 5/2. A, E, and calcic horizons are excluded from the concept of depleted matrix unless the soil has ≥2% distinct or prominent redox concentrations occurring as soft masses or pore linings. Organic/loamy/clayey layers above must have value ≤3, chroma ≤2, starting <6 in. (15 cm) from surface, and extend to the depleted or gleyed layer. Any loamy fine sand or coarser material above must have value ≤3, chroma ≤1, starting <6 in. (15 cm) from surface and extend to the depleted or gleyed matrix, PLUS ≥70% organic masking of sand grains (hand lens).'
 }, {
   id: 'A12',
@@ -11295,7 +11295,7 @@ const HYDRIC_SANDY = [{
   label: 'Sandy Mucky Mineral',
   lrr: 'All LRRs',
   autoable: true,
-  minProfileDepth: 8,
+  minProfileDepth: 2,
   desc: 'A layer of mucky-modified sandy soil material ≥2 in. (5 cm) thick, starting ≤6 in. (15 cm) from surface. "Mucky" modifier = OC 5–12%. Approved in LRRs B, C, and D. (Not approved in T, U, W, X, Y, Z, P/MLRA 136.)'
 }, {
   id: 'S4',
@@ -11303,7 +11303,7 @@ const HYDRIC_SANDY = [{
   label: 'Sandy Gleyed Matrix',
   lrr: 'All LRRs except W, X, Y',
   autoable: true,
-  minProfileDepth: 7,
+  minProfileDepth: 1,
   desc: 'A gleyed matrix occupying ≥60% of a layer starting ≤6 in. (15 cm) from surface in sandy soil (loamy fine sand or coarser, including Mucky Sand). Gleyed matrix = hues on the Munsell gley pages (N, 10Y, 5GY, 10GY, 5G, 10G, 5BG, 10BG, 5B, 10B, 5PB) with value ≥4. NOT the same as ordinary gray colors. No minimum thickness. Above-layer sections with chroma >2 must total <15 cm. Typically found in near-constantly inundated soils.'
 }, {
   id: 'S5',
@@ -11311,7 +11311,7 @@ const HYDRIC_SANDY = [{
   label: 'Sandy Redox',
   lrr: 'All LRRs except V, W, X, Y',
   autoable: true,
-  minProfileDepth: 10,
+  minProfileDepth: 4,
   desc: 'Sandy layer (loamy fine sand or coarser, including Mucky Sand) starting ≤6 in. (15 cm) from surface, ≥4 in. (10 cm) thick, matrix ≥60% chroma ≤2, with ≥2% DISTINCT OR PROMINENT redox concentrations as soft masses and/or pore linings (v9.3 confirmed). Faint redox features do not count. Above-layer sections with chroma >2 must total <15 cm. If soil is saturated at sampling, let dry to moist before reading redox.'
 }, {
   id: 'S6',
@@ -11327,7 +11327,7 @@ const HYDRIC_LOAMY = [{
   label: 'Loamy Mucky Mineral',
   lrr: 'All LRRs',
   autoable: true,
-  minProfileDepth: 10,
+  minProfileDepth: 4,
   desc: 'A layer of mucky-modified loamy or clayey soil material ≥4 in. (10 cm) thick, starting ≤6 in. (15 cm) from surface. "Mucky" modifier = OC 5–12%. Approved in LRRs B, C, D (approved in all LRRs except N, Q, R, S, V, W, X, Y, and those using A7 [P, T, U, Z], and MLRA 1 of LRR A).'
 }, {
   id: 'F2',
@@ -11335,7 +11335,7 @@ const HYDRIC_LOAMY = [{
   label: 'Loamy Gleyed Matrix',
   lrr: 'All LRRs except W, X, Y',
   autoable: true,
-  minProfileDepth: 12,
+  minProfileDepth: 1,
   desc: 'A gleyed matrix (≥60% of layer) starting ≤12 in. (30 cm) from surface in loamy or clayey soil (loamy very fine sand and finer). Gleyed matrix = true gley hues (N, 10Y, 5GY, etc.) with value ≥4. No minimum thickness. Above-layer sections with chroma >2 must total <15 cm. Typically near-constantly inundated sites; not common at wetland–upland boundaries.'
 }, {
   id: 'F3',
@@ -11351,7 +11351,7 @@ const HYDRIC_LOAMY = [{
   label: 'Redox Dark Surface',
   lrr: 'All LRRs',
   autoable: true,
-  minProfileDepth: 12,
+  minProfileDepth: 4,
   desc: 'Loamy or clayey layer ≥4 in. (10 cm) thick, ENTIRELY within the upper 12 in. (30 cm) of the mineral soil surface (measured from top of uppermost mineral layer, not from any organic surface), meeting either: (1) value ≤3, chroma ≤1, ≥2% distinct/prominent redox concentrations as soft masses or pore linings; OR (2) value ≤3, chroma ≤2, ≥5% distinct/prominent redox concentrations as soft masses or pore linings. Moist colors only. In high-OC dark soils, redox concentrations can be small and difficult to see — hand lens and careful ped examination required.'
 }, {
   id: 'F7',
@@ -11359,7 +11359,7 @@ const HYDRIC_LOAMY = [{
   label: 'Depleted Dark Surface',
   lrr: 'All LRRs',
   autoable: true,
-  minProfileDepth: 12,
+  minProfileDepth: 4,
   desc: 'Loamy or clayey layer ≥4 in. (10 cm) thick, ENTIRELY within the upper 12 in. (30 cm) of the mineral soil surface (measured from top of uppermost mineral layer), with redox depletions (value ≥5, chroma ≤2), meeting either: (1) matrix value ≤3, chroma ≤1, with ≥10% redox depletions; OR (2) matrix value ≤3, chroma ≤2, with ≥20% redox depletions. Soils meeting F7 commonly also meet F6. Do not confuse E horizon or calcic horizon pieces mixed into the surface layer as redox depletions. Depletions typically have associated redox concentrations as pore linings or masses within or surrounding them.'
 }, {
   id: 'F8',
