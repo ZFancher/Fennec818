@@ -20080,6 +20080,14 @@ function WetlandApp() {
     };
     return null;
   }, [vegCalc.allDominants]);
+  const c2Auto = useMemo(() => {
+    const a2 = parseFloat(hydroMeasure['A2h']);
+    if (!isNaN(a2) && a2 > 12 && a2 <= 24) return {
+      reason: `Water table observed at ${a2} in. (between 12–24 in.) during the dry season — suggests the normal wet-season water table likely rises to within 12 in. of surface. PRELIMINARY CONDITIONS MET. Field confirmation of seasonal pattern required.`,
+      partial: true
+    };
+    return null;
+  }, [hydroMeasure]);
   const effectiveHydroAuto = useMemo(() => {
     return { ...hydroAutoMet };
   }, [hydroAutoMet]);
@@ -24032,7 +24040,7 @@ function WetlandApp() {
       border: '1px solid var(--c-auto-partial)',
       whiteSpace: 'nowrap'
     }
-  }, "PARTIAL \u25d1"), "Partially met by soil data \u2014 addl. field observations req."))), React.createElement("div", {
+  }, "PARTIAL \u25d1"), "Partially met by soil or hydrology data \u2014 addl. field observations req."))), React.createElement("div", {
     style: {
       borderBottom: '1px solid var(--c-rule)'
     }
@@ -24120,7 +24128,7 @@ function WetlandApp() {
   }, numS, " selected", numS === 1 ? ' (need 2+)' : '')), SECONDARY.map(ind => {
     const d3VegOk = vegMet || vegDistOrProb;
     const d3SoilOk = soilsMet || soilDistOrProb;
-    const secAuto = ind.id === 'D3' && d3Auto && !chkS['D3'] && d3VegOk && d3SoilOk ? d3Auto : ind.id === 'D5' && d5Auto && !chkS['D5'] ? d5Auto : null;
+    const secAuto = ind.id === 'D3' && d3Auto && !chkS['D3'] && d3VegOk && d3SoilOk ? d3Auto : ind.id === 'D5' && d5Auto && !chkS['D5'] ? d5Auto : ind.id === 'C2' && c2Auto && !chkS['C2'] ? c2Auto : null;
     const d5Dimmed = ind.id === 'D5' && !d5Auto && !chkS['D5'];
     const d3Dimmed = ind.id === 'D3' && (!d3VegOk || !d3SoilOk) && !chkS['D3'];
     const dimmed = d5Dimmed || d3Dimmed;
