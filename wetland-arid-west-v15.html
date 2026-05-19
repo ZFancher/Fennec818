@@ -20139,7 +20139,7 @@ function WetlandApp() {
     return a && !a.combo && !a.partial;
   }).length;
   const numHydricProb = HYDRIC_PROBLEMATIC.filter(ind => {
-    if (ind.id === 'A9prob' && !a9IsProb) return false;
+    if (!_lrrOkSoil(ind)) return false;
     const manualChecked = !!chkHydricProb[ind.id];
     const auto = effectiveSoilAuto[ind.code];
     const autoFires = !!auto && !auto.partial && !auto.combo;
