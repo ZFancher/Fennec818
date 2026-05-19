@@ -18816,16 +18816,17 @@ function HydricRow({
   const isAuto = !!autoTriggered && !autoPartial && !autoCombo;
   const isPartial = !!autoTriggered && !!autoPartial && !autoCombo;
   const isCombo = !!autoTriggered && !!autoCombo;
-  const effectivelyChecked = checked || isAuto || isCombo;
   const lrrMismatch = selectedLrr && ind.lrr && !ind.lrr.includes('All LRRs') && !ind.lrr.includes('LRR ' + selectedLrr) && !ind.lrr.includes('LRRs B, C, D');
-  const rowBg = isPartial && !checked ? 'rgba(251,191,36,0.06)' : isCombo ? 'rgba(167,139,250,0.06)' : isAuto ? 'rgba(96,165,250,0.07)' : checked ? 'var(--c-pass-bg)' : 'transparent';
+  const autoActive = (isAuto || isCombo) && !lrrMismatch;
+  const effectivelyChecked = checked || autoActive;
+  const rowBg = isPartial && !checked ? 'rgba(251,191,36,0.06)' : (isCombo && !lrrMismatch) ? 'rgba(167,139,250,0.06)' : (isAuto && !lrrMismatch) ? 'rgba(96,165,250,0.07)' : checked ? 'var(--c-pass-bg)' : 'transparent';
   const codeColor = isCombo ? 'var(--c-auto-combo)' : problematic ? 'var(--c-auto-partial)' : 'var(--c-pass)';
   const pillStyle = (bg, fg, border) => ({fontSize:11,fontWeight:700,lineHeight:1,padding:'2px 6px 1px',borderRadius:3,background:bg,color:fg,border:border?'1px solid '+border:'none',whiteSpace:'nowrap',flexShrink:0});
-  const badge = isAuto
+  const badge = (autoActive && isAuto)
     ? React.createElement("span", {style:pillStyle('var(--c-auto-full-bg)','var(--c-auto-full)','var(--c-auto-full)')}, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "✦"))
     : (isPartial && !checked)
       ? React.createElement("span", {style:pillStyle('var(--c-auto-partial-bg)','var(--c-auto-partial)','var(--c-auto-partial)')}, "PARTIAL ◑")
-      : isCombo
+      : (autoActive && isCombo)
         ? React.createElement("span", {style:pillStyle('var(--c-auto-combo-bg)','var(--c-auto-combo)','var(--c-auto-combo)')}, "COMBO ◆")
         : null;
   const lrrTag = ind.lrr && !ind.testLRR && (lrrMismatch || !ind.lrr.includes('All LRRs'))
@@ -18852,11 +18853,11 @@ function HydricRow({
       }
     },
       React.createElement("div", {
-        onClick: e => { e.stopPropagation(); if (!isAuto && !isCombo) onManualChange(ind.id, !effectivelyChecked); },
-        style: {display:'flex',alignItems:'center',gap:10,flexShrink:0,cursor:isAuto||isCombo?'default':'pointer'}
+        onClick: e => { e.stopPropagation(); if (!autoActive) onManualChange(ind.id, !effectivelyChecked); },
+        style: {display:'flex',alignItems:'center',gap:10,flexShrink:0,cursor:autoActive?'default':'pointer'}
       },
         React.createElement("div", {style:{flexShrink:0,pointerEvents:'none'}},
-          isAuto || isCombo
+          autoActive
             ? React.createElement(CustomCheckbox, {checked:true,auto:!isCombo,combo:isCombo,disabled:true,color:isCombo?'#a78bfa':undefined})
             : React.createElement(CustomCheckbox, {checked:effectivelyChecked,onChange:v=>onManualChange(ind.id,v),disabled:false})
         ),
@@ -18890,12 +18891,13 @@ function IndRow({
   const [exp, setExp] = useState(false);
   const tc = tier === 'primary' ? 'var(--c-pass)' : 'var(--c-auto-combo)';
   const isAutoPartial = !!autoPartial && !checked;
-  const effective = checked || !!autoChecked;
-  const reasonText = autoReason || (autoChecked && typeof autoChecked === 'object' ? autoChecked.reason : null);
   const lrrMismatch = selectedLrr && ind.lrr && !ind.lrr.includes('All LRRs') && !ind.lrr.includes('LRR ' + selectedLrr) && !ind.lrr.includes('LRRs B, C, D');
-  const rowBg = isAutoPartial ? 'var(--c-auto-partial-bg)' : effective ? autoChecked ? 'var(--c-auto-full-bg)' : tier === 'primary' ? 'var(--c-pass-bg)' : 'var(--c-auto-combo-bg)' : 'transparent';
+  const autoActive = !!autoChecked && !lrrMismatch;
+  const effective = checked || autoActive;
+  const reasonText = autoReason || (autoChecked && typeof autoChecked === 'object' ? autoChecked.reason : null);
+  const rowBg = isAutoPartial ? 'var(--c-auto-partial-bg)' : effective ? autoActive ? 'var(--c-auto-full-bg)' : tier === 'primary' ? 'var(--c-pass-bg)' : 'var(--c-auto-combo-bg)' : 'transparent';
   const pillStyle = (bg, fg, border) => ({fontSize:11,fontWeight:700,lineHeight:1,padding:'2px 6px 1px',borderRadius:3,background:bg,color:fg,border:border?'1px solid '+border:'none',whiteSpace:'nowrap',flexShrink:0});
-  const badge = autoChecked
+  const badge = autoActive
     ? React.createElement("span", {style:pillStyle('var(--c-auto-full-bg)','var(--c-auto-full)','var(--c-auto-full)')}, "AUTO", React.createElement("span", {style:{position:'relative',top:'-2px',marginLeft:3}}, "✦"))
     : isAutoPartial
       ? React.createElement("span", {style:pillStyle('var(--c-auto-partial-bg)','var(--c-auto-partial)','var(--c-auto-partial)')}, "PARTIAL ◑")
@@ -18924,11 +18926,11 @@ function IndRow({
       }
     },
       React.createElement("div", {
-        onClick: e => { e.stopPropagation(); if (!autoChecked || isAutoPartial) onChange(ind.id, !checked); },
-        style: {display:'flex',alignItems:'center',gap:10,flexShrink:0,cursor:autoChecked&&!isAutoPartial?'default':'pointer'}
+        onClick: e => { e.stopPropagation(); if (!autoActive || isAutoPartial) onChange(ind.id, !checked); },
+        style: {display:'flex',alignItems:'center',gap:10,flexShrink:0,cursor:autoActive&&!isAutoPartial?'default':'pointer'}
       },
         React.createElement("div", {style:{flexShrink:0,pointerEvents:'none'}},
-          autoChecked
+          autoActive
             ? React.createElement(CustomCheckbox, {checked:true,auto:true,disabled:true})
             : React.createElement(CustomCheckbox, {checked:effective,onChange:v=>onChange(ind.id,v)})
         ),
