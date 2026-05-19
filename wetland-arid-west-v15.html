@@ -20191,6 +20191,9 @@ function WetlandApp() {
   const morphVegGated = vegCalc.morphVegMet && morphQualOk;
   const rawVegMet = vegCalc.domMet || piGatedMet || morphVegGated;
   const probVegMet = probHydroVeg && soilsSideOk && hydroSideOk;
+  useEffect(() => {
+    if (probHydroVeg && !(soilsSideOk && hydroSideOk)) setProbHydroVeg(false);
+  }, [probHydroVeg, soilsSideOk, hydroSideOk]);
   const vegMet = rawVegMet || probVegMet;
   const probValid = (rawVegMet || vegDistOrProb) && (hydroMet || hydroDistOrProb);
   const soilsMet = soilsMetStandard || numHydricProbManual >= 1 || numHydricProb >= 1 && probValid;
