@@ -98,9 +98,11 @@ For indicators that are partially supported by the data but require field verifi
 
 Above-layer chroma requirements are enforced automatically for all applicable indicators (All Soils, Sandy Soils, Loamy and Clayey Soils) — if the mineral layers above a qualifying horizon have a combined thickness with dominant chroma >2 of ≥6 in., the indicator will not auto-fire, and a data consistency warning will be generated if the user selects it manually.
 
-LRR-gating is applied throughout: indicators approved only in specific Land Resource Regions (B, C, or D) are evaluated only when applicable to the user's selected LRR, and the reason strings reflect which LRR conditions apply.
+Redox feature percentages from multiple rows within the same horizon are summed when evaluating indicator thresholds — two rows of 1% each correctly meet a ≥2% threshold, consistent with how the ADS evaluates multi-row redox data and how field descriptions are typically recorded (separate rows for different feature types and locations within the same horizon).
 
-Problematic hydric soil indicators — including F21 (Red Parent Material), F12 (Iron-Manganese Masses in Tilled Surface), and others — are tracked separately and require hydrophytic vegetation and wetland hydrology (or ≥2 factors significantly disturbed or naturally problematic) before counting toward a soil determination, per Ch. 5.
+LRR-gating is applied throughout: indicators approved only in specific Land Resource Regions (B, C, or D) are evaluated only when applicable to the user's selected LRR, and the reason strings reflect which LRR conditions apply. LRR gating applies to auto-inference only — a user may always manually select any indicator, and manual selections count toward the soil determination regardless of LRR, consistent with ADS behavior.
+
+Problematic hydric soil indicators — including F21 (Red Parent Material), F12 (Iron-Manganese Masses in Tilled Surface), and others — are tracked separately per Ch. 5. Auto-selection of these indicators requires hydrophytic vegetation and wetland hydrology each to be confirmed, significantly disturbed, or naturally problematic. Manual selection is always permitted and always counts toward the soil criterion, consistent with ADS behavior — but generates a data consistency warning when the supporting vegetation and hydrology criteria are not met. The W2 (Data Sheet Incomplete) warning fires for manually selected problematic indicators when additional soil profile data is required, the same as for standard indicators.
 
 ### 3. Wetland Hydrology Data Entry and Indicator Inference
 
@@ -148,7 +150,7 @@ The workflow:
 6. Remaining clusters are evaluated for minimum contrast from the matrix:
    - **Concentrations** are identified using the **USDA Hydric Soils Table A1 contrast classification** — the same Faint/Distinct/Prominent framework used in the NRCS *Field Indicators* guide — based on hue step, value, and chroma differences between the feature and the matrix. A user-controlled slider sweeps continuously from Prominent-only (most restrictive) to Faint+ (most inclusive), and the overlay updates in real time as the slider moves.
    - **Depletions** are identified by absolute low Munsell chroma relative to a second user-controlled slider (threshold range chroma ≤0 to ≤4). Sliding to ≤2 captures the most common USACE depletion criterion; ≤1 captures only unambiguous strongly reduced gray zones.
-7. Percentages for the matrix and each feature are computed as the raw pixel share of the sampled polygon area, reported independently and rounded to the nearest integer. Features at or below 1% are suppressed — no USACE hydric soil indicator requires a redox feature present at less than 2%.
+7. Percentages for the matrix and each feature are computed as the raw pixel share of the sampled polygon area, reported independently and rounded to the nearest integer. Features rounding to 0% are suppressed as noise; features at 1% are retained. ADS Plus evaluates indicator thresholds by summing redox percentages across all qualifying rows in the same horizon, so two 1% detections written to separate rows can together satisfy a ≥2% threshold.
 8. An **overlay** is rendered on the ped image: concentration pixels in teal, depletion pixels in amber, uncolored areas representing the matrix. The overlay updates in real time as either slider moves, letting the delineator explore the full color distribution of the ped before recording a result.
 
 The output — matrix Munsell notation, concentration type/color/percent, depletion color/percent — maps directly to the fields in the ADS Plus horizon entry form and to the redox feature descriptions required on the ENG Form 6116-1. A delineator can complete a full, quantitative horizon color description from a single photograph taken in the field.
@@ -175,13 +177,20 @@ The application uses the device's built-in geolocation API to acquire GPS coordi
 
 ### 7. Data Consistency Warnings
 
-A dedicated consistency engine evaluates all active manual indicator selections against the entered data and generates warnings when selections cannot be supported. Warnings are surfaced prominently at the top of the results panel and flagged on any export. Examples include:
+A dedicated consistency engine evaluates all active manual indicator selections against the entered data and generates warnings when selections cannot be supported. Warnings are surfaced prominently at the top of the results panel. Where multiple warnings apply to the same indicator, they are grouped under a single indicator code badge with all relevant text presented inline — the user sees one consolidated entry per indicator rather than a fragmented list.
 
-- A manually selected soil indicator when the entered profile data does not meet the indicator's criteria
-- An above-layer chroma violation for a manually selected Loamy/Clayey or Sandy soil indicator
-- A hydrology indicator selected without supporting measurement data
-- A manual vegetation determination that contradicts the calculated Dominance Test and Prevalence Index results
-- An incomplete soil profile (missing depth bounds, textures, or percentages) when active indicators require complete horizon data
+Warning types include:
+
+- **Soil data inconsistency:** A manually selected soil indicator when the entered horizon data does not meet the indicator's criteria. This warning always fires regardless of whether other warnings (LRR, problematic indicator conditions) are also present for the same indicator. It is suppressed when auto-inference fires at any level (full or partial) with sufficient horizon data entered — if data supports the indicator even partially, and the user is manually selecting, this is treated as a field confirmation rather than a contradiction.
+- **LRR mismatch:** A manually selected indicator that is not approved for use in the site's recorded Land Resource Region.
+- **Problematic indicator conditions not met:** A problematic hydric soil indicator that is manually selected when hydrophytic vegetation and wetland hydrology have not been confirmed, significantly disturbed, or naturally problematic.
+- **Incomplete soil profile (W2):** Additional soil profile data is required to support an active indicator selection — either no complete horizon rows have been entered, or entered rows have incomplete data (missing depth bounds, texture, or percentages). This warning fires for both standard and problematic indicator selections.
+- **Above-layer chroma violation:** A manually selected Loamy/Clayey or Sandy indicator where the above-layer chroma check is not met.
+- **Horizon percentage sum error (W3):** All entered color percentages (matrix and redox combined) within a horizon must sum to 100%. A warning identifies any horizon where they do not.
+- **Aquic conditions not confirmed (A2):** A2 (Histic Epipedon) requires aquic conditions, which cannot be assumed unless both hydrophytic vegetation and wetland hydrology are confirmed.
+- **Normal circumstances flag (W4):** The wetland determination is YES but Normal Circumstances are marked as absent — atypical-situation methods are required before finalizing.
+
+All warnings marked as data inconsistencies include the notation "Use of this indicator must be explained in Remarks" inline.
 
 Neither the ADS nor Survey 123 provides any equivalent to this layer of feedback.
 
