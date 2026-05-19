@@ -20137,21 +20137,21 @@ function WetlandApp() {
     const a = effectiveSoilAuto[ind.code];
     return a && !a.combo && !a.partial;
   }).length;
+  const numHydricProbManual = HYDRIC_PROBLEMATIC.filter(ind => !!chkHydricProb[ind.id]).length;
   const numHydricProb = HYDRIC_PROBLEMATIC.filter(ind => {
+    if (!!chkHydricProb[ind.id]) return true;
     if (!_lrrOkSoil(ind)) return false;
-    const manualChecked = !!chkHydricProb[ind.id];
     const auto = effectiveSoilAuto[ind.code];
-    const autoFires = !!auto && !auto.partial && !auto.combo;
-    return manualChecked || autoFires;
+    return !!auto && !auto.partial && !auto.combo;
   }).length;
   const soilsMetStandard = numHydricActive >= 1;
   const allHydricIndsWithProb = [...allHydricInds, ...HYDRIC_PROBLEMATIC];
   const hasActiveHorizonRequiredInd = allHydricIndsWithProb.some(ind => {
     if (ind.noHorizonReq) return false;
+    if (chkHydric[ind.id] || chkHydricProb[ind.id]) return true;
     if (!_lrrOkSoil(ind)) return false;
     const a = effectiveSoilAuto[ind.code];
-    const isAuto = a && !a.partial && !a.combo;
-    return chkHydric[ind.id] || chkHydricProb[ind.id] || isAuto;
+    return a && !a.partial && !a.combo;
   });
   function isHorizonSufficient(h) {
     if (h.depthFrom === '' || h.depthTo === '') return false;
@@ -20183,7 +20183,7 @@ function WetlandApp() {
   const probVegMet = probHydroVeg && soilsSideOk && hydroSideOk;
   const vegMet = rawVegMet || probVegMet;
   const probValid = (rawVegMet || vegDistOrProb) && (hydroMet || hydroDistOrProb);
-  const soilsMet = soilsMetStandard || numHydricProb >= 1 && probValid;
+  const soilsMet = soilsMetStandard || numHydricProbManual >= 1 || numHydricProb >= 1 && probValid;
   const isWetland = vegMet && soilsMet && hydroMet;
   const consistencyWarnings = useMemo(() => {
     const w = [];
@@ -20242,14 +20242,16 @@ function WetlandApp() {
     if ((chkHydric['A1'] || chkHydricProb['A1']) && !effectiveSoilAuto['A1']) w.push({
       code: 'A1',
       msg: 'A1 (Histosol) is manually selected but the entered soil data does not support it. This indicator requires either ≥16 in. of organic soil material (muck, mucky peat, or peat) in the upper 32 in., or organic material of any thickness directly overlying a bedrock restrictive layer. Additionally, mineral layers above the first organic layer must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total ≤6 in.',
-      _mismatch: true
+      _mismatch: true,
+      _soilData: true
     });
     const _enteredHz = horizons.filter(h => h.depthFrom !== '' || h.depthTo !== '' || h.texture);
     const _hasSufficientHz = _enteredHz.length > 0 && _enteredHz.every(h => h.depthFrom !== '' && h.depthTo !== '' && h.texture && (!(h.redoxRows && h.redoxRows.length > 0) || h.redoxRows.every(rx => rx.pct !== '')));
     if (chkP['C7'] && !effectiveHydroAuto['C7'] && _hasSufficientHz) w.push({
       code: 'C7',
       msg: 'C7 (Thin Muck Surface) is manually selected but the entered soil data does not support it. This indicator requires a muck-textured layer ≤1 in. thick starting at the soil surface (0 in.).',
-      _mismatch: true
+      _mismatch: true,
+      _soilData: true
     });
     {
       const _HINTS = {
@@ -20275,11 +20277,12 @@ function WetlandApp() {
         if (ind.noHorizonReq || !_AUTOABLE.has(ind.code)) return;
         if (!(chkHydric[ind.id] || chkHydricProb[ind.id])) return;
         if (effectiveSoilAuto[ind.code] && _hasSufficientHz) return;
-        if (w.some(x => x._mismatch && !x._lrr && x.code === ind.code)) return;
+        if (w.some(x => x._soilData && x.code === ind.code)) return;
         w.push({
           code: ind.code,
           msg: `${ind.code} (${ind.label}) is manually selected but the entered soil data does not support it. This indicator ${_HINTS[ind.code]}.`,
-          _mismatch: true
+          _mismatch: true,
+          _soilData: true
         });
       });
     }
@@ -22765,7 +22768,7 @@ function WetlandApp() {
     }, {
       l: 'Problematic\nIndicators',
       v: numHydricProb,
-      s: probValid ? 'Both other criteria met — usable' : 'Veg + hydro needed to apply'
+      s: numHydricProbManual >= 1 ? `${numHydricProbManual} manual${probValid ? '' : ' — conditions not met'}` : probValid ? 'Both criteria met — auto usable' : 'Veg + hydro needed for auto'
     }, {
       l: 'Hydric Soil\nPresent?',
       v: soilsMet ? 'YES' : 'NO',
@@ -23852,7 +23855,7 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       fontWeight: 700
     }
-  }, "Manual selection is possible but will generate a data consistency warning."))), HYDRIC_PROBLEMATIC.map(ind => {
+  }, "Manual selection is possible without having also selected these criteria but will generate a data consistency warning."))), HYDRIC_PROBLEMATIC.map(ind => {
     const a = autoFor(ind.code);
     const isPartial = a && !!a.partial;
     return React.createElement(HydricRow, {
@@ -24303,7 +24306,7 @@ function WetlandApp() {
   }, {
     label: 'Hydric\nSoils',
     met: soilsMet,
-    note: numHydricActive >= 1 ? `${numHydricActive} standard indicator(s)${autoCount > 0 ? ' (' + autoCount + ' auto)' : ''}${soilProfileWarning ? ' — PROFILE INCOMPLETE' : ''}` : numHydricProb >= 1 && probValid ? `${numHydricProb} problematic indicator(s)` : 'No indicator active',
+    note: numHydricActive >= 1 ? `${numHydricActive} standard indicator(s)${autoCount > 0 ? ' (' + autoCount + ' auto)' : ''}${soilProfileWarning ? ' — PROFILE INCOMPLETE' : ''}` : numHydricProbManual >= 1 ? `${numHydricProbManual} problematic (manual)` : numHydricProb >= 1 && probValid ? `${numHydricProb} problematic (auto)` : 'No indicator active',
     warn: soilProfileWarning
   }, {
     label: 'Wetland\nHydrology',
@@ -24402,8 +24405,8 @@ function WetlandApp() {
       textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)',
       color: 'var(--c-warn)', fontWeight: 700
     }
-  }, "Data Consistency Warnings (", consistencyWarnings.length, ")")), consistencyWarnings.map(w => React.createElement("div", {
-    key: w.code,
+  }, "Data Consistency Warnings (", consistencyWarnings.length, ")")), (() => { const _wg = []; const _wm = new Map(); consistencyWarnings.forEach(w => { if (!_wm.has(w.code)) { const g = {code: w.code, msgs: [w.msg], hasMismatch: !!w._mismatch}; _wm.set(w.code, g); _wg.push(g); } else { const g = _wm.get(w.code); g.msgs.push(w.msg); if (w._mismatch) g.hasMismatch = true; } }); return _wg; })().map(g => React.createElement("div", {
+    key: g.code,
     style: {
       display: 'flex',
       gap: 8,
@@ -24419,16 +24422,12 @@ function WetlandApp() {
       borderRadius: 3,
       padding: '1px 5px'
     }
-  }, w.code), React.createElement("span", {
+  }, g.code), React.createElement("span", {
     style: {
       fontFamily: 'var(--font-sans)', fontSize: 12,
       color: 'var(--c-ink-2)', lineHeight: 1.55
     }
-  }, w.msg, w._mismatch && React.createElement("span", {
-    style: {
-      color: 'var(--c-fail)'
-    }
-  }, " Use of this indicator must be explained in Remarks.")))))), React.createElement("div", {
+  }, g.msgs.map((m, i) => React.createElement("div", {key: i}, m)), g.hasMismatch && React.createElement("div", {style: {color: 'var(--c-fail)', marginTop: 2}}, "Use of this indicator must be explained in Remarks.")))))), React.createElement("div", {
     style: {
       display: 'flex',
       flexWrap: 'wrap',
