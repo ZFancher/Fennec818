@@ -22682,7 +22682,8 @@ function WetlandApp() {
       gap: 8,
       alignItems: 'flex-start',
       cursor: soilsSideOk && hydroSideOk ? 'pointer' : 'not-allowed',
-      opacity: soilsSideOk && hydroSideOk ? 1 : 0.45
+      opacity: soilsSideOk && hydroSideOk ? 1 : 0.45,
+      marginTop: (!(soilsSideOk && hydroSideOk) || probVegMet) ? 8 : 0
     }
   }, React.createElement(CustomCheckbox, {
     checked: probHydroVeg,
