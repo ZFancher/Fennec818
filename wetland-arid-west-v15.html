@@ -20276,11 +20276,12 @@ function WetlandApp() {
       [...HYDRIC_ALL, ...HYDRIC_SANDY, ...HYDRIC_LOAMY, ...HYDRIC_PROBLEMATIC].forEach(ind => {
         if (ind.noHorizonReq || !_AUTOABLE.has(ind.code)) return;
         if (!(chkHydric[ind.id] || chkHydricProb[ind.id])) return;
-        if (effectiveSoilAuto[ind.code] && !effectiveSoilAuto[ind.code].partial && _hasSufficientHz) return;
+        if (effectiveSoilAuto[ind.code] && _hasSufficientHz) return;
         if (w.some(x => x._soilData && x.code === ind.code)) return;
+        const _hint = _HINTS[ind.code];
         w.push({
           code: ind.code,
-          msg: `${ind.code} (${ind.label}) is manually selected but the entered soil data does not support it. This indicator ${_HINTS[ind.code]}.`,
+          msg: `${ind.code} (${ind.label}) is manually selected but the entered soil data does not support it. This indicator ${_hint}${_hint.endsWith('.') ? '' : '.'}`,
           _mismatch: true,
           _soilData: true
         });
@@ -24427,7 +24428,7 @@ function WetlandApp() {
       fontFamily: 'var(--font-sans)', fontSize: 12,
       color: 'var(--c-ink-2)', lineHeight: 1.55
     }
-  }, g.msgs.map((m, i) => React.createElement("div", {key: i}, m)), g.hasMismatch && React.createElement("div", {style: {color: 'var(--c-fail)', marginTop: 2}}, "Use of this indicator must be explained in Remarks.")))))), React.createElement("div", {
+  }, g.msgs.join(' '), g.hasMismatch && React.createElement("span", {style: {color: 'var(--c-fail)'}}, " Use of this indicator must be explained in Remarks.")))))), React.createElement("div", {
     style: {
       display: 'flex',
       flexWrap: 'wrap',
