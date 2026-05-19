@@ -18880,7 +18880,7 @@ function HydricRow({
     },
       (isPartial && !checked && autoReason && autoReason.includes('SOIL REQUIREMENTS MET')) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-partial)',lineHeight:1.5}}, "Soil Requirements Met — Additional field observations and/or tests are required before indicator may be confirmed (see indicator description)."),
       (isPartial && checked) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-pass)',lineHeight:1.5}}, "✓ Field observations confirmed"),
-      exp && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-sub)',lineHeight:1.65,whiteSpace:'pre-line',paddingTop:2}}, ind.desc)
+      exp && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-sub)',lineHeight:1.65,whiteSpace:'pre-line',paddingTop:0}}, ind.desc)
     )
   );
 }
@@ -18962,7 +18962,7 @@ function IndRow({
       (isAutoPartial && autoPartial?.reason?.includes('PRELIMINARY CONDITIONS MET')) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-auto-partial)',lineHeight:1.5}}, "Preliminary Conditions Met — Additional field observations are required before indicator may be confirmed (see indicator description)."),
       (autoPartial && checked) && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-pass)',lineHeight:1.5}}, "✓ Field observations confirmed"),
       warningBox,
-      exp && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-sub)',lineHeight:1.65,whiteSpace:'pre-line',paddingTop:2}}, ind.desc)
+      exp && React.createElement("div", {style:{fontFamily:'var(--font-sans)',fontSize:12,color:'var(--c-sub)',lineHeight:1.65,whiteSpace:'pre-line',paddingTop:['A1','A2','A3','D3','D5'].includes(ind.code)?2:0}}, ind.desc)
     )
   );
 }
