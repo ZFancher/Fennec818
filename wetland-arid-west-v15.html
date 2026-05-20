@@ -24320,7 +24320,7 @@ function WetlandApp() {
   }, {
     label: 'Hydric\nSoils',
     met: soilsMet,
-    note: numHydricActive >= 1 ? `${numHydricActive} standard indicator(s)${autoCount > 0 ? ' (' + autoCount + ' auto)' : ''}${soilProfileWarning ? ' — PROFILE INCOMPLETE' : ''}` : numHydricProbManual >= 1 ? `${numHydricProbManual} problematic (manual)` : numHydricProb >= 1 && probValid ? `${numHydricProb} problematic (auto)` : 'No indicator active',
+    note: numHydricActive >= 1 ? `${numHydricActive} standard indicator(s)${autoCount > 0 ? ' (' + autoCount + ' auto)' : ''}${soilProfileWarning ? ' — PROFILE INCOMPLETE' : ''}` : numHydricProbManual >= 1 ? `${numHydricProbManual} problematic (manual)${soilProfileWarning ? ' — PROFILE INCOMPLETE' : ''}` : numHydricProb >= 1 && probValid ? `${numHydricProb} problematic (auto)${soilProfileWarning ? ' — PROFILE INCOMPLETE' : ''}` : 'No indicator active',
     warn: soilProfileWarning
   }, {
     label: 'Wetland\nHydrology',
