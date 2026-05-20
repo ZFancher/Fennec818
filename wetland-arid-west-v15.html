@@ -601,6 +601,10 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
       }
     }
 
+    /* ── Final results tri-box: responsive horizontal cell padding ── */
+    :root { --tri-cell-px: 16px; }
+    @media (max-width:430px) { :root { --tri-cell-px: 10px; } }
+
     /* ── Remarks wrapper: native resize on desktop, auto-expand on mobile ── */
     .remarks-wrap { position:relative; }
     .remarks-wrap textarea {
@@ -24346,7 +24350,7 @@ function WetlandApp() {
   }].map((f, i) => React.createElement("div", {
     key: i,
     style: {
-      padding: '16px 16px',
+      padding: '16px var(--tri-cell-px)',
       borderLeft: i > 0 ? `1px solid ${isWetland ? 'var(--c-v-p-ibdr)' : 'var(--c-v-f-ibdr)'}` : undefined
     }
   }, React.createElement("div", {
