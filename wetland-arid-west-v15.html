@@ -374,7 +374,6 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   /* Warn / gate / info */
   --c-warn: #b45309;
   --c-warn-bg: #fff4e0;
-  --c-dcw: #92400e;
   --c-dcw-bg: #fef3c7;
   --c-gate: #b45309;
   --c-gate-bg: #fff8eb;
@@ -459,7 +458,6 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
 
   --c-warn: #f59e0b;
   --c-warn-bg: #372b19;
-  --c-dcw: #fbbf24;
   --c-dcw-bg: #451a03;
   --c-gate: #f59e0b;
   --c-gate-bg: #2a231a;
@@ -24399,7 +24397,7 @@ function WetlandApp() {
       marginBottom: 8,
       padding: '8px 12px',
       background: 'var(--c-dcw-bg)',
-      border: '1px solid var(--c-dcw)',
+      border: '1px solid var(--c-warn)',
       borderRadius: 8
     }
   }, React.createElement("div", null, React.createElement("div", {
@@ -24412,7 +24410,7 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontSize: 12,
-      color: 'var(--c-dcw)',
+      color: 'var(--c-warn)',
       lineHeight: 1,
       flexShrink: 0,
       marginBottom: 1
@@ -24421,7 +24419,7 @@ function WetlandApp() {
     style: {
       fontFamily: 'var(--font-mono)', fontSize: 10,
       textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)',
-      color: 'var(--c-dcw)', fontWeight: 700
+      color: 'var(--c-warn)', fontWeight: 700
     }
   }, "Data Consistency Warnings (", consistencyWarnings.length, ")")), (() => { const _wg = []; const _wm = new Map(); consistencyWarnings.forEach(w => { if (!_wm.has(w.code)) { const g = {code: w.code, msgs: [w.msg], hasMismatch: !!w._mismatch}; _wm.set(w.code, g); _wg.push(g); } else { const g = _wm.get(w.code); g.msgs.push(w.msg); if (w._mismatch) g.hasMismatch = true; } }); return _wg; })().map(g => React.createElement("div", {
     key: g.code,
@@ -24435,15 +24433,15 @@ function WetlandApp() {
     style: {
       fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
       color: 'var(--c-dcw-bg)', flexShrink: 0,
-      background: 'var(--c-dcw)',
-      border: '1px solid var(--c-dcw)',
+      background: 'var(--c-warn)',
+      border: '1px solid var(--c-warn)',
       borderRadius: 3,
       padding: '1px 5px'
     }
   }, g.code), React.createElement("span", {
     style: {
       fontFamily: 'var(--font-sans)', fontSize: 12,
-      color: 'var(--c-ink)', lineHeight: 1.55
+      color: 'var(--c-ink-2)', lineHeight: 1.55
     }
   }, g.msgs.join(' '), g.hasMismatch && React.createElement("span", {style: {fontWeight: 700}}, " Use of this indicator must be explained in Remarks.")))))), React.createElement("div", {
     style: {
