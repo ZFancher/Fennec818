@@ -22185,9 +22185,9 @@ function WetlandApp() {
         borderRadius: 4,
         fontWeight: 700,
         fontSize: 11,
-        background: vegCalc.pi === null ? 'var(--c-panel-2)' : vegCalc.hasReassignment && vegCalc.piMorph?.met && morphQualOk ? 'var(--c-pass-bg)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? 'var(--c-auto-partial-bg)' : vegCalc.piMet ? 'var(--c-auto-partial-bg)' : 'var(--c-fail-bg)',
+        background: vegCalc.pi === null ? 'var(--c-panel-2)' : vegCalc.hasReassignment && vegCalc.piMorph?.met && morphQualOk ? 'var(--c-pass-bg)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? 'var(--c-auto-partial-bg)' : piGatedMet ? 'var(--c-pass-bg)' : vegCalc.piMet ? 'var(--c-auto-partial-bg)' : 'var(--c-fail-bg)',
         color: vegCalc.hasReassignment && vegCalc.piMorph?.met ? morphQualOk ? 'var(--c-pass)' : 'var(--c-auto-partial)' : piColor,
-        border: `1px solid ${vegCalc.pi === null ? 'var(--c-rule-strong)' : vegCalc.hasReassignment && vegCalc.piMorph?.met && morphQualOk ? 'var(--c-pass)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? 'var(--c-auto-partial)' : vegCalc.piMet ? 'var(--c-auto-partial)' : 'var(--c-fail)'}`
+        border: `1px solid ${vegCalc.pi === null ? 'var(--c-rule-strong)' : vegCalc.hasReassignment && vegCalc.piMorph?.met && morphQualOk ? 'var(--c-pass)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? 'var(--c-auto-partial)' : piGatedMet ? 'var(--c-pass)' : vegCalc.piMet ? 'var(--c-auto-partial)' : 'var(--c-fail)'}`
       }
     }, vegCalc.pi === null ? '—' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? morphQualOk ? 'PASS (IND. 3)' : 'GATED' : piGatedMet ? 'PASS' : vegCalc.piMet ? 'GATED' : 'FAIL')),
     labelStyle: {
