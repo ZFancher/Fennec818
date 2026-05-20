@@ -22161,7 +22161,7 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       lineHeight: 1.5
     }
-  }, "\u26A0 Dominance Test passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, when utilizing Morphological Adaptations the recalculated Dominance Test only counts when indicators of hydric soil AND wetland hydrology are each present or are significantly disturbed or naturally problematic."))), React.createElement(Collapsible, {
+  }, "\u26A0 Dominance Test passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, when utilizing Morphological Adaptations the recalculated Dominance Test only counts when indicators of hydric soil AND wetland hydrology are present, unless significantly disturbed or naturally problematic."))), React.createElement(Collapsible, {
     defaultOpen: false,
     resetKey: collapsibleResetKey,
     label: React.createElement("span", {
@@ -22422,7 +22422,7 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       lineHeight: 1.5
     }
-  }, "\u26A0 PI passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, the Prevalence Index only counts when indicators of hydric soil AND wetland hydrology are each present or are significantly disturbed or naturally problematic.")))), React.createElement(Collapsible, {
+  }, "\u26A0 PI passes mathematically but is ", React.createElement("strong", null, "gated"), " \u2014 per ERDC/EL TR-08-28 Ch. 2, the Prevalence Index only counts when indicators of hydric soil AND wetland hydrology are present, unless significantly disturbed or naturally problematic.")))), React.createElement(Collapsible, {
     defaultOpen: false,
     resetKey: collapsibleResetKey,
     label: React.createElement("span", {
@@ -22453,7 +22453,7 @@ function WetlandApp() {
         color: 'var(--c-warn)',
         lineHeight: 1.5
       }
-    }, "⚠ Indicators of hydric soil AND wetland hydrology must each be present or be significantly disturbed or naturally problematic to apply the morphological adaptations indicator."),
+    }, "⚠ Indicators of hydric soil AND wetland hydrology must be present, unless significantly disturbed or naturally problematic to apply the morphological adaptations indicator."),
     React.createElement("div", {
       style: {
         padding: '2px 16px 6px',
@@ -22662,7 +22662,7 @@ function WetlandApp() {
         (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && morphQualOk
           ? '✓ Indicator 3 SATISFIED — vegetation is hydrophytic after reassignment'
           : (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk
-            ? '⚠ Reassignment passes mathematically, but Indicator 3 cannot be applied — indicators of hydric soil and wetland hydrology must each be present or be significantly disturbed or naturally problematic'
+            ? '⚠ Reassignment passes mathematically, but Indicator 3 cannot be applied — indicators of hydric soil and wetland hydrology must be present, unless significantly disturbed or naturally problematic'
             : '✗ Indicator 3 not satisfied — reassignment did not yield a pass on dominance test or prevalence index'
       )
     )
@@ -22697,7 +22697,7 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       lineHeight: 1.5
     }
-  }, "\u26A0 Indicators of hydric soil AND wetland hydrology must each be present or be significantly disturbed or naturally problematic. This selection is recorded but will not contribute to the vegetation conclusion until those conditions are met."),
+  }, "\u26A0 Indicators of hydric soil AND wetland hydrology must be present, unless significantly disturbed or naturally problematic. This selection is recorded but will not contribute to the vegetation conclusion until those conditions are met."),
 
   probVegMet && React.createElement("div", {
     style: {
