@@ -374,6 +374,8 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   /* Warn / gate / info */
   --c-warn: #b45309;
   --c-warn-bg: #fff4e0;
+  --c-dcw: #c2410c;
+  --c-dcw-bg: #fff7ed;
   --c-gate: #b45309;
   --c-gate-bg: #fff8eb;
   --c-info: #1e40af;
@@ -457,6 +459,8 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
 
   --c-warn: #f59e0b;
   --c-warn-bg: #372b19;
+  --c-dcw: #f97316;
+  --c-dcw-bg: #2a1005;
   --c-gate: #f59e0b;
   --c-gate-bg: #2a231a;
   --c-info: #60a5fa;
@@ -24394,9 +24398,9 @@ function WetlandApp() {
     style: {
       marginBottom: 8,
       padding: '8px 12px',
-      background: 'var(--c-warn-bg)',
-      border: '1px solid var(--c-warn-bg)',
-      borderLeft: '3px solid var(--c-warn)',
+      background: 'var(--c-dcw-bg)',
+      border: '1px solid var(--c-dcw-bg)',
+      borderLeft: '3px solid var(--c-dcw)',
       borderRadius: 8
     }
   }, React.createElement("div", null, React.createElement("div", {
@@ -24409,7 +24413,7 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontSize: 12,
-      color: 'var(--c-warn)',
+      color: 'var(--c-dcw)',
       lineHeight: 1,
       flexShrink: 0,
       marginBottom: 1
@@ -24418,7 +24422,7 @@ function WetlandApp() {
     style: {
       fontFamily: 'var(--font-mono)', fontSize: 10,
       textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)',
-      color: 'var(--c-warn)', fontWeight: 700
+      color: 'var(--c-dcw)', fontWeight: 700
     }
   }, "Data Consistency Warnings (", consistencyWarnings.length, ")")), (() => { const _wg = []; const _wm = new Map(); consistencyWarnings.forEach(w => { if (!_wm.has(w.code)) { const g = {code: w.code, msgs: [w.msg], hasMismatch: !!w._mismatch}; _wm.set(w.code, g); _wg.push(g); } else { const g = _wm.get(w.code); g.msgs.push(w.msg); if (w._mismatch) g.hasMismatch = true; } }); return _wg; })().map(g => React.createElement("div", {
     key: g.code,
@@ -24431,9 +24435,9 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-      color: 'var(--c-warn-bg)', flexShrink: 0,
-      background: 'var(--c-warn)',
-      border: '1px solid var(--c-warn)',
+      color: 'var(--c-dcw)', flexShrink: 0,
+      background: 'var(--c-dcw-bg)',
+      border: '1px solid var(--c-dcw)',
       borderRadius: 3,
       padding: '1px 5px'
     }
