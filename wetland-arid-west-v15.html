@@ -24039,9 +24039,9 @@ function WetlandApp() {
       fontSize: 10,
       color: 'var(--c-sub)',
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       gap: 5,
-      whiteSpace: 'nowrap'
+      flexWrap: 'wrap'
     }
   }, React.createElement("span", {
     style: {
@@ -24053,9 +24053,10 @@ function WetlandApp() {
       background: 'var(--c-auto-partial-bg)',
       color: 'var(--c-auto-partial)',
       border: '1px solid var(--c-auto-partial)',
-      whiteSpace: 'nowrap'
+      whiteSpace: 'nowrap',
+      flexShrink: 0
     }
-  }, "PARTIAL \u25d1"), "Partially met by soil or hydrology data \u2014 addl. field observations req."))), React.createElement("div", {
+  }, "PARTIAL \u25d1"), "Partially met by soil or hydrology data\u00a0\u2014 addl. field observations req."))), React.createElement("div", {
     style: {
       borderBottom: '1px solid var(--c-rule)'
     }
