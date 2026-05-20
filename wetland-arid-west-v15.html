@@ -24394,8 +24394,9 @@ function WetlandApp() {
     style: {
       marginBottom: 8,
       padding: '8px 12px',
-      background: 'rgba(146,64,14,0.08)',
-      border: '1px solid rgba(146,64,14,0.5)',
+      background: 'var(--c-warn-bg)',
+      border: '1px solid var(--c-warn-bg)',
+      borderLeft: '3px solid var(--c-warn)',
       borderRadius: 8
     }
   }, React.createElement("div", null, React.createElement("div", {
@@ -24430,8 +24431,8 @@ function WetlandApp() {
   }, React.createElement("span", {
     style: {
       fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
-      color: 'var(--c-warn)', flexShrink: 0,
-      background: 'var(--c-auto-partial-bg)',
+      color: 'var(--c-warn-bg)', flexShrink: 0,
+      background: 'var(--c-warn)',
       border: '1px solid var(--c-warn)',
       borderRadius: 3,
       padding: '1px 5px'
@@ -24439,7 +24440,7 @@ function WetlandApp() {
   }, g.code), React.createElement("span", {
     style: {
       fontFamily: 'var(--font-sans)', fontSize: 12,
-      color: 'var(--c-warn)', lineHeight: 1.55
+      color: 'var(--c-ink)', lineHeight: 1.55
     }
   }, g.msgs.join(' '), g.hasMismatch && React.createElement("span", {style: {fontWeight: 700}}, " Use of this indicator must be explained in Remarks.")))))), React.createElement("div", {
     style: {
