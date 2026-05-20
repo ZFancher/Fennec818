@@ -18832,7 +18832,7 @@ function HydricRow({
 }) {
   const [exp, setExp] = useState(false);
   const usableProb = problematic && !!probValid;
-  const dimmed = problematic && !usableProb;
+  const dimmed = false;
   const isAuto = !!autoTriggered && !autoPartial && !autoCombo;
   const isPartial = !!autoTriggered && !!autoPartial && !autoCombo;
   const isCombo = !!autoTriggered && !!autoCombo;
@@ -19565,6 +19565,7 @@ function WetlandApp() {
   const [morphAdaptEntries, setMorphAdaptEntries] = useState([]);
   const [probHydroVeg, setProbHydroVeg] = useState(false);
   const [probHydroVegRemarks, setProbHydroVegRemarks] = useState('');
+  const [probHydroVegConfirmed, setProbHydroVegConfirmed] = useState(false);
   function addMorphEntry() {
     setMorphAdaptEntries(e => [...e, {
       id: Date.now().toString(),
@@ -19817,6 +19818,7 @@ function WetlandApp() {
     setMorphAdaptEntries([]);
     setProbHydroVeg(false);
     setProbHydroVegRemarks('');
+    setProbHydroVegConfirmed(false);
     setPlotSizes({ tree: '', shrub: '', herb: '', vine: '' });
     setBareGround('');
     setGpsStatus(null);
@@ -19864,6 +19866,7 @@ function WetlandApp() {
       if (s.morphAdaptEntries) setMorphAdaptEntries(s.morphAdaptEntries);
       if (s.probHydroVeg !== undefined) setProbHydroVeg(s.probHydroVeg);
       if (s.probHydroVegRemarks !== undefined) setProbHydroVegRemarks(s.probHydroVegRemarks);
+      if (s.probHydroVegConfirmed !== undefined) setProbHydroVegConfirmed(s.probHydroVegConfirmed);
     } catch (e) {
       console.warn('Failed to restore form:', e);
     }
@@ -19900,6 +19903,7 @@ function WetlandApp() {
           morphAdaptEntries,
           probHydroVeg,
           probHydroVegRemarks,
+          probHydroVegConfirmed,
           gpsStatus,
           gpsAccuracy,
           gpsFromJson
@@ -19909,7 +19913,7 @@ function WetlandApp() {
       }
     }, 600);
     return () => clearTimeout(t);
-  }, [siteInfo, strata, horizons, restrictiveType, restrictiveDepth, chkHydric, chkHydricProb, chkP, chkS, hydroMeasure, plotSizes, bareGround, bioticCrust, normalCirc, sigDistVeg, sigDistSoil, sigDistHydro, natProbVeg, natProbSoil, natProbHydro, spgiRemarks, vegRemarks, soilRemarks, hydroRemarks, morphAdaptEntries, probHydroVeg, probHydroVegRemarks, gpsStatus, gpsAccuracy, gpsFromJson]);
+  }, [siteInfo, strata, horizons, restrictiveType, restrictiveDepth, chkHydric, chkHydricProb, chkP, chkS, hydroMeasure, plotSizes, bareGround, bioticCrust, normalCirc, sigDistVeg, sigDistSoil, sigDistHydro, natProbVeg, natProbSoil, natProbHydro, spgiRemarks, vegRemarks, soilRemarks, hydroRemarks, morphAdaptEntries, probHydroVeg, probHydroVegRemarks, probHydroVegConfirmed, gpsStatus, gpsAccuracy, gpsFromJson]);
   const [activeTab, setActiveTab] = useState('site');
   const [theme, setTheme] = useState(() => {
     try { return localStorage.getItem('aw.theme') || 'light'; } catch { return 'light'; }
@@ -20210,10 +20214,7 @@ function WetlandApp() {
   const morphQualOk = !morphAdapt || soilsSideOk && hydroSideOk;
   const morphVegGated = vegCalc.morphVegMet && morphQualOk;
   const rawVegMet = vegCalc.domMet || piGatedMet || morphVegGated;
-  const probVegMet = probHydroVeg && soilsSideOk && hydroSideOk;
-  useEffect(() => {
-    if (probHydroVeg && !(soilsSideOk && hydroSideOk)) setProbHydroVeg(false);
-  }, [probHydroVeg, soilsSideOk, hydroSideOk]);
+  const probVegMet = !rawVegMet && probHydroVeg && soilsSideOk && hydroSideOk && probHydroVegConfirmed;
   const vegMet = rawVegMet || probVegMet;
   const probValid = (rawVegMet || vegDistOrProb) && (hydroMet || hydroDistOrProb);
   const soilsMet = soilsMetStandard || numHydricProbManual >= 1 || numHydricProb >= 1 && probValid;
@@ -20251,6 +20252,18 @@ function WetlandApp() {
         _mismatch: true
       });
     });
+    if (chkS['D3'] && !((vegMet || vegDistOrProb) && (soilsMet || soilDistOrProb))) {
+      const _d3missing = !(vegMet || vegDistOrProb) && !(soilsMet || soilDistOrProb)
+        ? 'hydrophytic vegetation and hydric soil indicators have not been met'
+        : !(vegMet || vegDistOrProb)
+          ? 'hydrophytic vegetation indicator has not been met'
+          : 'hydric soil indicator has not been met';
+      w.push({
+        code: 'D3',
+        msg: `D3 (Shallow Aquitard) is manually selected but the required conditions are not met — ${_d3missing}. Hydrophytic vegetation and hydric soil must both be present, significantly disturbed, or naturally problematic.`,
+        _mismatch: true
+      });
+    }
     if (isWetland && normalCirc === false) w.push({
       code: 'W4',
       msg: 'Final determination is YES but Normal Circumstances are marked as absent. Per ERDC/EL TR-08-28 Ch. 5, atypical-situation methods must be applied before a final determination can be made.'
@@ -20338,7 +20351,7 @@ function WetlandApp() {
       }
     }
     return w;
-  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, hydroMet, soilProfileWarning, soilWarnDetail, probValid]);
+  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkS, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, soilsMet, hydroMet, vegDistOrProb, soilDistOrProb, soilProfileWarning, soilWarnDetail, probValid]);
   const criteriaCount = [vegMet, soilsMet, hydroMet].filter(Boolean).length;
   const passBadge = {
     background: 'var(--c-pass-bg)',
@@ -20483,6 +20496,7 @@ function WetlandApp() {
       morphAdaptEntries,
       probHydroVeg,
       probHydroVegRemarks,
+      probHydroVegConfirmed,
       gpsStatus,
       gpsAccuracy
     };
@@ -20536,6 +20550,7 @@ function WetlandApp() {
     if (s.morphAdaptEntries) setMorphAdaptEntries(s.morphAdaptEntries);
     if (s.probHydroVeg !== undefined) setProbHydroVeg(s.probHydroVeg);
     if (s.probHydroVegRemarks !== undefined) setProbHydroVegRemarks(s.probHydroVegRemarks);
+    if (s.probHydroVegConfirmed !== undefined) setProbHydroVegConfirmed(s.probHydroVegConfirmed);
     if (s.gpsStatus !== undefined) setGpsStatus(s.gpsStatus);
     if (s.gpsAccuracy !== undefined) setGpsAccuracy(s.gpsAccuracy);
     setGpsFromJson(!!(s.siteInfo?.lat || s.siteInfo?.lng));
@@ -22682,7 +22697,7 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       lineHeight: 1.5
     }
-  }, "\u26A0 Hydric soil AND wetland hydrology must each pass or be significantly disturbed or naturally problematic to enable this option."),
+  }, "\u26A0 Hydric soil AND wetland hydrology must each pass or be significantly disturbed or naturally problematic. This selection is recorded but will not contribute to the vegetation conclusion until those conditions are met."),
 
   probVegMet && React.createElement("div", {
     style: {
@@ -22701,13 +22716,12 @@ function WetlandApp() {
       display: 'flex',
       gap: 8,
       alignItems: 'flex-start',
-      cursor: soilsSideOk && hydroSideOk ? 'pointer' : 'not-allowed',
-      opacity: soilsSideOk && hydroSideOk ? 1 : 0.45,
-      marginTop: (!(soilsSideOk && hydroSideOk) || probVegMet) ? 12 : 0
+      cursor: 'pointer',
+      marginTop: probVegMet ? 12 : 0
     }
   }, React.createElement(CustomCheckbox, {
     checked: probHydroVeg,
-    onChange: v => soilsSideOk && hydroSideOk && setProbHydroVeg(v),
+    onChange: v => { setProbHydroVeg(v); if (!v) setProbHydroVegConfirmed(false); },
     style: {
       marginTop: 2
     }
@@ -22728,7 +22742,34 @@ function WetlandApp() {
       marginTop: 2,
       lineHeight: 1.5
     }
-  }, "Used when standard indicators fail due to disturbance (seeding, herbicide, drought, invasives, etc.) but hydric soil and wetland hydrology are both present (ERDC/EL TR-08-28 Ch. 5, pp. 85\u201395)."), probHydroVeg && vegDistOrProb && React.createElement("input", {
+  }, "Used when standard indicators fail due to disturbance (seeding, herbicide, drought, invasives, etc.) but hydric soil and wetland hydrology are both present (ERDC/EL TR-08-28 Ch. 5, pp. 85\u201395)."),
+  !rawVegMet && probHydroVeg && soilsSideOk && hydroSideOk && React.createElement("label", {
+    style: {
+      display: 'flex',
+      gap: 8,
+      alignItems: 'flex-start',
+      cursor: 'pointer',
+      marginTop: 8,
+      padding: '5px 8px',
+      background: probHydroVegConfirmed ? 'var(--c-pass-bg)' : 'rgba(251,191,36,0.08)',
+      border: probHydroVegConfirmed ? '1px solid var(--c-pass)' : '1px solid rgba(251,191,36,0.35)',
+      borderRadius: 3
+    }
+  }, React.createElement(CustomCheckbox, {
+    checked: probHydroVegConfirmed,
+    onChange: v => setProbHydroVegConfirmed(v),
+    style: { marginTop: 1, flexShrink: 0 }
+  }), React.createElement("div", {
+    style: {
+      fontSize: 10,
+      color: probHydroVegConfirmed ? 'var(--c-pass)' : 'var(--c-warn)',
+      lineHeight: 1.5
+    }
+  }, probHydroVegConfirmed
+    ? "\u2713 Confirmed \u2014 hydrophytic vegetation present based on professional judgment (Ch. 5)."
+    : "Confirm: Based on professional judgment (Ch. 5), hydrophytic vegetation is present at this site. Standard indicators (dominance test, prevalence index) have failed."
+  )),
+  probHydroVeg && vegDistOrProb && React.createElement("input", {
     type: "text",
     placeholder: "Describe problematic condition...",
     value: probHydroVegRemarks,
@@ -24156,8 +24197,7 @@ function WetlandApp() {
     const d3SoilOk = soilsMet || soilDistOrProb;
     const secAuto = ind.id === 'D3' && d3Auto && !chkS['D3'] && d3VegOk && d3SoilOk ? d3Auto : ind.id === 'D5' && d5Auto && !chkS['D5'] ? d5Auto : ind.id === 'C2' && c2Auto && !chkS['C2'] ? c2Auto : null;
     const d5Dimmed = ind.id === 'D5' && !d5Auto && !chkS['D5'];
-    const d3Dimmed = ind.id === 'D3' && (!d3VegOk || !d3SoilOk) && !chkS['D3'];
-    const dimmed = d5Dimmed || d3Dimmed;
+    const dimmed = d5Dimmed;
     const d5Details = ind.id === 'D5' && vegCalc.allDominants?.length > 0 ? (() => {
       const nonFAC = vegCalc.allDominants.filter(d => d.status !== 'FAC');
       const hydro = nonFAC.filter(d => ['OBL', 'FACW'].includes(d.status)).length;
@@ -24170,9 +24210,9 @@ function WetlandApp() {
     })() : null;
     const warnStyle = {marginTop: 4, padding: '4px 8px', borderRadius: 3, background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.25)', fontSize: 10, color: 'var(--c-warn)', lineHeight: 1.5};
     const warningElem = (ind.id === 'D3' && !(d3VegOk && d3SoilOk))
-      ? React.createElement("div", {style: warnStyle}, "\u26A0 A restrictive layer within 12 in. of the surface and indicators of hydrophytic vegetation and hydric soil (unless significantly disturbed or naturally problematic) must all be present to use this indicator. ", (!d3Auto ? 'No qualifying restrictive layer has been entered. ' : '') + (!d3VegOk && !d3SoilOk ? 'Hydrophytic vegetation and hydric soil indicators have not been met.' : !d3VegOk ? 'Hydrophytic vegetation indicator has not been met.' : 'Hydric soil indicator has not been met.'), " ", React.createElement("span", {style: {fontWeight: 700}}, "Indicator dimmed until all criteria met."))
+      ? React.createElement("div", {style: warnStyle}, "\u26A0 A restrictive layer within 12 in. of the surface and indicators of hydrophytic vegetation and hydric soil (unless significantly disturbed or naturally problematic) must all be present to use this indicator. ", (!d3Auto ? 'No qualifying restrictive layer has been entered. ' : '') + (!d3VegOk && !d3SoilOk ? 'Hydrophytic vegetation and hydric soil indicators have not been met.' : !d3VegOk ? 'Hydrophytic vegetation indicator has not been met.' : 'Hydric soil indicator has not been met.'), " ", React.createElement("span", {style: {fontWeight: 700}}, "Manual selection will generate a data consistency warning until all criteria are met."))
       : (ind.id === 'D5' && !d5Auto)
-        ? React.createElement("div", {style: warnStyle}, d5Details ? React.createElement(React.Fragment, null, "\u26A0 FAC-Neutral not met \u2014 ", d5Details.hydro, " OBL/FACW vs ", d5Details.upland, " FACU/UPL dominant", d5Details.upland !== 1 ? 's' : '', " among ", d5Details.nonFAC, " non-FAC dominant", d5Details.nonFAC !== 1 ? 's' : '', ". OBL/FACW must outnumber FACU/UPL. ", React.createElement("span", {style: {fontWeight: 700}}, "Indicator dimmed until criteria met.")) : React.createElement(React.Fragment, null, "\u26A0 Derived from vegetation dominance data (pre-morphological adaptations reassignment). Enter species and cover in the Vegetation module. OBL/FACW dominants (FAC excluded) must outnumber FACU/UPL dominants. ", React.createElement("span", {style: {fontWeight: 700}}, "Indicator dimmed until criteria met.")))
+        ? React.createElement("div", {style: warnStyle}, d5Details ? React.createElement(React.Fragment, null, "\u26A0 FAC-Neutral not met \u2014 ", d5Details.hydro, " OBL/FACW vs ", d5Details.upland, " FACU/UPL dominant", d5Details.upland !== 1 ? 's' : '', " among ", d5Details.nonFAC, " non-FAC dominant", d5Details.nonFAC !== 1 ? 's' : '', ". OBL/FACW must outnumber FACU/UPL. ", React.createElement("span", {style: {fontWeight: 700}}, "Auto-derived only \u2014 indicator locked until criteria met.")) : React.createElement(React.Fragment, null, "\u26A0 Derived from vegetation dominance data (pre-morphological adaptations reassignment). Enter species and cover in the Vegetation module. OBL/FACW dominants (FAC excluded) must outnumber FACU/UPL dominants. ", React.createElement("span", {style: {fontWeight: 700}}, "Auto-derived only \u2014 indicator locked until criteria met.")))
         : null;
     return React.createElement("div", {
       key: ind.id
@@ -24186,7 +24226,7 @@ function WetlandApp() {
       autoChecked: (secAuto && !secAuto?.partial) ? secAuto : false,
       autoPartial: secAuto?.partial ? secAuto : undefined,
       autoReason: secAuto?.reason,
-      onChange: dimmed ? () => {} : (id, v) => setChkS(p => ({
+      onChange: d5Dimmed ? () => {} : (id, v) => setChkS(p => ({
         ...p,
         [id]: v
       })),
