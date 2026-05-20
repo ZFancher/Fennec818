@@ -407,6 +407,11 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   --c-link: #1e40af;
   --c-selected-row: #eaf1ff;
 
+  --c-mod-site: #52525b;      --c-mod-site-bg: rgba(82,82,91,0.08);
+  --c-mod-veg: #15803d;       --c-mod-veg-bg: rgba(21,128,61,0.12);
+  --c-mod-soils: #92400e;     --c-mod-soils-bg: rgba(146,64,14,0.12);
+  --c-mod-hydro: #1e3a8a;     --c-mod-hydro-bg: rgba(30,58,138,0.12);
+
   --c-v-p-bg: #d9f0ec;
   --c-v-p-hdr: #c4e8e1;
   --c-v-p-bdr: var(--c-pass);
@@ -486,6 +491,11 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   --c-add-bg: #182829;
   --c-link: #60a5fa;
   --c-selected-row: rgba(96,165,250,0.10);
+
+  --c-mod-site: #a1a1aa;      --c-mod-site-bg: rgba(161,161,170,0.08);
+  --c-mod-veg: #4ade80;       --c-mod-veg-bg: rgba(74,222,128,0.10);
+  --c-mod-soils: #c2670a;     --c-mod-soils-bg: rgba(194,103,10,0.12);
+  --c-mod-hydro: #60a5fa;     --c-mod-hydro-bg: rgba(96,165,250,0.10);
 
   --c-v-p-bg: rgba(4,47,46,0.45);
   --c-v-p-hdr: rgba(13,74,63,0.6);
@@ -15754,7 +15764,7 @@ ${svg}
     ⚠ For best colour accuracy, use a printer with ICC colour management. Home inkjet printers are acceptable; laser printers are not recommended for the chromatic patches.
   </div>
 </div>
-<button class="no-print" onclick="window.print()" style="margin-top:16px;padding:10px 24px;background:#16a34a;color:white;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-weight:600;">🖨 Print Now</button>
+<button class="no-print" onclick="window.print()" style="margin-top:16px;padding:10px 24px;background:var(--c-action);color:var(--c-action-fg);border:none;border-radius:6px;font-size:14px;cursor:pointer;font-weight:600;">🖨 Print Now</button>
 </body>
 </html>`;
 }
@@ -17710,7 +17720,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
           cardOk?'Card detected — frame the ped and tap Analyze':'Hold reference card in view…'),
         React.createElement('div',{style:{position:'absolute',bottom:'calc(32px + env(safe-area-inset-bottom, 0px))',left:0,right:0,display:'flex',justifyContent:'center',pointerEvents:'none'}},
           React.createElement('button',{onClick:cardOk?handleAnalyse:undefined,disabled:!cardOk,style:{background:cardOk?'var(--c-pass)':'var(--c-disabled)',color:cardOk?'var(--c-action-fg)':'var(--c-sub)',border:'none',borderRadius:8,padding:'10px 28px',fontSize:15,fontWeight:600,cursor:cardOk?'pointer':'not-allowed',letterSpacing:'0.03em',pointerEvents:'auto'}},'Analyze'))),
-      React.createElement('button',{onClick:onClose,style:{position:'absolute',top:'calc(16px + env(safe-area-inset-top, 0px))',right:'calc(16px + env(safe-area-inset-right, 0px))',zIndex:1,background:'rgba(220,38,38,0.55)',color:'#fff',border:'none',borderRadius:5,width:30,height:30,fontSize:14,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}},'✕')
+      React.createElement('button',{onClick:onClose,style:{position:'absolute',top:'calc(16px + env(safe-area-inset-top, 0px))',right:'calc(16px + env(safe-area-inset-right, 0px))',zIndex:1,background:'none',color:'var(--c-fail)',border:'none',fontSize:22,lineHeight:1,cursor:'pointer',padding:'2px 6px'}},'✕')
     );
   }
 
@@ -17720,7 +17730,7 @@ function SoilAnalyzeCapture({ onAnalyze, onClose }) {
     React.createElement('div',{style:{position:'relative',flex:1,overflow:'hidden',background:'#000'}},
       React.createElement('canvas',{ref:reviewCanvasRef,
         style:{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'contain'}}),
-      React.createElement('button',{onClick:onClose,style:{position:'absolute',top:'calc(16px + env(safe-area-inset-top, 0px))',right:'calc(16px + env(safe-area-inset-right, 0px))',zIndex:1,background:'rgba(220,38,38,0.55)',color:'#fff',border:'none',borderRadius:5,width:30,height:30,fontSize:14,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}},'✕')),
+      React.createElement('button',{onClick:onClose,style:{position:'absolute',top:'calc(16px + env(safe-area-inset-top, 0px))',right:'calc(16px + env(safe-area-inset-right, 0px))',zIndex:1,background:'none',color:'var(--c-fail)',border:'none',fontSize:22,lineHeight:1,cursor:'pointer',padding:'2px 6px'}},'✕')),
     React.createElement('div',{style:{background:'var(--c-panel)',borderTop:'1px solid var(--c-rule-strong)',paddingTop:10,paddingLeft:'calc(14px + env(safe-area-inset-left, 0px))',paddingRight:'calc(14px + env(safe-area-inset-right, 0px))',paddingBottom:'calc(10px + env(safe-area-inset-bottom, 0px))',display:'flex',flexDirection:'column',gap:8,maxHeight:'55vh',overflowY:'auto',touchAction:'pan-y',overscrollBehavior:'none'}},
       React.createElement('div',{style:{fontSize:9,color:'var(--c-sub-2)',letterSpacing: 'var(--ls-cap)',textTransform:'uppercase',marginBottom:2}},'Adjust Redox Detection Thresholds'),
       React.createElement('div',{style:{display:'flex',gap:14}},
@@ -17984,10 +17994,8 @@ function SoilCameraCapture({ onSelect, onClose }) {
       onClick: onClose,
       style: {
         position: 'absolute', top: 'calc(16px + env(safe-area-inset-top, 0px))', right: 'calc(16px + env(safe-area-inset-right, 0px))', zIndex: 1,
-        background: 'rgba(220,38,38,0.55)', color: '#fff',
-        border: 'none', borderRadius: 5,
-        width: 30, height: 30, fontSize: 14, cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center'
+        background: 'none', color: 'var(--c-fail)',
+        border: 'none', fontSize: 22, lineHeight: 1, cursor: 'pointer', padding: '2px 6px'
       }
     }, '✕'),
     React.createElement('button', {
@@ -18737,7 +18745,7 @@ function StratumTable({
 function CustomCheckbox({
   checked,
   onChange,
-  color = '#14b8a6',
+  color = 'var(--c-pass)',
   auto = false,
   combo = false,
   disabled = false,
@@ -18754,7 +18762,7 @@ function CustomCheckbox({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      border: `1px solid ${checked ? color === '#14b8a6' ? 'var(--c-pass)' : color === 'var(--c-fail)' ? 'var(--c-fail)' : color === '#a78bfa' ? '#6d28d9' : 'var(--c-pass)' : 'var(--c-rule-strong)'}`,
+      border: `1px solid ${checked ? color === 'var(--c-pass)' ? 'var(--c-pass)' : color === 'var(--c-fail)' ? 'var(--c-fail)' : color === 'var(--c-auto-combo)' ? 'var(--c-auto-combo)' : 'var(--c-pass)' : 'var(--c-rule-strong)'}`,
       background: checked ? color : 'transparent',
       cursor: disabled ? 'default' : 'pointer',
       transition: 'background 0.1s, border 0.1s',
@@ -18860,7 +18868,7 @@ function HydricRow({
       },
         React.createElement("div", {style:{flexShrink:0,pointerEvents:'none'}},
           autoActive
-            ? React.createElement(CustomCheckbox, {checked:true,auto:!isCombo,combo:isCombo,disabled:true,color:isCombo?'#a78bfa':undefined})
+            ? React.createElement(CustomCheckbox, {checked:true,auto:!isCombo,combo:isCombo,disabled:true,color:isCombo?'var(--c-auto-combo)':undefined})
             : React.createElement(CustomCheckbox, {checked:effectivelyChecked,onChange:v=>onManualChange(ind.id,v),disabled:false})
         ),
         React.createElement("div", {style:{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:700,color:codeColor,minWidth:32,letterSpacing: 'var(--ls-cap)',flexShrink:0}}, ind.code),
@@ -21252,8 +21260,8 @@ function WetlandApp() {
   }, React.createElement(Card, {
     id: "module-site",
     subtitle: "USACE ENG 6116-1",
-    borderColor: "#52525b",
-    headerBg: "rgba(82,82,91,0.08)",
+    borderColor: "var(--c-mod-site)",
+    headerBg: "var(--c-mod-site-bg)",
     title: "Sample Point Information"
   }, React.createElement("div", {
     style: {
@@ -21912,8 +21920,8 @@ function WetlandApp() {
   })))), React.createElement(Card, {
     id: "module-vegetation",
     subtitle: "Module 1",
-    borderColor: "#15803d",
-    headerBg: "rgba(21,128,61,0.12)",
+    borderColor: "var(--c-mod-veg)",
+    headerBg: "var(--c-mod-veg-bg)",
     title: "Hydrophytic Vegetation",
     collapsible: true,
     defaultOpen: true,
@@ -21922,7 +21930,7 @@ function WetlandApp() {
     badgeStyle: vegMet ? passBadge : vegCalc.hasReassignment && (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? {
       background: 'var(--c-auto-partial-bg)',
       color: 'var(--c-auto-partial)',
-      border: '1px solid #92400e'
+      border: '1px solid var(--c-auto-partial)'
     } : failBadge,
     stickyFooter: React.createElement(React.Fragment, null, React.createElement("div", {
       style: {
@@ -22060,7 +22068,7 @@ function WetlandApp() {
         whiteSpace: 'nowrap',
         background: vegCalc.allValid.length === 0 ? 'var(--c-panel-2)' : vegCalc.domMet ? 'var(--c-pass-bg)' : vegCalc.domMorph?.met && morphQualOk ? 'var(--c-pass-bg)' : vegCalc.domMorph?.met ? 'var(--c-auto-partial-bg)' : 'var(--c-fail-bg)',
         color: vegCalc.allValid.length === 0 ? 'var(--c-sub)' : vegCalc.domMet ? 'var(--c-pass)' : vegCalc.domMorph?.met && morphQualOk ? 'var(--c-pass)' : vegCalc.domMorph?.met ? 'var(--c-auto-partial)' : domColor,
-        border: `1px solid ${vegCalc.allValid.length === 0 ? 'var(--c-rule-strong)' : vegCalc.domMet ? 'var(--c-pass)' : vegCalc.domMorph?.met && morphQualOk ? 'var(--c-pass)' : vegCalc.domMorph?.met ? '#92400e' : 'var(--c-fail)'}`
+        border: `1px solid ${vegCalc.allValid.length === 0 ? 'var(--c-rule-strong)' : vegCalc.domMet ? 'var(--c-pass)' : vegCalc.domMorph?.met && morphQualOk ? 'var(--c-pass)' : vegCalc.domMorph?.met ? 'var(--c-auto-partial)' : 'var(--c-fail)'}`
       }
     }, vegCalc.allValid.length === 0 ? '—' : vegCalc.domMet ? 'PASS' : vegCalc.domMorph?.met && morphQualOk ? 'PASS (IND. 3)' : vegCalc.domMorph?.met ? 'GATED' : 'FAIL'),
     labelStyle: {
@@ -22154,7 +22162,7 @@ function WetlandApp() {
         fontSize: 11,
         background: vegCalc.pi === null ? 'var(--c-panel-2)' : vegCalc.hasReassignment && vegCalc.piMorph?.met && morphQualOk ? 'var(--c-pass-bg)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? 'var(--c-auto-partial-bg)' : vegCalc.piMet ? 'var(--c-auto-partial-bg)' : 'var(--c-fail-bg)',
         color: vegCalc.hasReassignment && vegCalc.piMorph?.met ? morphQualOk ? 'var(--c-pass)' : 'var(--c-auto-partial)' : piColor,
-        border: `1px solid ${vegCalc.pi === null ? 'var(--c-rule-strong)' : vegCalc.hasReassignment && vegCalc.piMorph?.met && morphQualOk ? 'var(--c-pass)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? '#92400e' : vegCalc.piMet ? '#92400e' : 'var(--c-fail)'}`
+        border: `1px solid ${vegCalc.pi === null ? 'var(--c-rule-strong)' : vegCalc.hasReassignment && vegCalc.piMorph?.met && morphQualOk ? 'var(--c-pass)' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? 'var(--c-auto-partial)' : vegCalc.piMet ? 'var(--c-auto-partial)' : 'var(--c-fail)'}`
       }
     }, vegCalc.pi === null ? '—' : vegCalc.hasReassignment && vegCalc.piMorph?.met ? morphQualOk ? 'PASS (IND. 3)' : 'GATED' : piGatedMet ? 'PASS' : vegCalc.piMet ? 'GATED' : 'FAIL')),
     labelStyle: {
@@ -22764,8 +22772,8 @@ function WetlandApp() {
   })))), React.createElement(Card, {
     id: "module-soils",
     subtitle: "Module 2",
-    borderColor: "#92400e",
-    headerBg: "rgba(146,64,14,0.12)",
+    borderColor: "var(--c-mod-soils)",
+    headerBg: "var(--c-mod-soils-bg)",
     title: "Hydric Soils",
     collapsible: true,
     defaultOpen: true,
@@ -23927,8 +23935,8 @@ function WetlandApp() {
   })))), React.createElement(Card, {
     id: "module-hydro",
     subtitle: "Module 3",
-    borderColor: "#1e3a8a",
-    headerBg: "rgba(30,58,138,0.12)",
+    borderColor: "var(--c-mod-hydro)",
+    headerBg: "var(--c-mod-hydro-bg)",
     title: "Wetland Hydrology",
     collapsible: true,
     defaultOpen: true,
