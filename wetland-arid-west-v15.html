@@ -375,6 +375,9 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   --c-warn: #b45309;
   --c-warn-bg: #fff4e0;
   --c-dcw-bg: #fef3c7;
+  --c-warn-box-bg: rgb(255,250,237);
+  --c-conf-pill-bg: rgb(232,248,246);
+  --c-conf-header-bg: rgb(246,252,251);
   --c-gate: #b45309;
   --c-gate-bg: #fff8eb;
   --c-info: #1e40af;
@@ -467,6 +470,9 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   --c-warn: #f59e0b;
   --c-warn-bg: #372b19;
   --c-dcw-bg: #451a03;
+  --c-warn-box-bg: rgba(251,191,36,0.08);
+  --c-conf-pill-bg: rgba(20,184,166,0.1);
+  --c-conf-header-bg: rgba(20,184,166,0.04);
   --c-gate: #f59e0b;
   --c-gate-bg: #2a231a;
   --c-info: #60a5fa;
@@ -21861,7 +21867,7 @@ function WetlandApp() {
   }, lbl))), React.createElement("span", {
     style: {
       fontSize: 10,
-      background: 'rgb(232,248,246)',
+      background: 'var(--c-conf-pill-bg)',
       color: 'var(--c-pass)',
       border: '1px solid var(--c-pass)',
       borderRadius: 3,
@@ -21906,7 +21912,7 @@ function WetlandApp() {
   }, lbl))), React.createElement("span", {
     style: {
       fontSize: 10,
-      background: 'rgb(232,248,246)',
+      background: 'var(--c-conf-pill-bg)',
       color: 'var(--c-pass)',
       border: '1px solid var(--c-pass)',
       borderRadius: 3,
@@ -22159,7 +22165,7 @@ function WetlandApp() {
       marginTop: 4,
       padding: '4px 8px',
       borderRadius: 3,
-      background: 'rgb(255,250,237)',
+      background: 'var(--c-warn-box-bg)',
       border: '1px solid rgba(251,191,36,0.25)',
       fontSize: 10,
       color: 'var(--c-warn)',
@@ -22420,7 +22426,7 @@ function WetlandApp() {
       marginTop: 4,
       padding: '4px 8px',
       borderRadius: 3,
-      background: 'rgb(255,250,237)',
+      background: 'var(--c-warn-box-bg)',
       border: '1px solid rgba(251,191,36,0.25)',
       fontSize: 10,
       color: 'var(--c-warn)',
@@ -22451,7 +22457,7 @@ function WetlandApp() {
         margin: '2px 16px 8px',
         padding: '4px 8px',
         borderRadius: 3,
-        background: 'rgb(255,250,237)',
+        background: 'var(--c-warn-box-bg)',
         border: '1px solid rgba(251,191,36,0.25)',
         fontSize: 10,
         color: 'var(--c-warn)',
@@ -22655,7 +22661,7 @@ function WetlandApp() {
           fontSize: 10,
           lineHeight: 1.5,
           background: (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && morphQualOk ? 'var(--c-pass-bg)'
-            : (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'rgb(255,250,237)'
+            : (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'var(--c-warn-box-bg)'
             : 'var(--c-fail-bg)',
           border: `1px solid ${(vegCalc.domMorph?.met || vegCalc.piMorph?.met) && morphQualOk ? 'rgba(13,138,122,0.35)' : (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && !morphQualOk ? 'rgba(251,191,36,0.25)' : 'rgba(194,55,31,0.35)'}`,
           color: (vegCalc.domMorph?.met || vegCalc.piMorph?.met) && morphQualOk ? 'var(--c-pass)'
@@ -22694,7 +22700,7 @@ function WetlandApp() {
     style: {
       margin: '0 0 8px',
       padding: '4px 8px',
-      background: 'rgb(255,250,237)',
+      background: 'var(--c-warn-box-bg)',
       border: '1px solid rgba(251,191,36,0.25)',
       borderRadius: 3,
       fontSize: 10,
@@ -23200,7 +23206,7 @@ function WetlandApp() {
     style: {
       margin: '6px 12px 2px',
       padding: '8px 12px',
-      background: 'rgb(255,250,237)',
+      background: 'var(--c-warn-box-bg)',
       border: '1px solid rgba(251,191,36,0.25)',
       borderRadius: 6
     }
@@ -23900,7 +23906,7 @@ function WetlandApp() {
       lineHeight: 1.5,
       padding: '4px 8px',
       borderRadius: 3,
-      background: 'rgb(255,250,237)',
+      background: 'var(--c-warn-box-bg)',
       border: '1px solid rgba(251,191,36,0.25)'
     }
   }, "\u26A0 Problematic hydric soil indicators per 2024 ENG Form 6116-1 and ERDC/EL TR-08-28 Ch. 3. Require hydrophytic vegetation AND wetland hydrology to be present, significantly disturbed, or naturally problematic. ", React.createElement("span", {
@@ -24095,7 +24101,7 @@ function WetlandApp() {
       fontSize: 10,
       fontWeight: 700,
       color: 'var(--c-pass)',
-      background: 'rgb(246,252,251)',
+      background: 'var(--c-conf-header-bg)',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center'
@@ -24186,7 +24192,7 @@ function WetlandApp() {
         upland
       };
     })() : null;
-    const warnStyle = {marginTop: 4, padding: '4px 8px', borderRadius: 3, background: 'rgb(255,250,237)', border: '1px solid rgba(251,191,36,0.25)', fontSize: 10, color: 'var(--c-warn)', lineHeight: 1.5};
+    const warnStyle = {marginTop: 4, padding: '4px 8px', borderRadius: 3, background: 'var(--c-warn-box-bg)', border: '1px solid rgba(251,191,36,0.25)', fontSize: 10, color: 'var(--c-warn)', lineHeight: 1.5};
     const warningElem = (ind.id === 'D3' && !(d3VegOk && d3SoilOk))
       ? React.createElement("div", {style: warnStyle}, "\u26A0 A restrictive layer within 12 in. of the surface and indicators of hydrophytic vegetation and hydric soil (unless significantly disturbed or naturally problematic) must all be present to use this indicator. ", (!d3Auto ? 'No qualifying restrictive layer has been entered. ' : '') + (!d3VegOk && !d3SoilOk ? 'Hydrophytic vegetation and hydric soil indicators have not been met.' : !d3VegOk ? 'Hydrophytic vegetation indicator has not been met.' : 'Hydric soil indicator has not been met.'), " ", React.createElement("span", {style: {fontWeight: 700}}, "Manual selection will generate a data consistency warning until all criteria are met."))
       : (ind.id === 'D5' && !d5Auto)
