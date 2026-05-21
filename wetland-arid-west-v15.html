@@ -22721,35 +22721,31 @@ function WetlandApp() {
       lineHeight: 1.5
     }
   }, "\u2713 Criterion satisfied \u2014 " + (soilsMetStandard && hydroMet ? "hydric soil and wetland hydrology are present." : soilsMetStandard ? "hydric soil present; hydrology is disturbed/problematic (Ch. 5 exception)." : hydroMet ? "wetland hydrology present; soils are disturbed/problematic (Ch. 5 exception)." : "soils and hydrology both disturbed/problematic (Ch. 5 exception).")),
-  React.createElement("label", {
+  React.createElement("div", {
+    style: {
+      marginTop: probVegMet ? 12 : 0
+    }
+  }, React.createElement("label", {
     style: {
       display: 'flex',
       gap: 8,
-      alignItems: 'flex-start',
-      cursor: 'pointer',
-      marginTop: probVegMet ? 12 : 0
+      alignItems: 'center',
+      cursor: 'pointer'
     }
   }, React.createElement(CustomCheckbox, {
     checked: probHydroVeg,
-    onChange: v => setProbHydroVeg(v),
-    style: {
-      marginTop: 2
-    }
+    onChange: v => setProbHydroVeg(v)
   }), React.createElement("div", {
-    style: {
-      flex: 1
-    }
-  }, React.createElement("div", {
     style: {
       fontSize: 11,
       color: 'var(--c-ink-2)',
       fontWeight: 600
     }
-  }, "Problematic Hydrophytic Vegetation present"), React.createElement("div", {
+  }, "Problematic Hydrophytic Vegetation present")), React.createElement("div", {
     style: {
       fontSize: 11,
       color: 'var(--c-sub)',
-      marginTop: 2,
+      marginTop: 6,
       lineHeight: 1.5
     }
   }, "Check this box only after applying Chapter 5 procedures (ERDC/EL TR-08-28, pp. 85\u201395) and concluding that hydrophytic vegetation would be present during the wet portion of the growing season in a normal rainfall year. The procedures applied and the basis for this conclusion must be documented in the Remarks field below."),
@@ -22770,7 +22766,7 @@ function WetlandApp() {
       outline: 'none',
       boxSizing: 'border-box'
     }
-  }))))), React.createElement("div", {
+  })))), React.createElement("div", {
     style: {
       padding: '8px 16px 10px',
       borderTop: '2px solid var(--c-rule)',
