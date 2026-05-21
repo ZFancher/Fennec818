@@ -24212,8 +24212,10 @@ function WetlandApp() {
       })),
       tier: "secondary",
       selectedLrr: siteInfo.lrr,
-      warningBox: warningElem
-    })));
+      warningBox: dimmed ? null : warningElem
+    })), dimmed && warningElem && React.createElement("div", {
+      style: { padding: '0 16px 10px' }
+    }, warningElem));
   })), React.createElement("div", {
     style: {
       padding: '8px 16px',
