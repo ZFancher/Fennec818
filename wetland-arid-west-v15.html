@@ -18912,7 +18912,7 @@ function HydricRow({
 }
 function IndRow({
   ind, checked, onChange, tier, autoChecked, autoReason, autoPartial,
-  measureVal, onMeasureChange, selectedLrr, warningBox
+  measureVal, onMeasureChange, selectedLrr, warningBox, suppressBorderBottom
 }) {
   const [exp, setExp] = useState(false);
   const tc = tier === 'primary' ? 'var(--c-pass)' : 'var(--c-auto-combo)';
@@ -18940,7 +18940,7 @@ function IndRow({
       setExp(x => !x);
     },
     style: {
-      borderBottom: '1px solid var(--c-rule)',
+      borderBottom: suppressBorderBottom ? 'none' : '1px solid var(--c-rule)',
       cursor: 'pointer', background: rowBg,
       opacity: lrrMismatch ? 0.45 : 1
     }
@@ -24195,7 +24195,8 @@ function WetlandApp() {
         ? React.createElement("div", {style: warnStyle}, d5Details ? React.createElement(React.Fragment, null, "\u26A0 FAC-Neutral not met \u2014 ", d5Details.hydro, " OBL/FACW vs ", d5Details.upland, " FACU/UPL dominant", d5Details.upland !== 1 ? 's' : '', " among ", d5Details.nonFAC, " non-FAC dominant", d5Details.nonFAC !== 1 ? 's' : '', ". OBL/FACW must outnumber FACU/UPL. ", React.createElement("span", {style: {fontWeight: 700}}, "Auto-derived only \u2014 indicator locked until criteria met.")) : React.createElement(React.Fragment, null, "\u26A0 Derived from vegetation dominance data (pre-morphological adaptations reassignment). Enter species and cover in the Vegetation module. OBL/FACW dominants (FAC excluded) must outnumber FACU/UPL dominants. ", React.createElement("span", {style: {fontWeight: 700}}, "Auto-derived only \u2014 indicator locked until criteria met.")))
         : null;
     return React.createElement("div", {
-      key: ind.id
+      key: ind.id,
+      style: dimmed && warningElem ? { borderBottom: '1px solid var(--c-rule)' } : {}
     }, React.createElement("div", {
       style: {
         opacity: dimmed ? 0.45 : 1
@@ -24212,7 +24213,8 @@ function WetlandApp() {
       })),
       tier: "secondary",
       selectedLrr: siteInfo.lrr,
-      warningBox: dimmed ? null : warningElem
+      warningBox: dimmed ? null : warningElem,
+      suppressBorderBottom: !!(dimmed && warningElem)
     })), dimmed && warningElem && React.createElement("div", {
       style: { padding: '0 16px 10px' }
     }, warningElem));
