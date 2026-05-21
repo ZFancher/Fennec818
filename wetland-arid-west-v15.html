@@ -22167,7 +22167,7 @@ function WetlandApp() {
       borderRadius: 3,
       background: 'var(--c-warn-box-bg)',
       border: '1px solid rgba(251,191,36,0.25)',
-      fontSize: 10,
+      fontSize: 11,
       color: 'var(--c-warn)',
       lineHeight: 1.5
     }
@@ -22428,7 +22428,7 @@ function WetlandApp() {
       borderRadius: 3,
       background: 'var(--c-warn-box-bg)',
       border: '1px solid rgba(251,191,36,0.25)',
-      fontSize: 10,
+      fontSize: 11,
       color: 'var(--c-warn)',
       lineHeight: 1.5
     }
@@ -22459,7 +22459,7 @@ function WetlandApp() {
         borderRadius: 3,
         background: 'var(--c-warn-box-bg)',
         border: '1px solid rgba(251,191,36,0.25)',
-        fontSize: 10,
+        fontSize: 11,
         color: 'var(--c-warn)',
         lineHeight: 1.5
       }
@@ -22703,7 +22703,7 @@ function WetlandApp() {
       background: 'var(--c-warn-box-bg)',
       border: '1px solid rgba(251,191,36,0.25)',
       borderRadius: 3,
-      fontSize: 10,
+      fontSize: 11,
       color: 'var(--c-warn)',
       lineHeight: 1.5
     }
@@ -22716,7 +22716,7 @@ function WetlandApp() {
       background: 'var(--c-pass-bg)',
       border: '1px solid var(--c-pass)',
       borderRadius: 3,
-      fontSize: 10,
+      fontSize: 11,
       color: 'var(--c-pass)',
       lineHeight: 1.5
     }
@@ -23887,7 +23887,7 @@ function WetlandApp() {
     }
   }, probValid ? React.createElement("div", {
     style: {
-      fontSize: 10,
+      fontSize: 11,
       lineHeight: 1.5,
       padding: '4px 8px',
       borderRadius: 3,
@@ -23897,7 +23897,7 @@ function WetlandApp() {
     }
   }, "\u2713 ", React.createElement("strong", null, "Indicators active."), " ", rawVegMet && hydroMet ? 'Hydrophytic vegetation and wetland hydrology are both confirmed.' : rawVegMet ? 'Vegetation confirmed; hydrology is significantly disturbed or naturally problematic.' : hydroMet ? 'Wetland hydrology confirmed; vegetation is significantly disturbed or naturally problematic.' : 'Both vegetation and hydrology are significantly disturbed or naturally problematic.') : React.createElement("div", {
     style: {
-      fontSize: 10,
+      fontSize: 11,
       color: 'var(--c-warn)',
       lineHeight: 1.5,
       padding: '4px 8px',
@@ -24188,7 +24188,7 @@ function WetlandApp() {
         upland
       };
     })() : null;
-    const warnStyle = {marginTop: 4, padding: '4px 8px', borderRadius: 3, background: 'var(--c-warn-box-bg)', border: '1px solid rgba(251,191,36,0.25)', fontSize: 10, color: 'var(--c-warn)', lineHeight: 1.5};
+    const warnStyle = {marginTop: 4, padding: '4px 8px', borderRadius: 3, background: 'var(--c-warn-box-bg)', border: '1px solid rgba(251,191,36,0.25)', fontSize: 11, color: 'var(--c-warn)', lineHeight: 1.5};
     const warningElem = (ind.id === 'D3' && !(d3VegOk && d3SoilOk))
       ? React.createElement("div", {style: warnStyle}, "\u26A0 A restrictive layer within 12 in. of the surface and indicators of hydrophytic vegetation and hydric soil (unless significantly disturbed or naturally problematic) must all be present to use this indicator. ", (!d3Auto ? 'No qualifying restrictive layer has been entered. ' : '') + (!d3VegOk && !d3SoilOk ? 'Hydrophytic vegetation and hydric soil indicators have not been met.' : !d3VegOk ? 'Hydrophytic vegetation indicator has not been met.' : 'Hydric soil indicator has not been met.'), " ", React.createElement("span", {style: {fontWeight: 700}}, "Manual selection will generate a data consistency warning until all criteria are met."))
       : (ind.id === 'D5' && !d5Auto)
