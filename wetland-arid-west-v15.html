@@ -20128,11 +20128,14 @@ function WetlandApp() {
     if (typeof v === 'object' && v.partial) return !!chkP[k];
     return true;
   }).length;
+  const d3GateOk = (vegCalc.domMet || sigDistVeg || natProbVeg) &&
+    (Object.values(chkHydric).some(Boolean) ||
+     Object.values(_effectiveSoilAutoBase).some(v => v && !v?.partial) ||
+     sigDistSoil || natProbSoil) &&
+    !!d3Auto;
   const numS = Object.values({
     ...chkS,
-    ...(d3Auto && !d3Auto.partial && !chkS['D3'] ? {
-      D3: d3Auto
-    } : {}),
+    D3: chkS['D3'] ? d3GateOk : false,
     ...(d5Auto && !chkS['D5'] ? {
       D5: d5Auto
     } : {})
@@ -20254,15 +20257,15 @@ function WetlandApp() {
         _mismatch: true
       });
     });
-    if (chkS['D3'] && !((vegMet || vegDistOrProb) && (soilsMet || soilDistOrProb))) {
-      const _d3missing = !(vegMet || vegDistOrProb) && !(soilsMet || soilDistOrProb)
-        ? 'hydrophytic vegetation and hydric soil indicators have not been met'
-        : !(vegMet || vegDistOrProb)
-          ? 'hydrophytic vegetation indicator has not been met'
-          : 'hydric soil indicator has not been met';
+    if (chkS['D3'] && !((vegMet || vegDistOrProb) && (soilsMet || soilDistOrProb) && !!d3Auto)) {
+      const _d3missing = [
+        !d3Auto ? 'no qualifying restrictive layer has been entered' : null,
+        !(vegMet || vegDistOrProb) ? 'hydrophytic vegetation indicator has not been met' : null,
+        !(soilsMet || soilDistOrProb) ? 'hydric soil indicator has not been met' : null
+      ].filter(Boolean);
       w.push({
         code: 'D3',
-        msg: `D3 (Shallow Aquitard) is manually selected but the required conditions are not met — ${_d3missing}. Hydrophytic vegetation and hydric soil must both be present, significantly disturbed, or naturally problematic.`,
+        msg: `D3 (Shallow Aquitard) is manually selected but the required conditions are not met — ${_d3missing.join('; ')}. A restrictive layer within 12 in. of the surface and indicators of hydrophytic vegetation and hydric soil must all be present, significantly disturbed, or naturally problematic.`,
         _mismatch: true
       });
     }
@@ -20363,7 +20366,7 @@ function WetlandApp() {
       }
     }
     return w;
-  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkS, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, soilsMet, hydroMet, vegDistOrProb, soilDistOrProb, soilProfileWarning, soilWarnDetail, probValid, probHydroVeg, probHydroVegRemarks, soilsSideOk, hydroSideOk]);
+  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkS, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, soilsMet, hydroMet, vegDistOrProb, soilDistOrProb, soilProfileWarning, soilWarnDetail, probValid, probHydroVeg, probHydroVegRemarks, soilsSideOk, hydroSideOk, d3Auto]);
   const criteriaCount = [vegMet, soilsMet, hydroMet].filter(Boolean).length;
   const passBadge = {
     background: 'var(--c-pass-bg)',
@@ -24189,8 +24192,8 @@ function WetlandApp() {
       };
     })() : null;
     const warnStyle = {marginTop: 4, padding: '4px 8px', borderRadius: 3, background: 'var(--c-warn-box-bg)', border: '1px solid rgba(251,191,36,0.25)', fontSize: 11, color: 'var(--c-warn)', lineHeight: 1.5};
-    const warningElem = (ind.id === 'D3' && !(d3VegOk && d3SoilOk))
-      ? React.createElement("div", {style: warnStyle}, "\u26A0 A restrictive layer within 12 in. of the surface and indicators of hydrophytic vegetation and hydric soil (unless significantly disturbed or naturally problematic) must all be present to use this indicator. ", (!d3Auto ? 'No qualifying restrictive layer has been entered. ' : '') + (!d3VegOk && !d3SoilOk ? 'Hydrophytic vegetation and hydric soil indicators have not been met.' : !d3VegOk ? 'Hydrophytic vegetation indicator has not been met.' : 'Hydric soil indicator has not been met.'), " ", React.createElement("span", {style: {fontWeight: 700}}, "Manual selection will generate a data consistency warning until all criteria are met."))
+    const warningElem = (ind.id === 'D3' && !(d3VegOk && d3SoilOk && !!d3Auto))
+      ? React.createElement("div", {style: warnStyle}, "\u26A0 A restrictive layer within 12 in. of the surface and indicators of hydrophytic vegetation and hydric soil (unless significantly disturbed or naturally problematic) must all be present to use this indicator. ", [!d3Auto ? 'No qualifying restrictive layer has been entered.' : null, !d3VegOk ? 'Hydrophytic vegetation indicator has not been met.' : null, !d3SoilOk ? 'Hydric soil indicator has not been met.' : null].filter(Boolean).join(' '), " ", React.createElement("span", {style: {fontWeight: 700}}, "Manual selection will generate a data consistency warning until all criteria are met."))
       : (ind.id === 'D5' && !d5Auto)
         ? React.createElement("div", {style: warnStyle}, d5Details ? React.createElement(React.Fragment, null, "\u26A0 FAC-Neutral not met \u2014 ", d5Details.hydro, " OBL/FACW vs ", d5Details.upland, " FACU/UPL dominant", d5Details.upland !== 1 ? 's' : '', " among ", d5Details.nonFAC, " non-FAC dominant", d5Details.nonFAC !== 1 ? 's' : '', ". OBL/FACW must outnumber FACU/UPL. ", React.createElement("span", {style: {fontWeight: 700}}, "Auto-derived only \u2014 indicator locked until criteria met.")) : React.createElement(React.Fragment, null, "\u26A0 Derived from vegetation dominance data (pre-morphological adaptations reassignment). Enter species and cover in the Vegetation module. OBL/FACW dominants (FAC excluded) must outnumber FACU/UPL dominants. ", React.createElement("span", {style: {fontWeight: 700}}, "Auto-derived only \u2014 indicator locked until criteria met.")))
         : null;
