@@ -19565,7 +19565,6 @@ function WetlandApp() {
   const [morphAdaptEntries, setMorphAdaptEntries] = useState([]);
   const [probHydroVeg, setProbHydroVeg] = useState(false);
   const [probHydroVegRemarks, setProbHydroVegRemarks] = useState('');
-  const [probHydroVegConfirmed, setProbHydroVegConfirmed] = useState(false);
   function addMorphEntry() {
     setMorphAdaptEntries(e => [...e, {
       id: Date.now().toString(),
@@ -19818,7 +19817,6 @@ function WetlandApp() {
     setMorphAdaptEntries([]);
     setProbHydroVeg(false);
     setProbHydroVegRemarks('');
-    setProbHydroVegConfirmed(false);
     setPlotSizes({ tree: '', shrub: '', herb: '', vine: '' });
     setBareGround('');
     setGpsStatus(null);
@@ -19866,7 +19864,6 @@ function WetlandApp() {
       if (s.morphAdaptEntries) setMorphAdaptEntries(s.morphAdaptEntries);
       if (s.probHydroVeg !== undefined) setProbHydroVeg(s.probHydroVeg);
       if (s.probHydroVegRemarks !== undefined) setProbHydroVegRemarks(s.probHydroVegRemarks);
-      if (s.probHydroVegConfirmed !== undefined) setProbHydroVegConfirmed(s.probHydroVegConfirmed);
     } catch (e) {
       console.warn('Failed to restore form:', e);
     }
@@ -19903,7 +19900,6 @@ function WetlandApp() {
           morphAdaptEntries,
           probHydroVeg,
           probHydroVegRemarks,
-          probHydroVegConfirmed,
           gpsStatus,
           gpsAccuracy,
           gpsFromJson
@@ -19913,7 +19909,7 @@ function WetlandApp() {
       }
     }, 600);
     return () => clearTimeout(t);
-  }, [siteInfo, strata, horizons, restrictiveType, restrictiveDepth, chkHydric, chkHydricProb, chkP, chkS, hydroMeasure, plotSizes, bareGround, bioticCrust, normalCirc, sigDistVeg, sigDistSoil, sigDistHydro, natProbVeg, natProbSoil, natProbHydro, spgiRemarks, vegRemarks, soilRemarks, hydroRemarks, morphAdaptEntries, probHydroVeg, probHydroVegRemarks, probHydroVegConfirmed, gpsStatus, gpsAccuracy, gpsFromJson]);
+  }, [siteInfo, strata, horizons, restrictiveType, restrictiveDepth, chkHydric, chkHydricProb, chkP, chkS, hydroMeasure, plotSizes, bareGround, bioticCrust, normalCirc, sigDistVeg, sigDistSoil, sigDistHydro, natProbVeg, natProbSoil, natProbHydro, spgiRemarks, vegRemarks, soilRemarks, hydroRemarks, morphAdaptEntries, probHydroVeg, probHydroVegRemarks, gpsStatus, gpsAccuracy, gpsFromJson]);
   const [activeTab, setActiveTab] = useState('site');
   const [theme, setTheme] = useState(() => {
     try { return localStorage.getItem('aw.theme') || 'light'; } catch { return 'light'; }
@@ -20214,7 +20210,7 @@ function WetlandApp() {
   const morphQualOk = !morphAdapt || soilsSideOk && hydroSideOk;
   const morphVegGated = vegCalc.morphVegMet && morphQualOk;
   const rawVegMet = vegCalc.domMet || piGatedMet || morphVegGated;
-  const probVegMet = !rawVegMet && probHydroVeg && soilsSideOk && hydroSideOk && probHydroVegConfirmed;
+  const probVegMet = !rawVegMet && probHydroVeg && soilsSideOk && hydroSideOk;
   const vegMet = rawVegMet || probVegMet;
   const probValid = (rawVegMet || vegDistOrProb) && (hydroMet || hydroDistOrProb);
   const soilsMet = soilsMetStandard || numHydricProbManual >= 1 || numHydricProb >= 1 && probValid;
@@ -20264,6 +20260,16 @@ function WetlandApp() {
         _mismatch: true
       });
     }
+    if (probHydroVeg && !(soilsSideOk && hydroSideOk)) w.push({
+      code: 'PHV',
+      msg: 'Problematic Hydrophytic Vegetation (Ch. 5) is selected but the required conditions are not met — indicators of hydric soil AND wetland hydrology must be present, significantly disturbed, or naturally problematic before this selection can contribute to the vegetation conclusion.',
+      _mismatch: true
+    });
+    if (probHydroVeg && !probHydroVegRemarks.trim()) w.push({
+      code: 'PHV',
+      msg: 'Problematic Hydrophytic Vegetation (Ch. 5) is selected but no documentation has been entered in Remarks. The Chapter 5 procedures applied and the basis for concluding that hydrophytic vegetation would be present must be documented.',
+      _mismatch: true
+    });
     if (isWetland && normalCirc === false) w.push({
       code: 'W4',
       msg: 'Final determination is YES but Normal Circumstances are marked as absent. Per ERDC/EL TR-08-28 Ch. 5, atypical-situation methods must be applied before a final determination can be made.'
@@ -20351,7 +20357,7 @@ function WetlandApp() {
       }
     }
     return w;
-  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkS, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, soilsMet, hydroMet, vegDistOrProb, soilDistOrProb, soilProfileWarning, soilWarnDetail, probValid]);
+  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkS, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, soilsMet, hydroMet, vegDistOrProb, soilDistOrProb, soilProfileWarning, soilWarnDetail, probValid, probHydroVeg, probHydroVegRemarks, soilsSideOk, hydroSideOk]);
   const criteriaCount = [vegMet, soilsMet, hydroMet].filter(Boolean).length;
   const passBadge = {
     background: 'var(--c-pass-bg)',
@@ -20496,7 +20502,6 @@ function WetlandApp() {
       morphAdaptEntries,
       probHydroVeg,
       probHydroVegRemarks,
-      probHydroVegConfirmed,
       gpsStatus,
       gpsAccuracy
     };
@@ -20550,7 +20555,6 @@ function WetlandApp() {
     if (s.morphAdaptEntries) setMorphAdaptEntries(s.morphAdaptEntries);
     if (s.probHydroVeg !== undefined) setProbHydroVeg(s.probHydroVeg);
     if (s.probHydroVegRemarks !== undefined) setProbHydroVegRemarks(s.probHydroVegRemarks);
-    if (s.probHydroVegConfirmed !== undefined) setProbHydroVegConfirmed(s.probHydroVegConfirmed);
     if (s.gpsStatus !== undefined) setGpsStatus(s.gpsStatus);
     if (s.gpsAccuracy !== undefined) setGpsAccuracy(s.gpsAccuracy);
     setGpsFromJson(!!(s.siteInfo?.lat || s.siteInfo?.lng));
@@ -22697,7 +22701,7 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       lineHeight: 1.5
     }
-  }, "\u26A0 Indicators of hydric soil AND wetland hydrology must be present, unless significantly disturbed or naturally problematic. This selection is recorded but will not contribute to the vegetation conclusion until those conditions are met."),
+  }, "\u26A0 Apply Chapter 5 procedures (Difficult Wetland Situations in the Arid West, pp. 85\u201395) before using this option. Indicators of hydric soil AND wetland hydrology must be present, significantly disturbed, or naturally problematic. This selection will not contribute to the vegetation conclusion until those conditions are met."),
 
   probVegMet && React.createElement("div", {
     style: {
@@ -22721,7 +22725,7 @@ function WetlandApp() {
     }
   }, React.createElement(CustomCheckbox, {
     checked: probHydroVeg,
-    onChange: v => { setProbHydroVeg(v); if (!v) setProbHydroVegConfirmed(false); },
+    onChange: v => setProbHydroVeg(v),
     style: {
       marginTop: 2
     }
@@ -22742,36 +22746,10 @@ function WetlandApp() {
       marginTop: 2,
       lineHeight: 1.5
     }
-  }, "Used when standard indicators fail due to disturbance (seeding, herbicide, drought, invasives, etc.) but hydric soil and wetland hydrology are both present (ERDC/EL TR-08-28 Ch. 5, pp. 85\u201395)."),
-  !rawVegMet && probHydroVeg && soilsSideOk && hydroSideOk && React.createElement("label", {
-    style: {
-      display: 'flex',
-      gap: 8,
-      alignItems: 'flex-start',
-      cursor: 'pointer',
-      marginTop: 8,
-      padding: '5px 8px',
-      background: probHydroVegConfirmed ? 'var(--c-pass-bg)' : 'rgb(255,250,237)',
-      border: probHydroVegConfirmed ? '1px solid var(--c-pass)' : '1px solid rgba(251,191,36,0.35)',
-      borderRadius: 3
-    }
-  }, React.createElement(CustomCheckbox, {
-    checked: probHydroVegConfirmed,
-    onChange: v => setProbHydroVegConfirmed(v),
-    style: { marginTop: 1, flexShrink: 0 }
-  }), React.createElement("div", {
-    style: {
-      fontSize: 10,
-      color: probHydroVegConfirmed ? 'var(--c-pass)' : 'var(--c-warn)',
-      lineHeight: 1.5
-    }
-  }, probHydroVegConfirmed
-    ? "\u2713 Confirmed \u2014 hydrophytic vegetation present based on professional judgment (Ch. 5)."
-    : "Confirm: Based on professional judgment (Ch. 5), hydrophytic vegetation is present at this site. Standard indicators (dominance test, prevalence index) have failed."
-  )),
-  probHydroVeg && vegDistOrProb && React.createElement("input", {
+  }, "Check this box only after applying Chapter 5 procedures (ERDC/EL TR-08-28, pp. 85\u201395) and concluding that hydrophytic vegetation would be present during the wet portion of the growing season in a normal year. The procedures applied and the basis for this conclusion must be documented in the Remarks field below."),
+  probHydroVeg && React.createElement("input", {
     type: "text",
-    placeholder: "Describe problematic condition...",
+    placeholder: "Required \u2014 describe the Ch. 5 procedures applied (e.g., temporal shifts, reference site, grazing, managed vegetation) and the basis for concluding that hydrophytic vegetation would be present during the wet growing season under normal conditions.",
     value: probHydroVegRemarks,
     onChange: e => setProbHydroVegRemarks(e.target.value),
     style: {
