@@ -19507,11 +19507,23 @@ function WetlandApp() {
         };
       }, 200);
     }
+    // Keep the captured viewport position current as the page scrolls so that
+    // useLayoutEffect only compensates for layout-change delta, not scroll delta.
+    // Without this, a scroll between pointerdown and the next render causes the
+    // anchor to over-compensate, shifting all click targets by the scroll amount.
+    function onScroll() {
+      const { el } = _sa.current;
+      if (el && document.contains(el)) {
+        _sa.current = { el, top: el.getBoundingClientRect().top };
+      }
+    }
     document.addEventListener('pointerdown', onDown);
     document.addEventListener('pointerup', onUp);
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       document.removeEventListener('pointerdown', onDown);
       document.removeEventListener('pointerup', onUp);
+      window.removeEventListener('scroll', onScroll);
     };
   }, []);
   useLayoutEffect(() => {
