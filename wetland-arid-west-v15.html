@@ -22100,7 +22100,24 @@ function WetlandApp() {
       padding: '6px 16px',
       borderTop: '2px solid var(--c-rule)'
     }
-  }, React.createElement("div", {
+  }, vegCalc.hasReassignment && vegCalc.domMorph && React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '58px 1fr 1fr',
+      padding: '3px 16px',
+      background: 'var(--c-pass-bg)',
+      borderTop: '1px solid rgba(20,184,166,0.2)',
+      fontSize: 10,
+      letterSpacing: 'var(--ls-cap)'
+    }
+  }, React.createElement("span", null), React.createElement("span", null), React.createElement("span", {
+    style: {
+      textAlign: 'right',
+      paddingRight: 2,
+      color: vegCalc.domMorph.met ? 'var(--c-pass)' : 'var(--c-fail)',
+      textTransform: 'uppercase'
+    }
+  }, vegCalc.domMorph.met ? 'Ind. 3 Reassignment Active ✓' : 'Ind. 3 Reassignment Active ✗')), React.createElement("div", {
     className: "dt-stats-grid"
   }, [{
     l: 'Total Cover',
