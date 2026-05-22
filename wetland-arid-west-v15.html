@@ -20939,18 +20939,14 @@ function WetlandApp() {
   }, "Export / Import"), React.createElement("button", {
     onClick: () => { setShowExportModal(false); setGpsExportWarnTarget(null); },
     style: {
-      background: 'var(--c-fail-bg)',
-      border: '1px solid var(--c-fail)',
+      background: 'none',
+      border: 'none',
       color: 'var(--c-fail)',
-      borderRadius: 5,
-      width: 34,
-      height: 34,
-      fontSize: 14,
+      fontSize: 16,
+      lineHeight: 1,
       cursor: 'pointer',
-      flexShrink: 0,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
+      padding: '0 2px',
+      flexShrink: 0
     }
   }, "\u2715")), gpsExportWarnTarget && React.createElement("div", {
     style: { padding: '24px 20px' }
@@ -21172,7 +21168,7 @@ function WetlandApp() {
       }, "Clear Form"),
       React.createElement("button", {
         onClick: () => { setShowClearModal(false); setSaveBeforeClear(null); },
-        style: { background:'var(--c-fail-bg)', border:'1px solid var(--c-fail)', color:'var(--c-fail)', borderRadius:5, width:34, height:34, fontSize:14, cursor:'pointer', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center' }
+        style: { background:'none', border:'none', color:'var(--c-fail)', fontSize:16, lineHeight:1, cursor:'pointer', padding:'0 2px', flexShrink:0 }
       }, "✕")
     ),
     React.createElement("div", {
