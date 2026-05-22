@@ -24497,7 +24497,7 @@ function WetlandApp() {
       fontFamily: 'var(--font-sans)', fontSize: 12,
       color: 'var(--c-ink-2)', lineHeight: 1.55
     }
-  }, g.msgs.join(' '), g.hasMismatch && React.createElement("span", {style: {fontWeight: 700}}, " Use of this indicator must be explained in Remarks.")))))), React.createElement("div", {
+  }, g.msgs.join(' '), g.hasMismatch && React.createElement("span", {style: {fontWeight: 700}}, g.code === 'PHV' ? " Selection of PHV without having met all criteria must be explained in Remarks." : " Selection of this indicator without having met all criteria must be explained in Remarks.")))))), React.createElement("div", {
     style: {
       display: 'flex',
       flexWrap: 'wrap',
