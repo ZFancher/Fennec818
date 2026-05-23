@@ -94,7 +94,7 @@ The second function is designed for characterizing the *distribution* of colors 
    - Anything that is neither sufficiently more chromatic than the matrix (concentration) nor sufficiently achromatic (depletion) is left unclassified and not reported.
 11. Percentages for the matrix and each feature are computed independently as the raw pixel share of the sampled area, rounded to the nearest integer. Features rounding to 0% are discarded as k-means noise. Features at 1% are retained and reported. This matters because ADS Plus evaluates indicator thresholds by summing redox percentages across all qualifying rows in the same horizon — two 1% features written to separate rows can together satisfy a ≥2% indicator threshold, and discarding them would prevent that inference from firing.
 12. The remaining features are ranked by percentage area regardless of type (concentration or depletion). The top 5 by area are reported. This type-agnostic ranking ensures a high-percentage depletion is never dropped to accommodate a low-percentage concentration, or vice versa.
-13. An overlay is rendered showing concentration pixels in teal and depletion pixels in amber; uncolored areas are the matrix.
+13. An overlay is rendered showing concentration pixels in amber and depletion pixels in teal; uncolored areas are the matrix.
 
 ### 5.2 K-Means++ Clustering
 
@@ -108,7 +108,7 @@ K=6 is chosen as a pragmatic balance. More clusters capture finer color variatio
 
 This is where the science of the algorithm makes its most direct contact with hydric soils methodology. The USDA's *Field Indicators of Hydric Soils* and its regional supplements define redox concentrations partly by their **contrast** with the surrounding matrix — Faint, Distinct, or Prominent. That contrast is determined by a lookup table combining hue step difference (the number of hue intervals between matrix and feature on the Munsell hue circle), value difference, and chroma difference.
 
-Both sliders operate as **continuous visualization thresholds** rather than discrete preset sensitivity levels. As the user drags either slider, the overlay updates in real time — clusters progressively appear or disappear from the concentration (teal) or depletion (amber) highlighting as they cross the current threshold. The intent is exploratory: the delineator sees the full color distribution of the ped and uses the sliders to examine where the meaningful boundaries lie before recording a result.
+Both sliders operate as **continuous visualization thresholds** rather than discrete preset sensitivity levels. As the user drags either slider, the overlay updates in real time — clusters progressively appear or disappear from the concentration (amber) or depletion (teal) highlighting as they cross the current threshold. The intent is exploratory: the delineator sees the full color distribution of the ped and uses the sliders to examine where the meaningful boundaries lie before recording a result.
 
 The **concentration slider** sweeps continuously from left (Prominent only) to right (Faint+). The underlying classification still uses the USDA Table A1 contrast categories — Prominent, Distinct, and Faint — as its breakpoints. As the slider crosses each breakpoint, additional clusters cross the qualification threshold and appear in the overlay. Sliding right asks the algorithm "show me everything that qualifies as a concentration even under lenient criteria"; sliding left asks "show me only the features you're highly confident about."
 
