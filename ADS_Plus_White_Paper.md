@@ -151,7 +151,7 @@ The workflow:
    - **Concentrations** are identified using the **USDA Hydric Soils Table A1 contrast classification** — the same Faint/Distinct/Prominent framework used in the NRCS *Field Indicators* guide — based on hue step, value, and chroma differences between the feature and the matrix. A user-controlled slider sweeps continuously from Prominent-only (most restrictive) to Faint+ (most inclusive), and the overlay updates in real time as the slider moves.
    - **Depletions** are identified by absolute low Munsell chroma relative to a second user-controlled slider (threshold range chroma ≤0 to ≤4). Sliding to ≤2 captures the most common USACE depletion criterion; ≤1 captures only unambiguous strongly reduced gray zones.
 7. Percentages for the matrix and each feature are computed as the raw pixel share of the sampled polygon area, reported independently and rounded to the nearest integer. Features rounding to 0% are suppressed as noise; features at 1% are retained. ADS Plus evaluates indicator thresholds by summing redox percentages across all qualifying rows in the same horizon, so two 1% detections written to separate rows can together satisfy a ≥2% threshold.
-8. An **overlay** is rendered on the ped image: concentration pixels in teal, depletion pixels in amber, uncolored areas representing the matrix. The overlay updates in real time as either slider moves, letting the delineator explore the full color distribution of the ped before recording a result.
+8. An **overlay** is rendered on the ped image: concentration pixels in amber, depletion pixels in teal, uncolored areas representing the matrix. The overlay updates in real time as either slider moves, letting the delineator explore the full color distribution of the ped before recording a result.
 
 The output — matrix Munsell notation, concentration type/color/percent, depletion color/percent — maps directly to the fields in the ADS Plus horizon entry form and to the redox feature descriptions required on the ENG Form 6116-1. A delineator can complete a full, quantitative horizon color description from a single photograph taken in the field.
 
@@ -186,11 +186,11 @@ Warning types include:
 - **Problematic indicator conditions not met:** A problematic hydric soil indicator that is manually selected when hydrophytic vegetation and wetland hydrology have not been confirmed, significantly disturbed, or naturally problematic.
 - **Incomplete soil profile (W2):** Additional soil profile data is required to support an active indicator selection — either no complete horizon rows have been entered, or entered rows have incomplete data (missing depth bounds, texture, or percentages). This warning fires for both standard and problematic indicator selections.
 - **Above-layer chroma violation:** A manually selected Loamy/Clayey or Sandy indicator where the above-layer chroma check is not met.
-- **Horizon percentage sum error (W3):** All entered color percentages (matrix and redox combined) within a horizon must sum to 100%. A warning identifies any horizon where they do not.
+- **Horizon percentage sum error (W3):** All entered color percentages (matrix and redox combined) within a horizon must not exceed 100%. A warning identifies any horizon where they do.
 - **Aquic conditions not confirmed (A2):** A2 (Histic Epipedon) requires aquic conditions, which cannot be assumed unless both hydrophytic vegetation and wetland hydrology are confirmed.
 - **Normal circumstances flag (W4):** The wetland determination is YES but Normal Circumstances are marked as absent — atypical-situation methods are required before finalizing.
 
-All warnings marked as data inconsistencies include the notation "Use of this indicator must be explained in Remarks" inline.
+All warnings marked as data inconsistencies include an inline notation prompting documentation in Remarks. PHV-specific warnings read "Selection of PHV without having met all criteria must be explained in Remarks." All other indicator warnings read "Selection of this indicator without having met all criteria must be explained in Remarks."
 
 Neither the ADS nor Survey 123 provides any equivalent to this layer of feedback.
 
