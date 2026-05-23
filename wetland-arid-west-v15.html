@@ -20283,7 +20283,7 @@ function WetlandApp() {
       if (allEntries.length === 0) return;
       if (!allEntries.every(p => p !== '' && p !== undefined && p !== null)) return;
       const total = allEntries.reduce((s, p) => s + (Number(p) || 0), 0);
-      if (total !== 100) {
+      if (total > 100) {
         const depthLabel = h.depthFrom !== '' && h.depthTo !== '' ? `${h.depthFrom}–${h.depthTo} in.` : h.depthFrom !== '' ? `from ${h.depthFrom} in.` : 'horizon';
         w.push({
           code: 'W3',
