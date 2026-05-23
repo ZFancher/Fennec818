@@ -11693,14 +11693,11 @@ function inferHydricIndicators(horizons) {
   function redoxRows(h) {
     return h.redoxRows || [];
   }
-  function hasRedoxConcMassOrPL(h, pctMin = 2) {
-    return redoxRows(h).filter(rx => rx.type.startsWith('C ') || rx.loc.startsWith('PL')).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
+  function hasRedoxConc(h, pctMin = 2) {
+    return redoxRows(h).filter(rx => rx.type.startsWith('C ')).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
   }
   function hasRedoxMass(h, pctMin = 2) {
     return redoxRows(h).filter(rx => rx.type.startsWith('C ')).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
-  }
-  function hasRedoxPL(h, pctMin = 2) {
-    return redoxRows(h).filter(rx => rx.loc.startsWith('PL')).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
   }
   function hasAnyRedox(h, pctMin = 2) {
     return redoxRows(h).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
@@ -11712,8 +11709,8 @@ function inferHydricIndicators(horizons) {
     const c = contrastClass(h.matrixHue, h.matrixValue, h.matrixChroma, rx.hue, rx.value, rx.chroma);
     return c === 'D' || c === 'P';
   }
-  function hasDistOrPromConcMassOrPL(h, pctMin = 2) {
-    return redoxRows(h).filter(rx => (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(h,rx)).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
+  function hasDistOrPromConc(h, pctMin = 2) {
+    return redoxRows(h).filter(rx => rx.type.startsWith('C ') && isDP(h,rx)).reduce((s,rx)=>s+N(rx.pct),0) >= pctMin;
   }
   function aboveLayersChromaOK(qualLayerTop) {
     const above = horizons.filter(h => hzBot(h) <= qualLayerTop + 0.1 && hzTop(h) < qualLayerTop);
@@ -11835,7 +11832,7 @@ function inferHydricIndicators(horizons) {
       });
       if (!darkOK) continue;
       const needsRedox = !isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma) && (N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2);
-      if (needsRedox && !hasDistOrPromConcMassOrPL(h, 2)) continue;
+      if (needsRedox && !hasDistOrPromConc(h, 2)) continue;
       const hasSandyAbove = above.some(a => isTrueSandy(a.texture) || isMuckyMineral(a.texture));
       const minThick = hasSandyAbove ? 6 : 2;
       if (hzThick(h) < minThick) continue;
@@ -11860,7 +11857,7 @@ function inferHydricIndicators(horizons) {
       if (!to12.every(a => a.texture && a.matrixValue !== '' && (a.matrixHue === 'N' || a.matrixChroma !== '') && N(a.matrixValue) <= 2.5 && N(a.matrixChroma) <= 1)) continue;
       if (!beyond.every(a => a.texture && a.matrixValue !== '' && (a.matrixHue === 'N' || a.matrixChroma !== '') && N(a.matrixValue) <= 3 && N(a.matrixChroma) <= 1)) continue;
       const needsRedox = !isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma) && (N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2);
-      if (needsRedox && !hasDistOrPromConcMassOrPL(h, 2)) continue;
+      if (needsRedox && !hasDistOrPromConc(h, 2)) continue;
       const hasSandyAbove = above.some(a => isSandyLayer(a.texture));
       const _a12base = `Surface layers: value ≤2.5/chroma ≤1 from <6 in. to ≥12 in., then value ≤3/chroma ≤1 to depleted/gleyed layer at ${hzTop(h)}–${hzBot(h)} in. (${hzThick(h).toFixed(1)} in. thick).${needsRedox ? ' Redox at 4/1–5/2 verified distinct/prominent (Table A1).' : ''}`;
       inferred['A12'] = {
@@ -11883,9 +11880,9 @@ function inferHydricIndicators(horizons) {
     };
   }
   {
-    const q = sorted.find(h => hzTop(h) <= 6 && isSandyLayer(h.texture) && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 4 && hasDistOrPromConcMassOrPL(h, 2));
+    const q = sorted.find(h => hzTop(h) <= 6 && isSandyLayer(h.texture) && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 4 && hasDistOrPromConc(h, 2));
     if (q && aboveLayersChromaOK(hzTop(q))) {
-      const rxDesc = q.redoxRows.filter(rx => (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(q, rx) && N(rx.pct) > 0).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
+      const rxDesc = q.redoxRows.filter(rx => rx.type.startsWith('C ') && isDP(q, rx) && N(rx.pct) > 0).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
       inferred['S5'] = {
         reason: `Sandy layer at ${hzTop(q)}–${hzBot(q)} in.: ${hzThick(q).toFixed(1)} in. thick (≥4 in. req.), chroma ${q.matrixChroma} (≤2), ${rxDesc} distinct/prominent redox concentrations as soft masses/pore linings (Table A1).`
       };
@@ -11911,7 +11908,7 @@ function inferHydricIndicators(horizons) {
       const thickOK = hzTop(h) <= 4 && hzThick(h) >= 2 || hzTop(h) <= 10 && hzThick(h) >= 6;
       if (!thickOK) continue;
       const needsRedox = N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2;
-      if (needsRedox && !hasDistOrPromConcMassOrPL(h, 2)) continue;
+      if (needsRedox && !hasDistOrPromConc(h, 2)) continue;
       if (!aboveLayersChromaOK(hzTop(h))) continue;
       inferred['F3'] = {
         reason: `Loamy/clayey layer at ${hzTop(h)}–${hzBot(h)} in.: depleted matrix (value ${h.matrixValue} chroma ${h.matrixChroma} ≥60%), ${hzThick(h).toFixed(1)} in. thick.${needsRedox ? ' Distinct/prominent redox verified at 4/1–5/2 (Table A1).' : ''}`
@@ -11922,10 +11919,10 @@ function inferHydricIndicators(horizons) {
   {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
-    const q = sorted.find(h => isLoamy(h.texture) && hzThick(h) >= 4 && N(h.matrixValue) <= 3 && hzBot(h) - minOff <= 12 && (N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConcMassOrPL(h, 5)));
+    const q = sorted.find(h => isLoamy(h.texture) && hzThick(h) >= 4 && N(h.matrixValue) <= 3 && hzBot(h) - minOff <= 12 && (N(h.matrixChroma) <= 1 && hasDistOrPromConc(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConc(h, 5)));
     if (q && aboveLayersChromaOK(hzTop(q))) {
       const minPct = N(q.matrixChroma) <= 1 ? 2 : 5;
-      const rxDesc = q.redoxRows.filter(rx => (rx.type.startsWith('C ') || rx.loc.startsWith('PL')) && isDP(q, rx) && N(rx.pct) > 0).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
+      const rxDesc = q.redoxRows.filter(rx => rx.type.startsWith('C ') && isDP(q, rx) && N(rx.pct) > 0).map(rx => `${rx.pct}% ${rx.type.split('–')[0].trim()}`).join(', ');
       inferred['F6'] = {
         reason: `Loamy/clayey at ${hzTop(q)}–${hzBot(q)} in.: ${hzThick(q).toFixed(1)} in. thick (≥4 in.), value ${q.matrixValue}/chroma ${q.matrixChroma}, entirely within 12 in. of mineral surface, with ${rxDesc} distinct/prominent redox concentrations (Table A1).`
       };
@@ -11951,7 +11948,7 @@ function inferHydricIndicators(horizons) {
     }
   }
   {
-    const q = sorted.find(h => isLoamy(h.texture) && hzTop(h) <= 4 && hzThick(h) >= 2 && hasDistOrPromConcMassOrPL(h, 5));
+    const q = sorted.find(h => isLoamy(h.texture) && hzTop(h) <= 4 && hzThick(h) >= 2 && hasDistOrPromConc(h, 5));
     if (q) inferred['F8'] = {
       reason: `Loamy layer at ${hzTop(q)}–${hzBot(q)} in.: ≥5% distinct/prominent redox concentrations as soft masses/pore linings within ≤4 in. of surface (Table A1). SOIL REQUIREMENTS MET. However, closed depression topography must be confirmed in the field.`,
       partial: true
@@ -11994,7 +11991,7 @@ function inferHydricIndicators(horizons) {
   if (!inferred['F6'] && !inferred['F3']) {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
-    const f6cand = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 8 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2));
+    const f6cand = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 8 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hasDistOrPromConc(h, 2));
     const f3cand = sorted.find(h => isLoamy(h.texture) && hasDepletedMatrix60(h) && hzThick(h) >= 2 && hzTop(h) <= 12 && h !== f6cand);
     if (f6cand && f3cand) {
       inferred['F6+F3'] = {
@@ -12007,8 +12004,8 @@ function inferHydricIndicators(horizons) {
   if (!inferred['F6'] && !inferred['S5']) {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
-    const f6c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 8 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2));
-    const s5c = sorted.find(h => isSandyLayer(h.texture) && hzTop(h) <= 6 && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 2 && hasDistOrPromConcMassOrPL(h, 2) && h !== f6c);
+    const f6c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 8 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hasDistOrPromConc(h, 2));
+    const s5c = sorted.find(h => isSandyLayer(h.texture) && hzTop(h) <= 6 && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 2 && hasDistOrPromConc(h, 2) && h !== f6c);
     if (f6c && s5c && aboveLayersChromaOK(hzTop(s5c))) {
       inferred['F6+S5'] = {
         reason: `Combo pair: F6 candidate (${hzTop(f6c)}–${hzBot(f6c)} in., loamy dark + redox) and S5 candidate (${hzTop(s5c)}–${hzBot(s5c)} in., sandy low-chroma + redox). Combined satisfy Table 8 minimum thickness. Verify both layers.`,
@@ -12030,7 +12027,7 @@ function inferHydricIndicators(horizons) {
   }
   if (!inferred['F1'] && !inferred['S5']) {
     const f1c = sorted.find(h => hzTop(h) <= 6 && isLoamyMuck(h.texture) && hzThick(h) >= 2);
-    const s5c = sorted.find(h => isSandyLayer(h.texture) && hzTop(h) <= 6 && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 2 && hasDistOrPromConcMassOrPL(h, 2) && h !== f1c);
+    const s5c = sorted.find(h => isSandyLayer(h.texture) && hzTop(h) <= 6 && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 2 && hasDistOrPromConc(h, 2) && h !== f1c);
     if (f1c && s5c && aboveLayersChromaOK(hzTop(s5c))) {
       inferred['F1+S5'] = {
         reason: `Combo pair: F1 candidate (${hzTop(f1c)}–${hzBot(f1c)} in., loamy muck ${hzThick(f1c).toFixed(1)} in.) and S5 candidate (${hzTop(s5c)}–${hzBot(s5c)} in., sandy low-chroma + redox ${hzThick(s5c).toFixed(1)} in.). Combined satisfy Table 8 minimum thickness. Verify both layers.`,
@@ -12056,7 +12053,7 @@ function inferHydricIndicators(horizons) {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
     const f7c = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 2 && hasRedoxDepletion(h, 2));
-    const s5c = sorted.find(h => isSandyLayer(h.texture) && hzTop(h) <= 6 && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 2 && hasDistOrPromConcMassOrPL(h, 2) && h !== f7c);
+    const s5c = sorted.find(h => isSandyLayer(h.texture) && hzTop(h) <= 6 && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 2 && hasDistOrPromConc(h, 2) && h !== f7c);
     if (f7c && s5c && aboveLayersChromaOK(hzTop(s5c))) {
       inferred['F7+S5'] = {
         reason: `Combo pair: F7 candidate (${hzTop(f7c)}–${hzBot(f7c)} in., loamy dark + redox depletions) and S5 candidate (${hzTop(s5c)}–${hzBot(s5c)} in., sandy low-chroma + redox). Combined satisfy Table 8 minimum thickness. Verify both layers.`,
@@ -12069,7 +12066,7 @@ function inferHydricIndicators(horizons) {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
     const f1c = sorted.find(h => hzTop(h) <= 6 && isLoamyMuck(h.texture) && hzThick(h) >= 2);
-    const f6c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 6 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConcMassOrPL(h, 5)) && h !== f1c);
+    const f6c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 6 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasDistOrPromConc(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConc(h, 5)) && h !== f1c);
     if (f1c && f6c && aboveLayersChromaOK(hzTop(f6c))) {
       inferred['F1+F6'] = {
         reason: `Combo pair: F1 candidate (${hzTop(f1c)}–${hzBot(f1c)} in., loamy muck ${hzThick(f1c).toFixed(1)} in.) and F6 candidate (${hzTop(f6c)}–${hzBot(f6c)} in., dark loamy + redox ${hzThick(f6c).toFixed(1)} in.). Combined satisfy Table 8 minimum thickness. Verify both layers.`,
@@ -12094,7 +12091,7 @@ function inferHydricIndicators(horizons) {
   if (!inferred['F6'] && !inferred['F7']) {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
-    const f6c = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasDistOrPromConcMassOrPL(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConcMassOrPL(h, 5)));
+    const f6c = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasDistOrPromConc(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConc(h, 5)));
     const f7c = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasRedoxDepletion(h, 10) || N(h.matrixChroma) <= 2 && hasRedoxDepletion(h, 20)) && h !== f6c);
     if (f6c && f7c && aboveLayersChromaOK(hzTop(f6c))) {
       inferred['F6+F7'] = {
