@@ -376,9 +376,6 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   --c-warn-bg: #fff4e0;
   --c-dcw-bg: #fef3c7;
   --c-warn-box-bg: rgb(255,250,237);
-  --c-nc-warn-bg: #fde8e4;
-  --c-nc-warn-border: rgba(220,38,38,0.3);
-  --c-nc-warn-text: #991b1b;
   --c-conf-pill-bg: rgb(232,248,246);
   --c-conf-header-bg: rgb(235,249,249);
   --c-gate: #b45309;
@@ -474,9 +471,6 @@ function(a,b,c){if(!Vd(b))throw Error(n(200));return Wd(null,a,b,!1,c)};Q.unmoun
   --c-warn-bg: #372b19;
   --c-dcw-bg: #451a03;
   --c-warn-box-bg: rgba(251,191,36,0.08);
-  --c-nc-warn-bg: rgba(251,191,36,0.08);
-  --c-nc-warn-border: rgba(251,191,36,0.25);
-  --c-nc-warn-text: #f59e0b;
   --c-conf-pill-bg: rgba(20,184,166,0.1);
   --c-conf-header-bg: rgba(20,184,166,0.08);
   --c-gate: #f59e0b;
@@ -24335,8 +24329,8 @@ function WetlandApp() {
     style: {
       margin: '8px 12px',
       padding: '8px 12px',
-      background: 'var(--c-nc-warn-bg)',
-      border: '1px solid var(--c-nc-warn-border)',
+      background: 'rgba(146,64,14,0.08)',
+      border: '1px solid rgba(146,64,14,0.5)',
       borderRadius: 8
     }
   }, React.createElement("div", {
@@ -24351,12 +24345,12 @@ function WetlandApp() {
       flexShrink: 0,
       lineHeight: 1,
       marginTop: 2,
-      color: 'var(--c-nc-warn-text)'
+      color: 'var(--c-warn)'
     }
   }, "\u26A0"), React.createElement("div", null, React.createElement("div", {
     style: {
       fontFamily: 'var(--font-sans)', fontSize: 12,
-      color: 'var(--c-nc-warn-text)', lineHeight: 1.65, marginBottom: 6
+      color: 'var(--c-warn)', lineHeight: 1.65, marginBottom: 6
     }
   }, React.createElement("strong", null, normalCirc === false ? "Normal Circumstances not present." : "Ch. 5 Procedures in Effect."), " ", normalCirc === false && !ch5Engaged ? "The current determination may not reflect what indicators would be present under normal circumstances. Per the 1987 Corps Manual (\xA7F, \xA7G) and ERDC/EL TR-08-28 Ch. 5, if any parameters are significantly disturbed or naturally problematic, procedures must be applied before a final determination can be made." : "One or more parameters are resolved via difficult wetland situation procedures (significantly disturbed, naturally problematic, or Problematic Hydrophytic Vegetation). Ensure all Ch. 5 assessments are documented in Remarks.")))), React.createElement("div", {
     style: {
