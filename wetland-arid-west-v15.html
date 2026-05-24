@@ -20212,6 +20212,7 @@ function WetlandApp() {
   const probValid = (rawVegMet || vegDistOrProb) && (hydroMet || hydroDistOrProb);
   const soilsMet = soilsMetStandard || numHydricProbManual >= 1 || numHydricProb >= 1 && probValid;
   const isWetland = vegMet && soilsMet && hydroMet;
+  const ch5Engaged = sigDistVeg || sigDistSoil || sigDistHydro || natProbVeg || natProbSoil || natProbHydro || probHydroVeg;
   const consistencyWarnings = useMemo(() => {
     const w = [];
     if (soilProfileWarning) w.push({ code: 'W2', msg: 'Data Sheet Incomplete - Additional Soil Profile Data Required. Depth (both bounds), texture, and percentages of matrix color and redox features must all be filled in. A complete profile description is required to support any hydric soil determination under the USACE three-factor methodology. This data sheet may be considered incomplete or inconclusive by a USACE regulatory reviewer.' });
@@ -20267,9 +20268,9 @@ function WetlandApp() {
       msg: 'Problematic Hydrophytic Vegetation (Ch. 5) is selected but no documentation has been entered in Remarks. The Chapter 5 procedures applied and the basis for concluding that hydrophytic vegetation would be present must be documented.',
       _mismatch: true
     });
-    if (isWetland && normalCirc === false) w.push({
+    if (isWetland && normalCirc === false && !ch5Engaged) w.push({
       code: 'W4',
-      msg: 'Final determination is YES but Normal Circumstances are marked as absent. Per ERDC/EL TR-08-28 Ch. 5, atypical-situation methods must be applied before a final determination can be made.'
+      msg: 'Final determination is YES but Normal Circumstances are marked as absent. If any parameters are significantly disturbed or naturally problematic, Ch. 5 procedures (ERDC/EL TR-08-28) must be applied before the determination can be considered final.'
     });
     horizons.forEach(h => {
       if (h.depthFrom === '' && h.depthTo === '' && !h.texture) return;
@@ -20354,7 +20355,7 @@ function WetlandApp() {
       }
     }
     return w;
-  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkS, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, effectiveHydroAuto, effectiveSoilAuto, vegMet, soilsMet, hydroMet, vegDistOrProb, soilDistOrProb, soilProfileWarning, soilWarnDetail, probValid, probHydroVeg, probHydroVegRemarks, soilsSideOk, hydroSideOk, d3Auto]);
+  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkS, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, ch5Engaged, effectiveHydroAuto, effectiveSoilAuto, vegMet, soilsMet, hydroMet, vegDistOrProb, soilDistOrProb, soilProfileWarning, soilWarnDetail, probValid, probHydroVeg, probHydroVegRemarks, soilsSideOk, hydroSideOk, d3Auto]);
   const criteriaCount = [vegMet, soilsMet, hydroMet].filter(Boolean).length;
   const passBadge = {
     background: 'var(--c-pass-bg)',
@@ -21816,7 +21817,7 @@ function WetlandApp() {
       fontSize: 10,
       color: 'var(--c-fail)'
     }
-  }, "\u26A0 Atypical situation \u2014 Ch. 5 applies")), React.createElement("div", {
+  }, "\u26A0 Normal circumstances absent \u2014 Ch. 5 procedures may apply")), React.createElement("div", {
     className: "spgi-criteria-row",
     style: {
       marginTop: 8,
@@ -24351,12 +24352,12 @@ function WetlandApp() {
       fontFamily: 'var(--font-sans)', fontSize: 12,
       color: 'var(--c-warn)', lineHeight: 1.65, marginBottom: 6
     }
-  }, React.createElement("strong", null, "Normal Circumstances not present."), " Results below reflect ", React.createElement("em", null, "observed"), " conditions only. Per 1987 Corps Manual \xA7F and ERDC/EL TR-08-28 Ch. 5, atypical-situation methods must be applied to reconstruct what indicators would exist under normal conditions before a final determination can be made."), React.createElement("div", {
+  }, React.createElement("strong", null, "Normal Circumstances not present."), " ", ch5Engaged ? "Ch. 5 procedures are in effect for one or more flagged parameters. Ensure all difficult wetland situation assessments are documented in Remarks." : "Results below are based on current observed field conditions, which may not represent what indicators would be present under normal circumstances. Per the 1987 Corps Manual (\xA7F, \xA7G) and ERDC/EL TR-08-28 Ch. 5, if any parameters are significantly disturbed or naturally problematic, procedures must be applied before a final determination can be made."), !ch5Engaged && React.createElement("div", {
     style: {
       fontFamily: 'var(--font-sans)', fontSize: 11,
-      color: 'var(--c-ink-2)', lineHeight: 1.7
+      color: 'var(--c-ink-2)', lineHeight: 1.7, marginTop: 6
     }
-  }, "Ch. 5 Atypical Situation Procedure (ERDC/EL TR-08-28):", React.createElement("br", null), "1. Document the nature of the disturbance or problem situation in the Remarks field.", React.createElement("br", null), "2. Identify and document the normal plant community, soils, and hydrology for the area.", React.createElement("br", null), "3. Apply the three-parameter approach to the inferred normal conditions.")))), React.createElement("div", {
+  }, "Ch. 5 Difficult Wetland Situation Procedure (ERDC/EL TR-08-28):", React.createElement("br", null), "1. Document the nature of the disturbance or problem situation in the Remarks field.", React.createElement("br", null), "2. Identify and document the plant community, soils, and hydrology normal for the site or expected for its wetland type.", React.createElement("br", null), "3. Apply the three-parameter approach to reconstructed conditions (atypical situation) or type-appropriate indicators (problem area).")))), React.createElement("div", {
     style: {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr 1fr',
