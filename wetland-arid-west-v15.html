@@ -23037,14 +23037,14 @@ function WetlandApp() {
       checked: !!h.coveredSandGrains,
       onChange: v => updateHorizon(h.id, 'coveredSandGrains', v)
     }), React.createElement("div", {
-      style: { fontSize: 11, color: 'var(--c-ink-2)', fontWeight: 600 }
-    }, "Covered or Coated Sand Grains?")), h.coveredSandGrains && React.createElement("input", {
+      style: { fontSize: 11, color: 'var(--c-sub)', fontWeight: 600 }
+    }, "Covered or Coated Sand Grains?")), React.createElement("input", {
       type: 'number', min: '0', max: '100', placeholder: '%',
       value: h.maskedGrainsPct || '',
       onChange: e => updateHorizon(h.id, 'maskedGrainsPct', e.target.value),
-      style: { width: 38, background: 'var(--c-input)', border: '1px solid var(--c-rule-strong)', borderRadius: 4, padding: '4px 3px', fontSize: 10, color: 'var(--c-ink)', outline: 'none', textAlign: 'center' }
-    }), h.coveredSandGrains && React.createElement("span", {
-      style: { fontSize: 11, color: 'var(--c-ink-2)', fontWeight: 600 }
+      style: { width: 38, background: 'var(--c-input)', border: '1px solid var(--c-rule-strong)', borderRadius: 4, padding: '4px 3px', fontSize: 10, color: 'var(--c-ink)', outline: 'none', textAlign: 'center', visibility: h.coveredSandGrains ? 'visible' : 'hidden' }
+    }), React.createElement("span", {
+      style: { fontSize: 11, color: 'var(--c-sub)', fontWeight: 600, visibility: h.coveredSandGrains ? 'visible' : 'hidden' }
     }, "% Masked Grains")), React.createElement("div", {
       style: {
         padding: '4px 12px 0',
