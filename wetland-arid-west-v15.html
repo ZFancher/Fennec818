@@ -11829,6 +11829,12 @@ function inferHydricIndicators(horizons) {
       const above = sorted.filter(a => hzBot(a) <= deplTop + 0.1 && hzTop(a) < deplTop);
       if (above.length === 0) continue;
       if (!above.some(a => Math.abs(hzBot(a) - deplTop) < 0.1)) continue;
+      // Require continuous coverage — no gaps between above layers
+      let aboveHasGaps = false;
+      for (let i = 0; i < above.length - 1; i++) {
+        if (hzBot(above[i]) < hzTop(above[i + 1]) - 0.1) { aboveHasGaps = true; break; }
+      }
+      if (aboveHasGaps) continue;
       const darkOK = above.some(a => hzTop(a) <= 6) && above.every(a => {
         if (!a.texture || a.matrixValue === '' || (a.matrixHue !== 'N' && a.matrixChroma === '')) return false;
         if (isTrueSandy(a.texture) && !isMucky(a.texture)) return N(a.matrixValue) <= 3 && N(a.matrixChroma) <= 1;
