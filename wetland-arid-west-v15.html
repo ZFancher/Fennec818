@@ -23051,7 +23051,15 @@ function WetlandApp() {
       }
     }, "Texture"), React.createElement(Sel, {
       value: h.texture,
-      onChange: v => updateHorizon(h.id, 'texture', v),
+      onChange: v => {
+        const sandyTextures = ['Sandy', 'Mucky Sand'];
+        const leavingSandy = !sandyTextures.includes(v) && sandyTextures.includes(h.texture);
+        updateHorizon(h.id, 'texture', v);
+        if (leavingSandy) {
+          updateHorizon(h.id, 'coveredSandGrains', false);
+          updateHorizon(h.id, 'maskedGrainsPct', '');
+        }
+      },
       options: TEXTURES,
       placeholder: "\u2014 select \u2014",
       style: {
