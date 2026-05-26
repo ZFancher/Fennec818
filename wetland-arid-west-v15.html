@@ -11235,7 +11235,7 @@ const HUES = ['5R', '2.5R', '10YR', '7.5YR', '5YR', '2.5YR', 'N', '2.5Y', '5Y', 
 const VALUES = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 const CHROMAS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '10', '12', '14', '16', '18', '20'];
 const TEXTURES = ['Loamy/Clayey', 'Sandy', 'Mucky Loam/Clay', 'Mucky Sand', 'Muck', 'Mucky Peat', 'Peat'];
-const REDOX_TYPES = ['C – Concentration', 'D – Depletion', 'RM – Reduced Matrix', 'CS – Covered or Coated Sand Grains'];
+const REDOX_TYPES = ['C – Concentration', 'D – Depletion', 'RM – Reduced Matrix'];
 const REDOX_LOCS = ['M – Matrix', 'PL – Pore Linings', 'PL/M – Pore Linings and Matrix'];
 const RESTRICT_TYPES = ['Artisan', 'Bedrock', 'Fragipan', 'Duripan', 'Hardpan', 'Claypan', 'Ortstein', 'None observed'];
 const HYDRIC_ALL = [{
@@ -11797,11 +11797,15 @@ function inferHydricIndicators(horizons) {
         const qualH = surfHz.find(isQualLayer);
         const isOrgTex = h => isHistosolOrganic(h.texture) || isMuckyMineral(h.texture) || isLoamyMuck(h.texture);
         const qualIsSandyColor = !isOrgTex(qualH) && isTrueSandy(qualH.texture);
-        const qualExtra = isOrgTex(qualH) ? '' : `, value ${qualH.matrixValue}/chroma ${qualH.matrixChroma}`;
-        inferred['A5'] = {
-          reason: `${surfHz.length} stratified layers starting ≤6 in.: qualifying layer at ${hzTop(qualH)}–${hzBot(qualH)} in. (${qualH.texture || '?'}${qualExtra}); remaining layers chroma ≤2. SOIL REQUIREMENTS MET. However, confirm in the field: (1) layers are DEPOSITIONAL strata (not pedogenic horizons); (2) individual strata dominantly <1 in. thick (hand lens required); (3) undisturbed sample observed.${qualIsSandyColor ? ' Qualifying layer is sandy — ≥70% organic masking of sand grains required (field verify).' : ''} LRR C ONLY — not applicable in LRR B or D.`,
-          partial: true
-        };
+        if (qualIsSandyColor && !(qualH.coveredSandGrains && Number(qualH.maskedGrainsPct) >= 70)) {
+          // Sandy qualifying layer requires ≥70% masked grains; skip if not met
+        } else {
+          const qualExtra = isOrgTex(qualH) ? '' : `, value ${qualH.matrixValue}/chroma ${qualH.matrixChroma}`;
+          inferred['A5'] = {
+            reason: `${surfHz.length} stratified layers starting ≤6 in.: qualifying layer at ${hzTop(qualH)}–${hzBot(qualH)} in. (${qualH.texture || '?'}${qualExtra}); remaining layers chroma ≤2. SOIL REQUIREMENTS MET. However, confirm in the field: (1) layers are DEPOSITIONAL strata (not pedogenic horizons); (2) individual strata dominantly <1 in. thick (hand lens required); (3) undisturbed sample observed.${qualIsSandyColor ? ` Qualifying layer is sandy — ≥70% organic masking verified (${qualH.maskedGrainsPct}% masked grains).` : ''} LRR C ONLY — not applicable in LRR B or D.`,
+            partial: true
+          };
+        }
       }
     }
   }
@@ -11836,10 +11840,14 @@ function inferHydricIndicators(horizons) {
       const hasSandyAbove = above.some(a => isTrueSandy(a.texture) || isMuckyMineral(a.texture));
       const minThick = hasSandyAbove ? 6 : 2;
       if (hzThick(h) < minThick) continue;
+      if (hasSandyAbove) {
+        const sandyAboveLayers = above.filter(a => isTrueSandy(a.texture) || isMuckyMineral(a.texture));
+        const allMasked = sandyAboveLayers.every(a => a.coveredSandGrains && Number(a.maskedGrainsPct) >= 70);
+        if (!allMasked) continue;
+      }
       const _a11base = `Depleted/gleyed layer at ${hzTop(h)}–${hzBot(h)} in. (value ${h.matrixValue}/chroma ${h.matrixChroma}, ${hzThick(h).toFixed(1)} in.) starts ≤12 in. Above-layer(s) directly abut the depleted/gleyed layer: organic/loamy/clayey value ≤3/chroma ≤2, or sandy value ≤3/chroma ≤1, starting ≤6 in.${needsRedox ? ' Redox at 4/1–5/2 verified distinct/prominent (Table A1).' : ''}`;
       inferred['A11'] = {
-        reason: hasSandyAbove ? `${_a11base} SOIL REQUIREMENTS MET. However, loamy fine sand or coarser layer(s) above require ≥70% organic masking of sand grains (hand lens).` : _a11base,
-        ...(hasSandyAbove ? { partial: true } : {})
+        reason: hasSandyAbove ? `${_a11base} Sandy layer(s) above verified ≥70% organic masking of sand grains.` : _a11base
       };
       break;
     }
@@ -11859,10 +11867,14 @@ function inferHydricIndicators(horizons) {
       const needsRedox = !isGleyedMatrix(h.matrixHue, h.matrixValue, h.matrixChroma) && (N(h.matrixValue) === 4 && N(h.matrixChroma) <= 2 || N(h.matrixValue) === 5 && N(h.matrixChroma) === 2);
       if (needsRedox && !hasDistOrPromConc(h, 2)) continue;
       const hasSandyAbove = above.some(a => isSandyLayer(a.texture));
+      if (hasSandyAbove) {
+        const sandyAboveLayers = above.filter(a => isSandyLayer(a.texture));
+        const allMasked = sandyAboveLayers.every(a => a.coveredSandGrains && Number(a.maskedGrainsPct) >= 70);
+        if (!allMasked) continue;
+      }
       const _a12base = `Surface layers: value ≤2.5/chroma ≤1 from <6 in. to ≥12 in., then value ≤3/chroma ≤1 to depleted/gleyed layer at ${hzTop(h)}–${hzBot(h)} in. (${hzThick(h).toFixed(1)} in. thick).${needsRedox ? ' Redox at 4/1–5/2 verified distinct/prominent (Table A1).' : ''}`;
       inferred['A12'] = {
-        reason: hasSandyAbove ? `${_a12base} SOIL REQUIREMENTS MET. However, loamy fine sand or coarser layer(s) above require ≥70% organic masking of sand grains (hand lens).` : _a12base,
-        ...(hasSandyAbove ? { partial: true } : {})
+        reason: hasSandyAbove ? `${_a12base} Sandy layer(s) above verified ≥70% organic masking of sand grains.` : _a12base
       };
       break;
     }
