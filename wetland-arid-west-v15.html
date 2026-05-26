@@ -11860,6 +11860,13 @@ function inferHydricIndicators(horizons) {
       const above = sorted.filter(a => hzBot(a) <= hzTop(h) + 0.1 && a !== h);
       if (!above.length) continue;
       if (hzTop(above[0]) >= 6) continue;
+      // Require continuous coverage — no gaps between above layers or between last above layer and depleted layer top
+      let aboveHasGaps = false;
+      for (let i = 0; i < above.length - 1; i++) {
+        if (hzBot(above[i]) < hzTop(above[i + 1]) - 0.1) { aboveHasGaps = true; break; }
+      }
+      if (!aboveHasGaps && hzBot(above[above.length - 1]) < hzTop(h) - 0.1) aboveHasGaps = true;
+      if (aboveHasGaps) continue;
       const to12 = above.filter(a => hzTop(a) < 12);
       const beyond = above.filter(a => hzTop(a) >= 12);
       if (!to12.every(a => a.texture && a.matrixValue !== '' && (a.matrixHue === 'N' || a.matrixChroma !== '') && N(a.matrixValue) <= 2.5 && N(a.matrixChroma) <= 1)) continue;
