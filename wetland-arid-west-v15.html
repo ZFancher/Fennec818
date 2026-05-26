@@ -20477,6 +20477,10 @@ function WetlandApp() {
       .filter(h => !isNaN(h.from) && !isNaN(h.to) && h.to > h.from)
       .sort((a, b) => a.from - b.from);
     if (!complete.length) return null;
+    // Suppress if any two horizons share identical from+to (e.g. replicate rows)
+    for (let i = 0; i < complete.length - 1; i++) {
+      if (complete[i].from === complete[i + 1].from && complete[i].to === complete[i + 1].to) return null;
+    }
     const issues = [];
     if (complete[0].from > 0) issues.push(`Unsampled zone from 0–${complete[0].from} in. (first horizon does not start at the surface)`);
     for (let i = 0; i < complete.length - 1; i++) {
@@ -23297,7 +23301,7 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       fontWeight: 700
     }
-  }, "Horizon Depth Gaps")), React.createElement("div", {
+  }, "Sequential Horizons Advisory")), React.createElement("div", {
     style: {
       fontSize: 11,
       color: 'var(--c-warn)',
