@@ -20486,7 +20486,7 @@ function WetlandApp() {
     for (let i = 0; i < complete.length - 1; i++) {
       const cur = complete[i], next = complete[i + 1];
       if (next.from > cur.to) issues.push(`Unsampled gap from ${cur.to}–${next.from} in.`);
-      else if (next.from < cur.to) issues.push(`Overlapping horizons at ${next.from}–${cur.to} in.`);
+      else if (next.from < cur.to) issues.push(`Overlapping horizons at ${next.from}–${Math.min(cur.to, next.to)} in.`);
     }
     return issues.length ? issues : null;
   }, [horizons]);
