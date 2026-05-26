@@ -20312,7 +20312,7 @@ function WetlandApp() {
         const depthLabel = h.depthFrom !== '' && h.depthTo !== '' ? `${h.depthFrom}–${h.depthTo} in.` : h.depthFrom !== '' ? `from ${h.depthFrom} in.` : 'horizon';
         w.push({
           code: 'W3',
-          msg: `Horizon ${depthLabel}: color percentages sum to ${total}% — all entered percentages (matrix colors and redox features combined) must total 100%.`
+          msg: `Horizon ${depthLabel}: color percentages sum to ${total}% — all entered percentages (matrix colors and redox features combined) must not exceed 100%.`
         });
       }
     });
