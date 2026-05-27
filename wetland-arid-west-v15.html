@@ -11388,7 +11388,7 @@ const HYDRIC_LOAMY = [{
   lrr: 'All LRRs',
   autoable: true,
   minProfileDepth: 4,
-  desc: 'Loamy or clayey layer ≥4 in. (10 cm) thick, ENTIRELY within the upper 12 in. (30 cm) of the mineral soil surface (measured from top of uppermost mineral layer), with redox depletions (value ≥5, chroma ≤2), meeting either: (1) matrix value ≤3, chroma ≤1, with ≥10% redox depletions; OR (2) matrix value ≤3, chroma ≤2, with ≥20% redox depletions. Soils meeting F7 commonly also meet F6. Do not confuse E horizon or calcic horizon pieces mixed into the surface layer as redox depletions. Depletions typically have associated redox concentrations as pore linings or masses within or surrounding them.'
+  desc: 'Loamy or clayey layer ≥4 in. (10 cm) thick, starting at a depth of ≤8 in. (20 cm) from the mineral soil surface, with redox depletions (value ≥5, chroma ≤2) meeting either: (1) matrix value ≤3, chroma ≤1, with ≥10% redox depletions; OR (2) matrix value ≤3, chroma ≤2, with ≥20% redox depletions. Do not confuse E horizon or calcic horizon pieces mixed into the surface layer as redox depletions. Depletions should have associated redox concentrations as pore linings or masses within or surrounding them.'
 }, {
   id: 'F8',
   code: 'F8',
@@ -11959,16 +11959,16 @@ function inferHydricIndicators(horizons) {
     const q = sorted.find(h => {
       if (!isLoamy(h.texture)) return false;
       if (hzThick(h) < 4) return false;
-      if (hzBot(h) - minOff > 12) return false;
+      if (hzTop(h) - minOff > 8) return false;
       if (N(h.matrixValue) > 3) return false;
-      const deplPct = redoxRows(h).filter(rx => rx.type.startsWith('D')).reduce((s, rx) => s + N(rx.pct), 0);
+      const deplPct = redoxRows(h).filter(rx => rx.type.startsWith('D') && N(rx.value) >= 5 && N(rx.chroma) <= 2).reduce((s, rx) => s + N(rx.pct), 0);
       return N(h.matrixChroma) <= 1 && deplPct >= 10 || N(h.matrixChroma) <= 2 && deplPct >= 20;
     });
     if (q && aboveLayersChromaOK(hzTop(q))) {
-      const deplPct = redoxRows(q).filter(rx => rx.type.startsWith('D')).reduce((s, rx) => s + N(rx.pct), 0);
+      const deplPct = redoxRows(q).filter(rx => rx.type.startsWith('D') && N(rx.value) >= 5 && N(rx.chroma) <= 2).reduce((s, rx) => s + N(rx.pct), 0);
       const variant = N(q.matrixChroma) <= 1 ? 1 : 2;
       inferred['F7'] = {
-        reason: `Loamy/clayey at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in.): dark matrix value ${q.matrixValue}/chroma ${q.matrixChroma} with ${deplPct}% redox depletions (variant ${variant}: ≥${variant === 1 ? 10 : 20}% req.), entirely within 12 in. of mineral surface.`
+        reason: `Loamy/clayey at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in.): dark matrix value ${q.matrixValue}/chroma ${q.matrixChroma} with ${deplPct}% redox depletions (value ≥5/chroma ≤2; variant ${variant}: ≥${variant === 1 ? 10 : 20}% req.), starting ≤8 in. from mineral surface.`
       };
     }
   }
@@ -12064,7 +12064,7 @@ function inferHydricIndicators(horizons) {
   if (!inferred['F7'] && !inferred['F3']) {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
-    const f7cand = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 2 && hasRedoxDepletion(h, 2));
+    const f7cand = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 8 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 2 && redoxRows(h).filter(rx => rx.type.startsWith('D') && N(rx.value) >= 5 && N(rx.chroma) <= 2).reduce((s, rx) => s + N(rx.pct), 0) >= 2);
     const f3cand = sorted.find(h => isLoamy(h.texture) && hasDepletedMatrix60(h) && hzThick(h) >= 2 && hzTop(h) <= 12 && h !== f7cand);
     if (f7cand && f3cand) {
       inferred['F7+F3'] = {
@@ -12077,7 +12077,7 @@ function inferHydricIndicators(horizons) {
   if (!inferred['F7'] && !inferred['S5']) {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
-    const f7c = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 2 && hasRedoxDepletion(h, 2));
+    const f7c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 8 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 2 && redoxRows(h).filter(rx => rx.type.startsWith('D') && N(rx.value) >= 5 && N(rx.chroma) <= 2).reduce((s, rx) => s + N(rx.pct), 0) >= 2);
     const s5c = sorted.find(h => isSandyLayer(h.texture) && hzTop(h) <= 6 && N(h.matrixChroma) <= 2 && matrixPct(h) >= 60 && hzThick(h) >= 2 && hasDistOrPromConc(h, 2) && h !== f7c);
     if (f7c && s5c && aboveLayersChromaOK(hzTop(s5c))) {
       inferred['F7+S5'] = {
@@ -12104,7 +12104,7 @@ function inferHydricIndicators(horizons) {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
     const f1c = sorted.find(h => hzTop(h) <= 6 && isLoamyMuck(h.texture) && hzThick(h) >= 2);
-    const f7c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 6 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasRedoxDepletion(h, 10) || N(h.matrixChroma) <= 2 && hasRedoxDepletion(h, 20)) && h !== f1c);
+    const f7c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 8 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && redoxRows(h).filter(rx => rx.type.startsWith('D') && N(rx.value) >= 5 && N(rx.chroma) <= 2).reduce((s, rx) => s + N(rx.pct), 0) >= 10 || N(h.matrixChroma) <= 2 && redoxRows(h).filter(rx => rx.type.startsWith('D') && N(rx.value) >= 5 && N(rx.chroma) <= 2).reduce((s, rx) => s + N(rx.pct), 0) >= 20) && h !== f1c);
     if (f1c && f7c && aboveLayersChromaOK(hzTop(f7c))) {
       inferred['F1+F7'] = {
         reason: `Combo pair: F1 candidate (${hzTop(f1c)}–${hzBot(f1c)} in., loamy muck ${hzThick(f1c).toFixed(1)} in.) and F7 candidate (${hzTop(f7c)}–${hzBot(f7c)} in., dark loamy + redox depletions ${hzThick(f7c).toFixed(1)} in.). Combined satisfy Table 8 minimum thickness. Verify both layers.`,
@@ -12116,8 +12116,8 @@ function inferHydricIndicators(horizons) {
   if (!inferred['F6'] && !inferred['F7']) {
     const firstMin = sorted.find(h => !isHistosolOrganic(h.texture));
     const minOff = firstMin ? hzTop(firstMin) : 0;
-    const f6c = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasDistOrPromConc(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConc(h, 5)));
-    const f7c = sorted.find(h => isLoamy(h.texture) && hzBot(h) - minOff <= 12 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasRedoxDepletion(h, 10) || N(h.matrixChroma) <= 2 && hasRedoxDepletion(h, 20)) && h !== f6c);
+    const f6c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 8 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && hasDistOrPromConc(h, 2) || N(h.matrixChroma) <= 2 && hasDistOrPromConc(h, 5)));
+    const f7c = sorted.find(h => isLoamy(h.texture) && hzTop(h) - minOff <= 8 && hzThick(h) >= 2 && N(h.matrixValue) <= 3 && (N(h.matrixChroma) <= 1 && redoxRows(h).filter(rx => rx.type.startsWith('D') && N(rx.value) >= 5 && N(rx.chroma) <= 2).reduce((s, rx) => s + N(rx.pct), 0) >= 10 || N(h.matrixChroma) <= 2 && redoxRows(h).filter(rx => rx.type.startsWith('D') && N(rx.value) >= 5 && N(rx.chroma) <= 2).reduce((s, rx) => s + N(rx.pct), 0) >= 20) && h !== f6c);
     if (f6c && f7c && aboveLayersChromaOK(hzTop(f6c))) {
       inferred['F6+F7'] = {
         reason: `Combo pair: F6 candidate (${hzTop(f6c)}–${hzBot(f6c)} in., dark loamy + redox concentrations ${hzThick(f6c).toFixed(1)} in.) and F7 candidate (${hzTop(f7c)}–${hzBot(f7c)} in., dark loamy + redox depletions ${hzThick(f7c).toFixed(1)} in.). Combined satisfy Table 8 minimum thickness. Verify both layers.`,
@@ -20347,7 +20347,7 @@ function WetlandApp() {
         F2: 'requires a loamy/clayey layer with gleyed matrix (gley hue, value ≥4, ≥60% of layer) starting ≤12 in.; any mineral layers above must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <6 in.',
         F3: 'requires a loamy/clayey depleted matrix (≥60% value ≥4, chroma ≤2), either ≥2 in. starting ≤4 in. or ≥6 in. starting ≤10 in. from surface; any mineral layers above must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <6 in.',
         F6: 'requires a loamy/clayey layer ≥4 in. thick starting ≤8 in. from the mineral soil surface, value ≤3, with ≥2% distinct/prominent redox concentrations as soft masses or pore linings (chroma ≤1) or ≥5% (chroma ≤2); any mineral layers above must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <6 in.',
-        F7: 'requires a loamy/clayey layer ≥4 in. thick entirely within 12 in. of mineral surface, value ≤3, with ≥10% redox depletions (chroma ≤1) or ≥20% (chroma ≤2); any mineral layers above must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <6 in.',
+        F7: 'requires a loamy/clayey layer ≥4 in. thick starting ≤8 in. from the mineral soil surface, value ≤3, with redox depletions (value ≥5, chroma ≤2) totaling ≥10% (matrix chroma ≤1) or ≥20% (matrix chroma ≤2); any mineral layers above must have a dominant chroma ≤2, or such layers with dominant chroma >2 must total <6 in.',
         F8: 'requires a loamy/clayey layer ≥2 in. thick starting ≤4 in. from surface with ≥5% distinct/prominent redox concentrations as soft masses or pore linings. Additionally, the location must be within a closed depression subject to ponding, confirmed in the field',
         F18: 'requires a Loamy/Clayey or Mucky Loam/Clay layer ≥4 in. thick starting ≤12 in., or ≥2 in. thick starting ≤6 in. from surface; partial suggestion only shown when both hydrophytic vegetation and wetland hydrology are met'
       };
