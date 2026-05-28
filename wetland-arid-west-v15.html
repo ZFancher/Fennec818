@@ -12005,6 +12005,23 @@ function inferHydricIndicators(horizons) {
     }
   }
   {
+    const q = sorted.find(h => {
+      if (!isLoamy(h.texture)) return false;
+      if (hzTop(h) > 8) return false;
+      if (hzTop(h) > 0.1 && hzThick(h) < 4) return false;
+      if (N(h.matrixChroma) > 2 || matrixPct(h) < 40) return false;
+      const iMassesPct = redoxRows(h).filter(rx => rx.type.startsWith('C ') && isDP(h, rx) && N(rx.value) <= 3 && N(rx.chroma) <= 3).reduce((s, rx) => s + N(rx.pct), 0);
+      return iMassesPct >= 2;
+    });
+    if (q) {
+      const iMassesPct = redoxRows(q).filter(rx => rx.type.startsWith('C ') && isDP(q, rx) && N(rx.value) <= 3 && N(rx.chroma) <= 3).reduce((s, rx) => s + N(rx.pct), 0);
+      inferred['F12'] = {
+        reason: `Layer at ${hzTop(q)}–${hzBot(q)} in.: ${q.texture}, ${hzThick(q).toFixed(1)} in. thick${hzTop(q) <= 0.1 ? ' (at surface — thickness req. waived)' : ''}, matrix chroma ${q.matrixChroma} (${matrixPct(q)}%, ≥40% chroma ≤2 req.), ${iMassesPct}% distinct/prominent Fe-Mn masses (value ≤3/chroma ≤3; ≥2% req.), starting ${hzTop(q)} in. (≤8 in. req.). SOIL REQUIREMENTS MET. However, confirm flood plain location; this is a testing/problematic indicator requiring hydrophytic vegetation AND wetland hydrology.`,
+        partial: true
+      };
+    }
+  }
+  {
     const q = sorted.find(h => isLoamy(h.texture) && (
       (hzThick(h) >= 4 && hzTop(h) <= 12) ||
       (hzThick(h) >= 2 && hzTop(h) <= 6)
