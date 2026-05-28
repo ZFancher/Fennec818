@@ -11982,7 +11982,7 @@ function inferHydricIndicators(horizons) {
   {
     const RED_HUES = ['7.5YR', '5YR', '2.5YR', '10R', '7.5R', '5R', '2.5R'];
     const f21MatrixOK = h => RED_HUES.includes(h.matrixHue) && N(h.matrixValue) > 2 && N(h.matrixValue) <= 4 && N(h.matrixChroma) > 2 && N(h.matrixChroma) <= 4;
-    const f21DeplQual = (h, rx) => (N(rx.value) >= N(h.matrixValue) + 1 && N(rx.chroma) <= N(h.matrixChroma) - 1) || (N(rx.value) >= 4 && N(rx.chroma) <= N(h.matrixChroma) && N(h.matrixChroma) - N(rx.chroma) <= 2);
+    const f21DeplQual = (h, rx) => (N(rx.value) >= N(h.matrixValue) + 1 && N(rx.chroma) <= N(h.matrixChroma) - 1) || (N(rx.value) >= 4 && N(rx.chroma) < N(h.matrixChroma) && N(h.matrixChroma) - N(rx.chroma) <= 2);
     const f21ConcPct = h => redoxRows(h).filter(rx => rx.type.startsWith('C ') && isDP(h, rx)).reduce((s, rx) => s + N(rx.pct), 0);
     const f21DeplPct = h => redoxRows(h).filter(rx => rx.type.startsWith('D') && f21DeplQual(h, rx)).reduce((s, rx) => s + N(rx.pct), 0);
     const q = sorted.find(h => {
