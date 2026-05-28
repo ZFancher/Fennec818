@@ -11444,7 +11444,7 @@ const HYDRIC_PROBLEMATIC = [{
   code: 'F22',
   label: 'Very Shallow Dark Surface',
   lrr: 'All LRRs',
-  desc: 'In depressions/flood plains subject to FREQUENT ponding/flooding, meeting one of: (1) If bedrock at 6–10 in. (15–25 cm) depth: a layer ≥6 in. (15 cm) thick starting ≤4 in. (10 cm) from surface, with value ≤2.5, chroma ≤1, and remaining soil to bedrock having same color or chroma ≤2; OR (2) If bedrock ≤6 in. (15 cm) depth: >half of soil thickness with value ≤2.5, chroma ≤1, and remainder chroma ≤2. Per v9.3, approved in specific Florida/Gulf MLRAs; TEST in all other LRRs. Listed as problematic indicator for Arid West on 2024 ENG Form 6116-1. Requires veg+hydro (or 2+ factors disturbed/problematic).'
+  desc: 'Loamy or clayey layer in depressions/flood plains subject to frequent ponding/flooding, meeting one of: (1) If bedrock at 6–10 in. (15–25 cm) depth: a layer ≥6 in. (15 cm) thick starting ≤4 in. (10 cm) from surface, with value ≤2.5, chroma ≤1, with remaining soil to bedrock being same color as above, or any other color with chroma ≤2; OR (2) If bedrock ≤6 in. (15 cm) depth: >half of soil thickness with value ≤2.5, chroma ≤1, with remaining soil to bedrock being same color as above, or any other color with chroma ≤2. Approved in specific Florida/Gulf MLRAs; for testing in all other LRRs (hydrophytic vegetation AND wetland hydrology required, unless disturbed/problematic).'
 }, {
   id: 'SOTHERprob',
   code: 'Other',
@@ -20034,7 +20034,7 @@ function WetlandApp() {
               const thick = (Number(dl.depthTo) || 0) - (Number(dl.depthFrom) || 0);
               const singleHz = remaining.length === 0;
               base['F22'] = {
-                reason: `Condition 1: Layer at ${Number(dl.depthFrom) || 0}–${Number(dl.depthTo) || 0} in. (${thick.toFixed(1)} in. thick, ≥6 in. req.), value ${dl.matrixValue}/chroma ${dl.matrixChroma} (≤2.5/≤1 req.); bedrock at ${bdRaw} in. (6–10 in. req.)${singleHz ? '' : ', remaining soil to bedrock chroma ≤2'}. SOIL REQUIREMENTS MET. However, confirm depression or flood plain subject to frequent ponding${singleHz ? ' (single-horizon profile — landscape position confirmation especially important)' : ''}.`,
+                reason: `Condition 1: Layer at ${Number(dl.depthFrom) || 0}–${Number(dl.depthTo) || 0} in. (${thick.toFixed(1)} in. thick, ≥6 in. req.), value ${dl.matrixValue}/chroma ${dl.matrixChroma} (≤2.5/≤1 req.); bedrock at ${bdRaw} in. (6–10 in. req.)${singleHz ? '' : '; remaining soil to bedrock same color as qualifying layer or chroma ≤2'}. SOIL REQUIREMENTS MET. However, confirm depression or flood plain subject to frequent ponding${singleHz ? ' (single-horizon profile — landscape position confirmation especially important)' : ''}.`,
                 partial: true
               };
             }
@@ -20053,7 +20053,7 @@ function WetlandApp() {
           }
           if (darkThick > bdRaw / 2 && remainOk) {
             base['F22'] = {
-              reason: `Condition 2: ${darkThick.toFixed(1)} in. dark (value ≤2.5, chroma ≤1) of ${bdRaw} in. total to bedrock (>half req.); remainder chroma ≤2. SOIL REQUIREMENTS MET. However, confirm depression or flood plain subject to frequent ponding.`,
+              reason: `Condition 2: ${darkThick.toFixed(1)} in. dark (value ≤2.5, chroma ≤1) of ${bdRaw} in. total to bedrock (>half req.); remaining soil to bedrock same color as qualifying layer or chroma ≤2. SOIL REQUIREMENTS MET. However, confirm depression or flood plain subject to frequent ponding.`,
               partial: true
             };
           }
@@ -20393,13 +20393,13 @@ function WetlandApp() {
     if (chkHydricProb['F22']) {
       const bdDepth = Number(restrictiveDepth);
       const hasBedrock = restrictiveType === 'Bedrock' && bdDepth > 0 && bdDepth <= 10;
-      const hasDarkLayer = horizons.some(h => h.depthFrom !== '' && h.depthTo !== '' && h.texture && Number(h.depthFrom) <= 4 && h.matrixValue !== '' && Number(h.matrixValue) <= 2.5 && h.matrixChroma !== '' && Number(h.matrixChroma) <= 1);
+      const hasDarkLayer = horizons.some(h => h.depthFrom !== '' && h.depthTo !== '' && isLoamy(h.texture) && Number(h.depthFrom) <= 4 && h.matrixValue !== '' && Number(h.matrixValue) <= 2.5 && h.matrixChroma !== '' && Number(h.matrixChroma) <= 1);
       if (!hasBedrock || !hasDarkLayer) {
         const _f22missing = [
           !hasBedrock ? 'no Bedrock restrictive layer within 10 in. has been entered' : null,
           !hasDarkLayer ? 'no layer starting ≤4 in. with value ≤2.5/chroma ≤1 has been entered' : null
         ].filter(Boolean);
-        w.push({ code: 'F22', msg: `F22 (Very Shallow Dark Surface) is manually selected but the entered data does not support it — ${_f22missing.join('; ')}. This indicator requires a shallow bedrock profile (Variant 1: bedrock 6–10 in. with dark layer ≥6 in. thick starting ≤4 in., value ≤2.5/chroma ≤1, remaining soil to bedrock chroma ≤2; Variant 2: bedrock ≤6 in. with >half of soil value ≤2.5/chroma ≤1, remainder chroma ≤2) plus a depression or flood plain subject to frequent ponding.`, _mismatch: true, _soilData: true });
+        w.push({ code: 'F22', msg: `F22 (Very Shallow Dark Surface) is manually selected but the entered data does not support it — ${_f22missing.join('; ')}. This indicator requires a loamy/clayey layer in a depression or flood plain subject to frequent ponding, meeting one of: (1) bedrock at 6–10 in. with a dark layer (value ≤2.5, chroma ≤1) ≥6 in. thick starting ≤4 in. from surface, remaining soil to bedrock same color or chroma ≤2; OR (2) bedrock ≤6 in. with >half of soil dark (value ≤2.5, chroma ≤1), remaining soil to bedrock same color or chroma ≤2.`, _mismatch: true, _soilData: true });
       }
     }
     if (chkHydric['A2'] && !(vegMet && hydroMet)) {
