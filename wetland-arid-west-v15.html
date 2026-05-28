@@ -20048,8 +20048,8 @@ function WetlandApp() {
             const bot = Math.min(Number(h.depthTo) || 0, bdRaw);
             const ht = bot - top;
             if (ht <= 0) continue;
-            if (!_isLoamy(h.texture)) { remainOk = false; continue; }
-            if (Number(h.matrixValue) <= 2.5 && Number(h.matrixChroma) <= 1) darkThick += ht;else if (Number(h.matrixChroma) > 2) remainOk = false;
+            if (_isLoamy(h.texture) && Number(h.matrixValue) <= 2.5 && Number(h.matrixChroma) <= 1) darkThick += ht;
+            else if (Number(h.matrixChroma) > 2) remainOk = false;
           }
           if (darkThick > bdRaw / 2 && remainOk) {
             base['F22'] = {
