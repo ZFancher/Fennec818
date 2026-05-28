@@ -11981,19 +11981,29 @@ function inferHydricIndicators(horizons) {
   }
   {
     const RED_HUES = ['7.5YR', '5YR', '2.5YR', '10R', '7.5R', '5R', '2.5R'];
+    const f21DeplQual = (h, rx) => (N(rx.value) >= N(h.matrixValue) + 1 && N(rx.chroma) <= N(h.matrixChroma) - 1) || (N(rx.value) >= 4 && N(rx.chroma) <= 2);
+    const f21QualPct = h => redoxRows(h).reduce((s, rx) => {
+      if (rx.type.startsWith('C ') && isDP(h, rx)) return s + N(rx.pct);
+      if (rx.type.startsWith('D') && f21DeplQual(h, rx)) return s + N(rx.pct);
+      return s;
+    }, 0);
     const q = sorted.find(h => {
       if (!isLoamy(h.texture)) return false;
       if (hzTop(h) > 10 || hzThick(h) < 4) return false;
       if (!RED_HUES.includes(h.matrixHue)) return false;
-      if (N(h.matrixValue) < 2 || N(h.matrixValue) > 4) return false;
-      if (N(h.matrixChroma) < 2 || N(h.matrixChroma) > 4) return false;
-      const qualPct = redoxRows(h).filter(rx => (rx.type.startsWith('C ') || rx.type.startsWith('D')) && isDP(h, rx)).reduce((s, rx) => s + N(rx.pct), 0);
-      return qualPct >= 10;
+      if (N(h.matrixValue) <= 2 || N(h.matrixValue) > 4) return false;
+      if (N(h.matrixChroma) <= 2 || N(h.matrixChroma) > 4) return false;
+      return f21QualPct(h) >= 10;
     });
     if (q) {
-      const qualPct = redoxRows(q).filter(rx => (rx.type.startsWith('C ') || rx.type.startsWith('D')) && isDP(q, rx)).reduce((s, rx) => s + N(rx.pct), 0);
+      const concPct = redoxRows(q).filter(rx => rx.type.startsWith('C ') && isDP(q, rx)).reduce((s, rx) => s + N(rx.pct), 0);
+      const deplPct = redoxRows(q).filter(rx => rx.type.startsWith('D') && f21DeplQual(q, rx)).reduce((s, rx) => s + N(rx.pct), 0);
+      const qualPct = concPct + deplPct;
+      const f21Parts = [];
+      if (concPct > 0) f21Parts.push(`${concPct}% distinct/prominent concentrations`);
+      if (deplPct > 0) f21Parts.push(`${deplPct}% qualifying depletions`);
       inferred['F21'] = {
-        reason: `Layer at ${hzTop(q)}–${hzBot(q)} in.: hue ${q.matrixHue}, value ${q.matrixValue}/chroma ${q.matrixChroma} — red-colored range, ${hzThick(q).toFixed(1)} in. thick, ${qualPct}% distinct/prominent C/D redox (≥10% req., Table A1). SOIL REQUIREMENTS MET. However, confirm red parent material origin (CCPI <30) and redoximorphic context in the field.`,
+        reason: `Layer at ${hzTop(q)}–${hzBot(q)} in.: hue ${q.matrixHue}, value ${q.matrixValue}/chroma ${q.matrixChroma} — red parent material color range, ${hzThick(q).toFixed(1)} in. thick, ${qualPct}% qualifying redox (${f21Parts.join('; ')}; ≥10% req.). SOIL REQUIREMENTS MET. However, confirm red parent material origin (CCPI <30) and redoximorphic context in the field.`,
         partial: true
       };
     }
@@ -20382,7 +20392,7 @@ function WetlandApp() {
       if (!hasF12) w.push({ code: 'F12', msg: 'F12 (Iron-Manganese Masses) is manually selected but the entered soil data does not support it. On flood plains only: requires a loamy/clayey layer ≥4 in. thick (thickness waived if beginning at the mineral surface) starting ≤8 in. from surface, with ≥40% matrix chroma ≤2 and ≥2% soft iron-manganese masses (value + chroma ≤3) entered as redox concentrations.', _mismatch: true, _soilData: true });
     }
     if (chkHydricProb['F21'] && !effectiveSoilAuto['F21']) {
-      if (!w.some(x => x._soilData && x.code === 'F21')) w.push({ code: 'F21', msg: 'F21 (Red Parent Material) is manually selected but the entered soil data does not support it. This indicator requires a loamy/clayey layer ≥4 in. thick starting ≤10 in. from surface, with matrix hue 7.5YR or redder, value 3–4, chroma 2–4, and ≥10% distinct/prominent redox concentrations or depletions (Table A1). Red parent material origin (CCPI <30) must be confirmed in the field.', _mismatch: true, _soilData: true });
+      if (!w.some(x => x._soilData && x.code === 'F21')) w.push({ code: 'F21', msg: 'F21 (Red Parent Material) is manually selected but the entered soil data does not support it. This indicator requires a loamy/clayey layer ≥4 in. thick starting ≤10 in. from surface, with matrix hue 7.5YR or redder, value 3–4, chroma 3–4, and ≥10% qualifying redox (distinct/prominent concentrations or qualifying depletions) (Table A1). Red parent material origin (CCPI <30) must be confirmed in the field.', _mismatch: true, _soilData: true });
     }
     if (chkHydricProb['F22']) {
       const bdDepth = Number(restrictiveDepth);
