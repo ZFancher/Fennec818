@@ -20521,6 +20521,15 @@ function WetlandApp() {
     });
     return neededDepth;
   }, [horizons, profileMaxDepth, effectiveSoilAuto, chkHydric]);
+  const profileShallowIsManual = useMemo(() => {
+    if (!profileShallow) return false;
+    const checkInds = [...HYDRIC_ALL, ...HYDRIC_SANDY, ...HYDRIC_LOAMY];
+    return checkInds.some(ind => {
+      if (chkHydric[ind.id]) return true;
+      const a = effectiveSoilAuto[ind.code];
+      return a && !a.partial && !a.combo;
+    });
+  }, [profileShallow, effectiveSoilAuto, chkHydric]);
   const horizonGaps = useMemo(() => {
     const complete = horizons
       .filter(h => h.depthFrom !== '' && h.depthTo !== '')
@@ -23334,7 +23343,7 @@ function WetlandApp() {
       color: 'var(--c-warn)',
       lineHeight: 1.6
     }
-  }, "Deepest horizon ends at ", profileMaxDepth, " in. One or more manually selected hydric soil indicators require data to at least ", profileShallow, " in. Indicators requiring layers within that depth may not have been detectable with the current profile.")), horizonGaps && React.createElement("div", {
+  }, "Deepest horizon ends at ", profileMaxDepth, " in. ", profileShallowIsManual ? React.createElement(React.Fragment, null, "One or more manually selected hydric soil indicators require data to at least ", profileShallow, " in.") : React.createElement(React.Fragment, null, "One or more hydric soil indicators require data to at least ", profileShallow, " in."), " Indicators requiring layers within that depth may not have been detectable with the current profile.")), horizonGaps && React.createElement("div", {
     style: {
       marginTop: profileShallow ? 8 : 0
     }
