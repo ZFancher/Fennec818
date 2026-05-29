@@ -20417,7 +20417,7 @@ function WetlandApp() {
       if (!hasF12) w.push({ code: 'F12', msg: 'F12 (Iron-Manganese Masses) is manually selected but the entered soil data does not support it. On flood plains only: requires a loamy/clayey layer ≥4 in. thick (thickness waived if beginning at the mineral surface) starting ≤8 in. from surface, with ≥40% matrix chroma ≤2 and ≥2% soft iron-manganese masses (value + chroma ≤3) entered as redox concentrations.', _mismatch: true, _soilData: true });
     }
     if (chkHydricProb['F21'] && !effectiveSoilAuto['F21']) {
-      if (!w.some(x => x._soilData && x.code === 'F21')) w.push({ code: 'F21', msg: 'F21 (Red Parent Material) is manually selected but the entered soil data does not support it. This indicator requires a loamy/clayey layer ≥4 in. thick starting ≤10 in. from surface, with matrix hue 7.5YR or redder, value and chroma >2 to ≤4, and ≥10% combined distinct/prominent concentrations and/or qualifying depletions (Table A1). Red parent material origin (CCPI <30) must be confirmed in the field.', _mismatch: true, _soilData: true });
+      if (!w.some(x => x._soilData && x.code === 'F21')) w.push({ code: 'F21', msg: 'F21 (Red Parent Material) is manually selected but the entered soil data does not support it. This indicator requires a loamy/clayey layer ≥4 in. thick starting ≤10 in. from surface, with matrix hue 7.5YR or redder, value and chroma >2 to ≤4, and ≥10% combined distinct/prominent concentrations and/or qualifying depletions. Red parent material origin (CCPI <30) must be confirmed in the field.', _mismatch: true, _soilData: true });
     }
     if (chkHydricProb['F22']) {
       const bdDepth = Number(restrictiveDepth);
