@@ -11818,7 +11818,8 @@ function inferHydricIndicators(horizons) {
   {
     const q = sorted.find(h => hzTop(h) <= 6 && isMuck(h.texture) && N(h.matrixValue) <= 3 && N(h.matrixChroma) <= 1 && hzThick(h) >= 0.75);
     if (q && aboveMinLayersChromaOK_A(hzTop(q))) inferred['A10'] = {
-      reason: `Muck at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in. thick; ≥0.75 in. req.), value ${q.matrixValue}/chroma ${q.matrixChroma}. TEST indicator in LRR B only.`
+      reason: `Muck at ${hzTop(q)}–${hzBot(q)} in. (${hzThick(q).toFixed(1)} in. thick; ≥0.75 in. req.), value ${q.matrixValue}/chroma ${q.matrixChroma}. TEST indicator in LRR B only.`,
+      partial: true
     };
   }
   {
@@ -20183,6 +20184,7 @@ function WetlandApp() {
   const soilDistOrProb = sigDistSoil || natProbSoil;
   const hydroDistOrProb = sigDistHydro || natProbHydro;
   const hydroMet = hydroMetStandard;
+  const a9IsProb = siteInfo.lrr === 'C';
   const effectiveSoilAuto = useMemo(() => {
     let result = _effectiveSoilAutoBase;
     if (result['A2'] && result['A2'].partial && vegCalc.vegMet && hydroMet) {
@@ -20195,14 +20197,24 @@ function WetlandApp() {
         }
       };
     }
-    if (result['F18'] && !(vegCalc.vegMet && hydroMet)) {
-      const { F18: _f18removed, ...rest } = result;
-      result = rest;
+    const psiGateOk = (vegCalc.vegMet || vegDistOrProb) && (hydroMet || hydroDistOrProb);
+    for (const code of ['F12', 'F18', 'F21', 'F22', 'A10']) {
+      if (result[code] && !psiGateOk) {
+        const { [code]: _removed, ...rest } = result;
+        result = rest;
+      }
+    }
+    if (result['A9'] && a9IsProb) {
+      if (!psiGateOk) {
+        const { A9: _a9removed, ...rest } = result;
+        result = rest;
+      } else {
+        result = { ...result, 'A9': { ...result['A9'], partial: true } };
+      }
     }
     return result;
-  }, [_effectiveSoilAutoBase, vegCalc, hydroMet]);
+  }, [_effectiveSoilAutoBase, vegCalc, hydroMet, vegDistOrProb, hydroDistOrProb, a9IsProb]);
   const allHydricInds = [...HYDRIC_ALL, ...HYDRIC_SANDY, ...HYDRIC_LOAMY];
-  const a9IsProb = siteInfo.lrr === 'C';
   const _lrrOkSoil = ind => !siteInfo.lrr || !ind.lrr || ind.lrr.includes('All LRRs') || ind.lrr.includes('LRR ' + siteInfo.lrr) || ind.lrr.includes('LRRs B, C, D');
   const numHydricActive = allHydricInds.filter(ind => {
     const a = effectiveSoilAuto[ind.code];
@@ -24033,7 +24045,7 @@ function WetlandApp() {
       fontWeight: 700
     }
   }, "Manual selection is possible without having met these criteria but will generate a data consistency warning."))), HYDRIC_PROBLEMATIC.map(ind => {
-    const a = autoFor(ind.code);
+    const a = _lrrOkSoil(ind) ? autoFor(ind.code) : null;
     const isPartial = a && !!a.partial;
     return React.createElement(HydricRow, {
       key: ind.id,
