@@ -20365,6 +20365,69 @@ function WetlandApp() {
       _mismatch: true,
       _soilData: true
     });
+    if (chkP['A1h'] && !effectiveHydroAuto['A1h']) w.push({
+      code: 'A1',
+      msg: 'A1 (Surface Water) is manually selected but no surface water depth has been entered. This indicator requires direct field observation of standing water (flooding or ponding) at or above the soil surface — enter the observed depth in the Surface Water field.',
+      _mismatch: true
+    });
+    if (chkP['A2h'] && !effectiveHydroAuto['A2h']) {
+      const _a2val = parseFloat(hydroMeasure['A2h']);
+      const _a2why = isNaN(_a2val) ? 'no water table depth has been entered' : `the entered depth (${_a2val} in.) exceeds 12 in.`;
+      w.push({
+        code: 'A2',
+        msg: `A2 (High Water Table) is manually selected but ${_a2why}. This indicator requires direct observation of a free water surface within 12 in. (30 cm) of the soil surface in a soil pit, auger hole, or monitoring well.`,
+        _mismatch: true
+      });
+    }
+    if (chkP['A3h'] && !effectiveHydroAuto['A3h']) {
+      const _a3val = parseFloat(hydroMeasure['A3h']);
+      const _a2val = parseFloat(hydroMeasure['A2h']);
+      const _rDepth = Number(restrictiveDepth);
+      let _a3why;
+      if (isNaN(_a3val)) {
+        _a3why = 'no saturation depth has been entered';
+      } else if (_a3val > 12) {
+        _a3why = `the entered saturation depth (${_a3val} in.) exceeds 12 in.`;
+      } else {
+        const _noWT = isNaN(_a2val) || _a2val <= _a3val;
+        const _noRL = !(restrictiveType && _rDepth > _a3val && _rDepth <= 12);
+        _a3why = 'the required supporting conditions are not met — ' +
+          (_noWT ? 'no water table deeper than the saturation zone has been entered' : '') +
+          (_noWT && _noRL ? '; and ' : '') +
+          (_noRL ? 'no qualifying restrictive layer within 12 in. has been entered (episaturation waiver)' : '');
+      }
+      w.push({
+        code: 'A3',
+        msg: `A3 (Saturation) is manually selected but ${_a3why}. This indicator requires saturation ≤12 in. below the surface, confirmed by water glistening on soil peds or samples, with either a water table observed below the saturated zone or a restrictive layer within 12 in. for episaturation.`,
+        _mismatch: true
+      });
+    }
+    if (chkP['B12'] && !effectiveHydroAuto['B12']) w.push({
+      code: 'B12',
+      msg: 'B12 (Biotic Crust) is manually selected but no biotic crust cover percentage has been entered. This indicator requires a cover value >0% in the Biotic Crust field — enter the observed percentage of ponding-remnant biotic crusts, benthic microflora, or dried algae at or near the soil surface.',
+      _mismatch: true
+    });
+    if (chkP['C4'] && !effectiveHydroAuto['C4']) w.push({
+      code: 'C4',
+      msg: 'C4 (Presence of Reduced Iron) is manually selected but no supporting data has been detected. If confirmed by a reduced matrix that changes color upon air exposure, enter a Reduced Matrix (RM) redox entry in a horizon starting ≤12 in. from the surface — this will auto-select the indicator. If confirmed by alpha-alpha-dipyridyl dye (positive pink or red reaction over >50% of the tested layer), document the test result in Remarks.',
+      _mismatch: true
+    });
+    {
+      const _c2a2 = parseFloat(hydroMeasure['A2h']);
+      const _c2hasAuto = !isNaN(_c2a2) && _c2a2 > 12 && _c2a2 <= 24;
+      if (chkS['C2'] && !_c2hasAuto) {
+        const _c2why = isNaN(_c2a2)
+          ? 'no water table depth has been entered'
+          : _c2a2 <= 12
+            ? `the entered depth (${_c2a2} in.) is ≤12 in., which supports A2 (High Water Table) rather than C2`
+            : `the entered depth (${_c2a2} in.) exceeds 24 in. — a dry-season depth of 12–24 in. is required`;
+        w.push({
+          code: 'C2',
+          msg: `C2 (Dry-Season Water Table) is manually selected but ${_c2why}. This indicator requires a water table observed between 12–24 in. below the surface during the dry season, suggesting that under normal wet-season conditions the water table rises to within 12 in. Field confirmation of the seasonal pattern is required before this indicator can be confirmed.`,
+          _mismatch: true
+        });
+      }
+    }
     {
       const _HINTS = {
         A18: 'requires identification of dark-gray or black iron monosulfide (FeS) concentrations (value ≤4, chroma ≤2) starting ≤10 in. from surface. Enter a redox concentration row (C type) with value ≤4 and chroma ≤2 in a horizon starting within 10 in. of the surface. Chemical field confirmation is required — apply ~3% H₂O₂ (Munsell value must increase ≥1) or dilute HCl (H₂S evolution)',
@@ -20449,7 +20512,7 @@ function WetlandApp() {
       }
     }
     return w;
-  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkS, chkHydric, chkHydricProb, hydroMeasure, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, ch5Engaged, effectiveHydroAuto, effectiveSoilAuto, vegMet, soilsMet, hydroMet, vegDistOrProb, soilDistOrProb, soilProfileWarning, soilWarnDetail, probValid, probHydroVeg, probHydroVegRemarks, soilsSideOk, hydroSideOk, d3Auto]);
+  }, [vegCalc, numHydricActive, autoCount, numP, numS, chkP, chkS, chkHydric, chkHydricProb, hydroMeasure, bioticCrust, restrictiveType, restrictiveDepth, horizons, siteInfo.lrr, isWetland, normalCirc, ch5Engaged, effectiveHydroAuto, effectiveSoilAuto, vegMet, soilsMet, hydroMet, vegDistOrProb, soilDistOrProb, soilProfileWarning, soilWarnDetail, probValid, probHydroVeg, probHydroVegRemarks, soilsSideOk, hydroSideOk, d3Auto]);
   const criteriaCount = [vegMet, soilsMet, hydroMet].filter(Boolean).length;
   const passBadge = {
     background: 'var(--c-pass-bg)',
