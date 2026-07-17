@@ -24309,7 +24309,7 @@ function WetlandApp() {
   }, numS, " selected", numS === 1 ? ' (need 2+)' : '')), SECONDARY.map(ind => {
     const d3VegOk = vegMet || vegDistOrProb;
     const d3SoilOk = soilsMet || soilDistOrProb;
-    const secAuto = ind.id === 'D3' && d3Auto && !chkS['D3'] && d3VegOk && d3SoilOk ? d3Auto : ind.id === 'D5' && d5Auto && !chkS['D5'] ? d5Auto : ind.id === 'C2' && c2Auto && !chkS['C2'] ? c2Auto : null;
+    const secAuto = ind.id === 'D3' && d3Auto && !chkS['D3'] && d3VegOk && d3SoilOk ? d3Auto : ind.id === 'D5' && d5Auto && !chkS['D5'] ? d5Auto : ind.id === 'C2' && c2Auto ? c2Auto : null;
     const d5Dimmed = ind.id === 'D5' && !d5Auto && !chkS['D5'];
     const dimmed = d5Dimmed;
     const d5Details = ind.id === 'D5' && vegCalc.allDominants?.length > 0 ? (() => {
