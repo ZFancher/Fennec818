@@ -24642,7 +24642,7 @@ function WetlandApp() {
       textTransform: 'uppercase', letterSpacing: 'var(--ls-cap)',
       color: 'var(--c-warn)', fontWeight: 700
     }
-  }, "Data Consistency Warnings (", consistencyWarnings.length, ")")), (() => { const _wg = []; const _wm = new Map(); consistencyWarnings.forEach(w => { if (!_wm.has(w.code)) { const g = {code: w.code, msgs: [w.msg], hasMismatch: !!w._mismatch}; _wm.set(w.code, g); _wg.push(g); } else { const g = _wm.get(w.code); g.msgs.push(w.msg); if (w._mismatch) g.hasMismatch = true; } }); return _wg; })().map(g => React.createElement("div", {
+  }, "Data Consistency Warnings (", new Set(consistencyWarnings.map(w => w.code)).size, ")")), (() => { const _wg = []; const _wm = new Map(); consistencyWarnings.forEach(w => { if (!_wm.has(w.code)) { const g = {code: w.code, msgs: [w.msg], hasMismatch: !!w._mismatch}; _wm.set(w.code, g); _wg.push(g); } else { const g = _wm.get(w.code); g.msgs.push(w.msg); if (w._mismatch) g.hasMismatch = true; } }); return _wg; })().map(g => React.createElement("div", {
     key: g.code,
     style: {
       display: 'flex',
