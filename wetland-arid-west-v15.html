@@ -11466,7 +11466,7 @@ const PRIMARY = [{
   label: 'High Water Table',
   measureHint: 'Enter depth to water table. Auto-selects if depth ≤12 in.',
   measureThreshold: 12,
-  desc: 'Direct, visual observation of the water table ≤12 in. (30 cm) or less below the surface in a soil pit, auger hole, or shallow monitoring well. This indicator includes water tables derived from perched water, throughflow, and discharging groundwater (e.g., in seeps) that may be moving laterally near the soil surface.'
+  desc: 'Direct, visual observation of the water table ≤12 in. (30 cm) below the surface in a soil pit, auger hole, or shallow monitoring well. This indicator includes water tables derived from perched water, throughflow, and discharging groundwater (e.g., in seeps) that may be moving laterally near the soil surface.'
 }, {
   id: 'A3h',
   code: 'A3',
@@ -20372,7 +20372,7 @@ function WetlandApp() {
     });
     if (chkP['A2h'] && !effectiveHydroAuto['A2h']) {
       const _a2val = parseFloat(hydroMeasure['A2h']);
-      const _a2why = isNaN(_a2val) ? 'no water table depth has been entered' : `the entered depth (${_a2val} in.) exceeds 12 in.`;
+      const _a2why = isNaN(_a2val) ? 'no water table depth has been entered' : `the entered depth (${_a2val} in.) exceeds 12 in`;
       w.push({
         code: 'A2',
         msg: `A2 (High Water Table) is manually selected but ${_a2why}. This indicator requires direct observation of a free water surface within 12 in. (30 cm) of the soil surface in a soil pit, auger hole, or monitoring well.`,
