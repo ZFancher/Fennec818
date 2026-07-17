@@ -17860,7 +17860,8 @@ function SoilCameraCapture({ onSelect, onClose }) {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
     let active = true;
     navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 } }
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 } },
+      audio: false
     }).then(stream => {
       if (!active) { stream.getTracks().forEach(t => t.stop()); return; }
       streamRef.current = stream;
